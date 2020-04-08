@@ -11,6 +11,8 @@ import { locale as thai } from '../i18n/th';
 import { OrderService } from '../services/order.service';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MatDialog } from '@angular/material';
+import { CarAndDateComponent } from '../car-and-date/car-and-date.component';
 
 @Component({
   selector: 'app-order-form',
@@ -28,7 +30,8 @@ export class OrderFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private orderService: OrderService,
     private route: ActivatedRoute,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    public dialog: MatDialog
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
@@ -39,16 +42,42 @@ export class OrderFormComponent implements OnInit {
     this.orderData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
-        name: ""
+        "docno": "",
+        "docdate": "",
+        "carNo": "",
+        "cusAmount": null,
+        "orderStatus": "draft"
       };
+
+    console.log(this.orderData);
 
     this.orderForm = this.createForm();
     this.spinner.hide();
+
+    setTimeout(() => {
+      this.openCarAndDate();
+    });
+  }
+
+  openCarAndDate(): void {
+    const dialogRef = this.dialog.open(CarAndDateComponent, {
+      width: '250px',
+      disableClose: true,
+      data: { name: "ddd" }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
   createForm(): FormGroup {
     return this.formBuilder.group({
-      name: [this.orderData.name, Validators.required]
+      docno: [this.orderData.docno],
+      docdate: [this.orderData.docdate],
+      carNo: [this.orderData.carNo],
+      cusAmount: [this.orderData.cusAmount],
+      orderStatus: [this.orderData.orderStatus]
     });
   }
 
@@ -58,29 +87,32 @@ export class OrderFormComponent implements OnInit {
   }
 
   async onSave() {
-    this.spinner.show();
+    // this.spinner.show();
 
-    if (this.orderData._id) {
-      this.orderForm.value._id = this.orderData._id;
-      this.orderService
-        .updateOrderData(this.orderForm.value)
-        .then(res => {
-          // console.log(res);
-          this.location.back();
-        })
-        .catch(err => {
-          this.spinner.hide();
-        });
-    } else {
-      this.orderService
-        .createOrderData(this.orderForm.value)
-        .then(() => {
-          this.location.back();
-        })
-        .catch(err => {
-          this.spinner.hide();
-        });
-    }
+    console.log(this.orderForm.value)
+
+    // if (this.orderData._id) {
+    //   this.orderForm.value._id = this.orderData._id;
+    //   this.orderService
+    //     .updateOrderData(this.orderForm.value)
+    //     .then(res => {
+    //       // console.log(res);
+    //       this.location.back();
+    //     })
+    //     .catch(err => {
+    //       this.spinner.hide();
+    //     });
+    // } else {
+    //   this.orderService
+    //     .createOrderData(this.orderForm.value)
+    //     .then(() => {
+    //       this.location.back();
+    //     })
+    //     .catch(err => {
+    //       this.spinner.hide();
+    //     });
+    // }
+
   }
 
 

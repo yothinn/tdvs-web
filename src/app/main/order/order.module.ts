@@ -9,6 +9,7 @@ import { MatIconModule, MatMenuModule, MatSelectModule, MatDatepickerModule, Mat
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { OrderService } from './services/order.service';
+import { CarAndDateComponent } from './car-and-date/car-and-date.component';
 
 const routes = [
   {
@@ -28,7 +29,8 @@ const routes = [
 @NgModule({
   declarations: [
     OrderListComponent,
-    OrderFormComponent
+    OrderFormComponent,
+    CarAndDateComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -64,6 +66,9 @@ const routes = [
   exports: [
     OrderListComponent,
     OrderFormComponent
+  ],
+  entryComponents: [
+    CarAndDateComponent
   ]
 })
 export class OrderModule { }
