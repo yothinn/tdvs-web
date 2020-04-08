@@ -122,7 +122,7 @@ export class OrderFormComponent implements OnInit {
     if (this.orderData._id) {
       this.orderForm.value._id = this.orderData._id;
       this.orderService
-        .updateOrderData(this.orderForm.value)
+        .updateOrderData(this.orderForm.value._id, this.orderForm.value)
         .then(res => {
           // console.log(res);
           this.location.back();
