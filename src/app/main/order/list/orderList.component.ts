@@ -8,6 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { OrderService } from '../services/order.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-order-list',
@@ -37,6 +38,15 @@ export class OrderListComponent implements OnInit {
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
     console.log(this.rows)
+    this.formatMoment();
+  }
+
+  formatMoment() {
+    for (let i = 0; i < this.rows.length; i++) {
+      const row = this.rows[i];
+      row.docdate = moment(row.docdate).format("DD/MM/YYYY");
+      // row.docdate = moment(row.docdate).format();
+    };
   }
 
   addData() {
@@ -53,6 +63,7 @@ export class OrderListComponent implements OnInit {
     this.orderService.updateOrderData(item).then((res) => {
       this.orderService.getOrderDataList().subscribe((res: any) => {
         this.rows = res.data;
+        this.formatMoment();
       })
     })
   }
@@ -61,6 +72,7 @@ export class OrderListComponent implements OnInit {
     this.orderService.deleteOrderData(item).then((res) => {
       this.orderService.getOrderDataList().subscribe((res: any) => {
         this.rows = res.data;
+        this.formatMoment();
       })
     })
   }
