@@ -36,6 +36,7 @@ export class OrderListComponent implements OnInit {
   ngOnInit(): void {
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
+    console.log(this.rows)
   }
 
   addData() {
@@ -44,6 +45,16 @@ export class OrderListComponent implements OnInit {
 
   editData(item) {
     this.router.navigateByUrl("/order/orderForm/" + item._id);
+  }
+
+  changeStatusData(item, status) {
+    item.orderStatus = status
+    // console.log(item);
+    this.orderService.updateOrderData(item).then((res) => {
+      this.orderService.getOrderDataList().subscribe((res: any) => {
+        this.rows = res.data;
+      })
+    })
   }
 
   deleteData(item) {
