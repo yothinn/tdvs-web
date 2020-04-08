@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { OrderService } from './services/order.service';
 import { CarAndDateComponent } from './car-and-date/car-and-date.component';
+import { AgmCoreModule } from '@agm/core';
 
 const routes = [
   {
@@ -61,7 +62,11 @@ const routes = [
 
     TranslateModule,
     FuseSharedModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyD2aNk7BXJ13EyVfPZXWRVqEcnfzfRVVIA'
+    })
   ],
   exports: [
     OrderListComponent,

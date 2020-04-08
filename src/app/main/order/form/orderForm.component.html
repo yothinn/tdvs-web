@@ -30,10 +30,19 @@
     <div class="content">
       <div fxLayout="row wrap">
         <div fxFlex="30">
-          ddddd
+          เว้นไว้เพื่อลิส
         </div>
         <div fxFlex="70">
-          ddddd
+
+          <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false"
+            [zoomControl]="false">
+
+            <agm-marker *ngFor="let m of markers; let i = index" (markerClick)="clickedMarker(m.label, i)"
+              [latitude]="m.lat" [longitude]="m.lng" [label]="m.label" [markerDraggable]="m.draggable">
+            </agm-marker>
+
+          </agm-map>
+
         </div>
       </div>
     </div>

@@ -24,6 +24,13 @@ import { CarAndDateComponent } from '../car-and-date/car-and-date.component';
 export class OrderFormComponent implements OnInit {
   orderForm: FormGroup;
   orderData: any = {};
+
+  markers: Array<any> = [];
+
+  zoom: number = 10;
+  lat: number = 13.6186285;
+  lng: number = 100.5078163;
+
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
@@ -57,6 +64,8 @@ export class OrderFormComponent implements OnInit {
     setTimeout(() => {
       this.openCarAndDate();
     });
+
+    this.getMarkerData();
   }
 
   openCarAndDate(): void {
@@ -72,6 +81,22 @@ export class OrderFormComponent implements OnInit {
         this.orderForm.get('docdate').setValue(result.docdate, { emitEvent: false });
       }
     });
+  }
+
+  getMarkerData() {
+    this.markers = [
+      { "lat": 13.75327751893923, "lng": 100.64047617858176, "label": null, "draggable": false },
+      { "lat": 13.843966242828646, "lng": 100.63635630553489, "label": null, "draggable": false },
+      { "lat": 13.76661630540836, "lng": 100.67480845397239, "label": null, "draggable": false },
+      { "lat": 13.70658578493252, "lng": 100.60065073912864, "label": null, "draggable": false },
+      { "lat": 13.717259000672662, "lng": 100.68167490905051, "label": null, "draggable": false },
+      { "lat": 13.794275321937924, "lng": 100.63498301451926, "label": null, "draggable": false },
+      { "lat": 13.758930056124933, "lng": 100.58966441100364, "label": null, "draggable": false }
+    ]
+  }
+
+  clickedMarker(label: string, index: number) {
+    console.log(`clicked the marker: ${label || index}`)
   }
 
   createForm(): FormGroup {
