@@ -11,7 +11,7 @@ const routes = [
     {
         path     : 'sample',
         component: SampleComponent,
-        canActivate: [AuthenGuardService]
+        // canActivate: [AuthenGuardService]
     }
 ];
 
