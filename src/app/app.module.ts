@@ -32,79 +32,82 @@ import { GlobalErrorHandler } from "./global-error-handler";
 import { ServerErrorInterceptor } from "./server-error.interceptor";
 
 const appRoutes: Routes = [
-    {
-        path        : 'auth',
-        loadChildren: './authentication/authentication.module#AuthenticationModule'
-    },
-    {
-        path      : '**',
-        redirectTo: 'sample'
-    }
+  {
+    path: 'auth',
+    loadChildren: './authentication/authentication.module#AuthenticationModule'
+  },
+  {
+    path: 'order',
+    loadChildren: './main/order/order.module#OrderModule'
+  },
+  {
+    path: '**',
+    redirectTo: 'sample'
+  }
 ];
 
 export const MY_FORMATS = {
-    parse: {
-      dateInput: "DD/MM/YYYY"
-    },
-    display: {
-      dateInput: "DD/MM/YYYY",
-      monthYearLabel: "MMMM YYYY",
-      dateA11yLabel: "DD/MM/YYYY",
-      monthYearA11yLabel: "MM YYYY"
-    }
-  };
+  parse: {
+    dateInput: "DD/MM/YYYY"
+  },
+  display: {
+    dateInput: "DD/MM/YYYY",
+    monthYearLabel: "MMMM YYYY",
+    dateA11yLabel: "DD/MM/YYYY",
+    monthYearA11yLabel: "MM YYYY"
+  }
+};
 
 @NgModule({
-    declarations: [
-        AppComponent
-    ],
-    imports     : [
-        BrowserModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        RouterModule.forRoot(appRoutes),
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    RouterModule.forRoot(appRoutes),
 
-        TranslateModule.forRoot(),
+    TranslateModule.forRoot(),
 
-        // Material moment date module
-        MatMomentDateModule,
+    // Material moment date module
+    MatMomentDateModule,
 
-        // Material
-        MatButtonModule,
-        MatIconModule,
-        MatSnackBarModule,
+    // Material
+    MatButtonModule,
+    MatIconModule,
+    MatSnackBarModule,
 
-        // Fuse modules
-        FuseModule.forRoot(fuseConfig),
-        FuseProgressBarModule,
-        FuseSharedModule,
-        FuseSidebarModule,
-        FuseThemeOptionsModule,
+    // Fuse modules
+    FuseModule.forRoot(fuseConfig),
+    FuseProgressBarModule,
+    FuseSharedModule,
+    FuseSidebarModule,
+    FuseThemeOptionsModule,
 
-        // App modules
-        LayoutModule,
-        NgxSpinnerModule,
-        SampleModule
-    ],
-    bootstrap   : [
-        AppComponent
-    ],
-    providers: [
-        // { provide: ErrorHandler, useClass: GlobalErrorHandler },
-        // {
-        //   provide: HTTP_INTERCEPTORS,
-        //   useClass: ServerErrorInterceptor,
-        //   multi: true
-        // },
-        { provide: MAT_DATE_LOCALE, useValue: "th-TH" },
-        {
-          provide: DateAdapter,
-          useClass: MomentDateAdapter,
-          deps: [MAT_DATE_LOCALE]
-        },
-        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }
-      ]
+    // App modules
+    LayoutModule,
+    NgxSpinnerModule,
+    SampleModule
+  ],
+  bootstrap: [
+    AppComponent
+  ],
+  providers: [
+    // { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: ServerErrorInterceptor,
+    //   multi: true
+    // },
+    { provide: MAT_DATE_LOCALE, useValue: "th-TH" },
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE]
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }
+  ]
 })
-export class AppModule
-{
+export class AppModule {
 }
