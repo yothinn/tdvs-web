@@ -61,13 +61,14 @@ export class OrderFormComponent implements OnInit {
 
   openCarAndDate(): void {
     const dialogRef = this.dialog.open(CarAndDateComponent, {
-      width: '250px',
+      width: '350px',
       disableClose: true,
-      data: { name: "ddd" }
+      data: { carNo: this.orderData.carNo, docdate: this.orderData.docdate }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      this.orderForm.get('carNo').setValue(result.carNo, { emitEvent: false });
+      this.orderForm.get('docdate').setValue(result.docdate, { emitEvent: false });
     });
   }
 
@@ -87,31 +88,31 @@ export class OrderFormComponent implements OnInit {
   }
 
   async onSave() {
-    // this.spinner.show();
+    this.spinner.show();
 
     console.log(this.orderForm.value)
 
-    // if (this.orderData._id) {
-    //   this.orderForm.value._id = this.orderData._id;
-    //   this.orderService
-    //     .updateOrderData(this.orderForm.value)
-    //     .then(res => {
-    //       // console.log(res);
-    //       this.location.back();
-    //     })
-    //     .catch(err => {
-    //       this.spinner.hide();
-    //     });
-    // } else {
-    //   this.orderService
-    //     .createOrderData(this.orderForm.value)
-    //     .then(() => {
-    //       this.location.back();
-    //     })
-    //     .catch(err => {
-    //       this.spinner.hide();
-    //     });
-    // }
+    if (this.orderData._id) {
+      this.orderForm.value._id = this.orderData._id;
+      this.orderService
+        .updateOrderData(this.orderForm.value)
+        .then(res => {
+          // console.log(res);
+          this.location.back();
+        })
+        .catch(err => {
+          this.spinner.hide();
+        });
+    } else {
+      this.orderService
+        .createOrderData(this.orderForm.value)
+        .then(() => {
+          this.location.back();
+        })
+        .catch(err => {
+          this.spinner.hide();
+        });
+    }
 
   }
 

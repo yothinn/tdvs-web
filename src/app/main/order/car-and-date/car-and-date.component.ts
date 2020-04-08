@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-car-and-date',
@@ -7,9 +8,34 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CarAndDateComponent implements OnInit {
 
-  constructor() { }
+  cars: Array<any> = [];
+
+  constructor(
+    public dialogRef: MatDialogRef<CarAndDateComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) { }
 
   ngOnInit() {
+    this.cars = [
+      {
+        "carNo": "1ก-151"
+      }, {
+        "carNo": "2ข-382"
+      }, {
+        "carNo": "3ค-438"
+      }
+    ];
+
+    // console.log(this.data);
+  }
+
+  onCencel() {
+    this.dialogRef.close();
+  }
+
+  onConfirm() {
+    // console.log(this.data)
+    this.dialogRef.close(this.data);
   }
 
 }
