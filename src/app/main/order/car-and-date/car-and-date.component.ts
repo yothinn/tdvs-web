@@ -29,7 +29,7 @@ export class CarAndDateComponent implements OnInit {
     // console.log(this.data);
   }
 
-  onCencel() {
+  onCancel() {
     this.dialogRef.close();
   }
 

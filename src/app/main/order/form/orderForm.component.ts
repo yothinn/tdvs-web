@@ -67,8 +67,10 @@ export class OrderFormComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.orderForm.get('carNo').setValue(result.carNo, { emitEvent: false });
-      this.orderForm.get('docdate').setValue(result.docdate, { emitEvent: false });
+      if (result) {
+        this.orderForm.get('carNo').setValue(result.carNo, { emitEvent: false });
+        this.orderForm.get('docdate').setValue(result.docdate, { emitEvent: false });
+      }
     });
   }
 
