@@ -1,11 +1,8 @@
 <div class="page-layout carded  fullwidth inner-scroll">
-  <!-- TOP BACKGROUND -->
-  <!-- <div class="top-bg accent"></div> -->
-  <!-- / TOP BACKGROUND -->
-
   <div class="content">
-    <div fxLayout="row wrap">
-      <div fxFlex="30">
+    <mat-sidenav-container class="full-d-hsize">
+
+      <mat-sidenav class="sidenav-side" mode="side" [(opened)]="sideNaveOpened">
 
         <div fxLayout="row" fxLayoutAlign="start center">
           <div fxFlex="20">
@@ -19,29 +16,49 @@
               view_list
             </mat-icon>
             <span class="logo-text h3" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
-              ลายชื่อ
+              รายชื่อสมาชิก
             </span>
           </div>
           <div fxFlex="30">
-            <button class="full-wsize" mat-raised-button color="warn" (click)="onSave()">บันทึก</button>
+            <button class="full-wsize" mat-raised-button color="warn" (click)="onSave()"
+              [disabled]="!orderData.docdate">บันทึก</button>
           </div>
         </div>
 
-        เว้นไว้เพื่อลิส
-      </div>
-      <div fxFlex="70">
+        <div class="list-bg" *ngFor="let item of markersSelected; let i = index" (click)="clickedMarker(item, i)">
+          <div class="list-item">
+            <div>
+              ชื่อ: {{item.personalInfo.titleThai}}{{item.personalInfo.firstNameThai}}
+              {{item.personalInfo.middleNameThai}} {{item.personalInfo.lastNameThai}}
+            </div>
+            <div>
+              ที่อยู่: {{item.contactAddress.addressLine1}} {{item.contactAddress.addressStreet}}
+              {{item.contactAddress.addressSubDistrict}} {{item.contactAddress.addressDistrict}}
+              {{item.contactAddress.addressProvince}} {{item.contactAddress.addressCountry}}
+              {{item.contactAddress.addressPostalCode}}
+            </div>
+            <div *ngFor="let contact of item.directContact">
+              {{contact.method}}: {{contact.value}}
+            </div>
+            <div>
+              lineID:
+            </div>
+          </div>
+        </div>
 
+      </mat-sidenav>
+
+      <mat-sidenav-content>
         <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false"
           [zoomControl]="false">
 
-          <agm-marker *ngFor="let m of markers; let i = index" (markerClick)="clickedMarker(m.label, i)"
-            [latitude]="m.lat" [longitude]="m.lng" [label]="m.label" [markerDraggable]="m.draggable">
+          <agm-marker *ngFor="let markerItem of markersData; let i = index" (markerClick)="clickedMarker(markerItem, i)"
+            [latitude]="markerItem.contactAddress.latitude" [longitude]="markerItem.contactAddress.longitude">
           </agm-marker>
 
         </agm-map>
+      </mat-sidenav-content>
 
-      </div>
-    </div>
+    </mat-sidenav-container>
   </div>
-
 </div>

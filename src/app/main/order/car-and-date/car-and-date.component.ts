@@ -16,16 +16,13 @@ export class CarAndDateComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.cars = [
-      {
-        "carNo": "1ก-151"
-      }, {
-        "carNo": "2ข-382"
-      }, {
-        "carNo": "3ค-438"
-      }
-    ];
+    this.data.cars.forEach(el => {
+      let car = '(' + el.lisenceID + ')' + ' ' + el.ownerInfo.titleThai + el.ownerInfo.firstNameThai
+        + ' ' + el.ownerInfo.middleNameThai + ' ' + el.ownerInfo.lastNameThai
+      this.cars.push({ carNo: car });
+    });
 
+    // console.log(this.cars);
     // console.log(this.data);
   }
 

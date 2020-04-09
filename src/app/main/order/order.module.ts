@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { OrderService } from './services/order.service';
 import { CarAndDateComponent } from './car-and-date/car-and-date.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { AgmCoreModule } from '@agm/core';
 
 const routes = [
@@ -59,6 +60,7 @@ const routes = [
     MatTreeModule,
     MatSliderModule,
     MatToolbarModule,
+    MatSidenavModule,
 
     TranslateModule,
     FuseSharedModule,

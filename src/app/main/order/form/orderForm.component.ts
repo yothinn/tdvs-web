@@ -8,6 +8,7 @@ import { locale as english } from '../i18n/en';
 import { locale as thai } from '../i18n/th';
 
 import { OrderService } from '../services/order.service';
+import { InvolvedpartyService } from './../../involvedparty/services/involvedparty.service';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDialog } from '@angular/material';
@@ -23,8 +24,12 @@ import { CarAndDateComponent } from '../car-and-date/car-and-date.component';
 export class OrderFormComponent implements OnInit {
 
   orderData: any = {};
+  vehicleData: Array<any> = [];
+  markersData: Array<any> = [];
 
-  markers: Array<any> = [];
+  sideNaveOpened: Boolean;
+
+  markersSelected: Array<any> = [];
 
   zoom: number = 10;
   lat: number = 13.6186285;
@@ -34,6 +39,7 @@ export class OrderFormComponent implements OnInit {
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
     private orderService: OrderService,
+    private involvedpartyService: InvolvedpartyService,
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     public dialog: MatDialog
@@ -53,23 +59,29 @@ export class OrderFormComponent implements OnInit {
         "cusAmount": null,
         "orderStatus": "draft"
       };
-
     console.log(this.orderData);
 
-    this.spinner.hide();
-
-    setTimeout(() => {
-      this.openCarAndDate();
-    });
-
+    this.getVehicleData();
     this.getMarkerData();
+
+  }
+
+  getVehicleData() {
+    this.orderService.getVehicleData().then((res) => {
+      this.vehicleData = res;
+      this.openCarAndDate();
+      this.spinner.hide();
+    }).catch((err) => {
+      console.log(err);
+      this.spinner.hide();
+    })
   }
 
   openCarAndDate(): void {
     const dialogRef = this.dialog.open(CarAndDateComponent, {
       width: '350px',
       disableClose: true,
-      data: { carNo: this.orderData.carNo, docdate: this.orderData.docdate }
+      data: { carNo: this.orderData.carNo, docdate: this.orderData.docdate, cars: this.vehicleData }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -81,19 +93,33 @@ export class OrderFormComponent implements OnInit {
   }
 
   getMarkerData() {
-    this.markers = [
-      { "lat": 13.75327751893923, "lng": 100.64047617858176, "label": null, "draggable": false },
-      { "lat": 13.843966242828646, "lng": 100.63635630553489, "label": null, "draggable": false },
-      { "lat": 13.76661630540836, "lng": 100.67480845397239, "label": null, "draggable": false },
-      { "lat": 13.70658578493252, "lng": 100.60065073912864, "label": null, "draggable": false },
-      { "lat": 13.717259000672662, "lng": 100.68167490905051, "label": null, "draggable": false },
-      { "lat": 13.794275321937924, "lng": 100.63498301451926, "label": null, "draggable": false },
-      { "lat": 13.758930056124933, "lng": 100.58966441100364, "label": null, "draggable": false }
-    ]
+    this.involvedpartyService.getInvolvedpartyDataList().subscribe((res: any) => {
+      this.markersData = res.data;
+      // console.log(this.markersData);
+    });
   }
 
-  clickedMarker(label: string, index: number) {
-    console.log(`clicked the marker: ${label || index}`)
+  clickedMarker(item: any, index: number) {
+
+    let mIndex = this.markersSelected.findIndex((el) => {
+      return el._id === item._id
+    });
+    // console.log(mIndex)
+
+    if (mIndex === -1) {
+      this.markersSelected.push(item);
+    } else {
+      this.markersSelected.splice(mIndex, 1);
+    }
+    // console.log(this.markersSelected);
+    // console.log(this.markersSelected.length);
+
+    if(this.markersSelected.length > 0){
+      this.sideNaveOpened = true;
+    } else {
+      this.sideNaveOpened = false;
+    }
+    
   }
 
   goBack() {
