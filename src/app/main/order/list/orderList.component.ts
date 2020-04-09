@@ -58,14 +58,16 @@ export class OrderListComponent implements OnInit {
   }
 
   changeStatusData(item, status) {
-    item.orderStatus = status
     // console.log(item);
-    this.orderService.updateOrderData(item).then((res) => {
+    let body = {
+      "orderStatus": status
+    };
+    this.orderService.updateOrderData(item._id, body).then((res) => {
       this.orderService.getOrderDataList().subscribe((res: any) => {
         this.rows = res.data;
         this.formatMoment();
       })
-    })
+    });
   }
 
   deleteData(item) {

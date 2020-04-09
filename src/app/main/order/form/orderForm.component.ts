@@ -3,7 +3,6 @@ import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.
 import { fuseAnimations } from '@fuse/animations';
 
 import { Location } from '@angular/common';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 import { locale as english } from '../i18n/en';
 import { locale as thai } from '../i18n/th';
@@ -22,7 +21,7 @@ import { CarAndDateComponent } from '../car-and-date/car-and-date.component';
   animations: fuseAnimations
 })
 export class OrderFormComponent implements OnInit {
-  orderForm: FormGroup;
+
   orderData: any = {};
 
   markers: Array<any> = [];
@@ -34,7 +33,6 @@ export class OrderFormComponent implements OnInit {
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
-    private formBuilder: FormBuilder,
     private orderService: OrderService,
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
@@ -58,7 +56,6 @@ export class OrderFormComponent implements OnInit {
 
     console.log(this.orderData);
 
-    this.orderForm = this.createForm();
     this.spinner.hide();
 
     setTimeout(() => {
@@ -77,8 +74,8 @@ export class OrderFormComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.orderForm.get('carNo').setValue(result.carNo, { emitEvent: false });
-        this.orderForm.get('docdate').setValue(result.docdate, { emitEvent: false });
+        this.orderData.carNo = result.carNo
+        this.orderData.docdate = result.docdate
       }
     });
   }
@@ -99,16 +96,6 @@ export class OrderFormComponent implements OnInit {
     console.log(`clicked the marker: ${label || index}`)
   }
 
-  createForm(): FormGroup {
-    return this.formBuilder.group({
-      docno: [this.orderData.docno],
-      docdate: [this.orderData.docdate],
-      carNo: [this.orderData.carNo],
-      cusAmount: [this.orderData.cusAmount],
-      orderStatus: [this.orderData.orderStatus]
-    });
-  }
-
   goBack() {
     this.spinner.show();
     this.location.back();
@@ -117,12 +104,11 @@ export class OrderFormComponent implements OnInit {
   async onSave() {
     this.spinner.show();
 
-    console.log(this.orderForm.value)
+    console.log(this.orderData)
 
     if (this.orderData._id) {
-      this.orderForm.value._id = this.orderData._id;
       this.orderService
-        .updateOrderData(this.orderForm.value)
+        .updateOrderData(this.orderData._id, this.orderData)
         .then(res => {
           // console.log(res);
           this.location.back();
@@ -132,7 +118,7 @@ export class OrderFormComponent implements OnInit {
         });
     } else {
       this.orderService
-        .createOrderData(this.orderForm.value)
+        .createOrderData(this.orderData)
         .then(() => {
           this.location.back();
         })

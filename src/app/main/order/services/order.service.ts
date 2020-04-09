@@ -56,10 +56,10 @@ export class OrderService {
     });
   }
 
-  updateOrderData(body): Promise<any> {
+  updateOrderData(id, body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http
-        .put(api_url + body._id, body, { headers: this.authorizationHeader() })
+        .put(api_url + id, body, { headers: this.authorizationHeader() })
         .subscribe((res: any) => {
           resolve(res.data);
         }, reject);
