@@ -1,11 +1,8 @@
 <div class="page-layout carded  fullwidth inner-scroll">
-  <!-- TOP BACKGROUND -->
-  <!-- <div class="top-bg accent"></div> -->
-  <!-- / TOP BACKGROUND -->
-
   <div class="content">
-    <div fxLayout="row wrap">
-      <div fxFlex="30">
+    <mat-sidenav-container class="full-d-hsize">
+
+      <mat-sidenav class="sidenav-side" mode="side" [(opened)]="sideNaveOpened">
 
         <div fxLayout="row" fxLayoutAlign="start center">
           <div fxFlex="20">
@@ -29,9 +26,10 @@
         </div>
 
         เว้นไว้เพื่อลิส
-      </div>
-      <div fxFlex="70">
 
+      </mat-sidenav>
+
+      <mat-sidenav-content>
         <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false"
           [zoomControl]="false">
 
@@ -40,9 +38,8 @@
           </agm-marker>
 
         </agm-map>
+      </mat-sidenav-content>
 
-      </div>
-    </div>
+    </mat-sidenav-container>
   </div>
-
 </div>

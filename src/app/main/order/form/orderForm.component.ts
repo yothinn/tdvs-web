@@ -27,6 +27,8 @@ export class OrderFormComponent implements OnInit {
 
   markers: Array<any> = [];
 
+  sideNaveOpened: Boolean;
+
   zoom: number = 10;
   lat: number = 13.6186285;
   lng: number = 100.5078163;
@@ -101,6 +103,7 @@ export class OrderFormComponent implements OnInit {
 
   clickedMarker(label: string, index: number) {
     console.log(`clicked the marker: ${label || index}`)
+    this.sideNaveOpened = true;
   }
 
   goBack() {
