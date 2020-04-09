@@ -32,13 +32,10 @@ import { GlobalErrorHandler } from "./global-error-handler";
 import { ServerErrorInterceptor } from "./server-error.interceptor";
 
 const appRoutes: Routes = [
-<<<<<<< HEAD
   // {
   //     path        : 'auth',
   //     loadChildren: './authentication/authentication.module#AuthenticationModule'
   // },
-=======
->>>>>>> a64b1d08c711d3d0583c1032519f5f3916304cef
   {
     path: 'member',
     loadChildren: './main/member/member.module#MemberModule'
@@ -46,10 +43,6 @@ const appRoutes: Routes = [
   {
     path: 'order',
     loadChildren: './main/order/order.module#OrderModule'
-  },
-  {
-    path: 'member',
-    loadChildren: './main/member/member.module#MemberModule'
   },
   {
     path: '**',
