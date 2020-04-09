@@ -6,47 +6,23 @@
   <!-- CENTER -->
   <div class="center">
     <!-- HEADER -->
-    <div
-      class="header accent"
-      fxLayout="row"
-      fxLayoutAlign="space-between center"
-    >
+    <div class="header accent" fxLayout="row" fxLayoutAlign="space-between center">
       <!-- APP TITLE -->
       <div fxLayout="row" fxLayoutAlign="start center">
         <button class="mat-icon-button mr-0 mr-sm-16" (click)="goBack()">
           <mat-icon>arrow_back</mat-icon>
         </button>
 
-        <div
-          class="logo mb-24 mb-md-0"
-          fxLayout="row"
-          fxLayoutAlign="start center"
-        >
-          <mat-icon
-            class="logo-icon s-32 mr-16"
-            [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }"
-          >
+        <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
             edit
           </mat-icon>
-          <span
-            class="logo-text h1"
-            [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }"
-          >
-          involvedpartyForm
+          <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
+            involvedpartyForm
           </span>
         </div>
-        <div
-          fxFlex="100"
-          fxFlex.gt-sm="40"
-          class="pl-20  pr-16"
-          fxLayoutAlign="end"
-        >
-          <button
-            [disabled]="involvedpartyForm.invalid"
-            mat-fab
-            color="warn"
-            (click)="onSave()"
-          >
+        <div fxFlex="100" fxFlex.gt-sm="40" class="pl-20  pr-16" fxLayoutAlign="end">
+          <button [disabled]="involvedpartyForm.invalid" mat-fab color="warn" (click)="onSave()">
             <mat-icon class="icon-position">save</mat-icon>
           </button>
         </div>
@@ -62,7 +38,7 @@
         <mat-tab-group fxFlex>
           <mat-tab label="involvedparty">
             <form [formGroup]="involvedpartyForm">
-              
+
               <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
 
                 <div fxLayout="row wrap" formGroupName="personalInfo" fxFlex="100">
@@ -86,35 +62,41 @@
                   </div>
                 </div>
 
-                <div formArrayName="directContact"
+                <!-- <div fxLayout="row wrap" formArrayName="directContact"
                   *ngFor="let item of involvedpartyForm.get('directContact').controls; let i = index;">
-                  <div [formGroupName]="i" fxLayout="row wrap" fxFlex="100">
-                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
-                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                        <mat-label>เบอร์มือถือ</mat-label>
-                        <input matInput formControlName="value">
-                      </mat-form-field>
-                    </div>
-                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
-                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                        <mat-label>เบอร์บ้าน</mat-label>
-                        <input matInput formControlName="value">
-                      </mat-form-field>
-                    </div>
-                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
-                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                        <mat-label>เบอร์อื่น ๆ</mat-label>
-                        <input matInput formControlName="value">
-                      </mat-form-field>
-                    </div>
+                  <div [formGroupName]="i" fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="30" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>เบอร์โทรศัพท์</mat-label>
+                      <input matInput formControlName="value">
+                    </mat-form-field>
                   </div>
+                </div> -->
+
+                <div fxLayout="row wrap" formArrayName="directContact"
+                  *ngFor="let item of involvedpartyForm.get('directContact').controls; let i = index;"
+                  fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                  <mat-form-field class="example-full-width" [formGroupName]="i" appearance="outline" fxFlex>
+                    <!-- <mat-label>{{item.value.method}}</mat-label> -->
+                    <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ</mat-label>
+                    <mat-label *ngIf="item.value.method==='home'">เบอร์บ้าน</mat-label>
+                    <mat-label *ngIf="item.value.method==='other'">เบอร์อื่น ๆ</mat-label>
+                    <input matInput formControlName="value">
+                  </mat-form-field>
+                  <!-- {{item.value.method | json}} -->
                 </div>
+
 
                 <div fxLayout="row wrap" formGroupName="contactAddress" fxFlex="100">
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>ที่อยู่ปัจจุบันเลขที่</mat-label>
                       <input matInput formControlName="addressLine1" name="addressLine1">
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>ถนน</mat-label>
+                      <input matInput formControlName="addressStreet" name="addressStreet">
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
@@ -129,15 +111,15 @@
                       <input matInput formControlName="addressDistrict" name="addressDistrict">
                     </mat-form-field>
                   </div>
+                </div>
+
+                <div fxLayout="row wrap" formGroupName="contactAddress" fxFlex="100">
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>จังหวัด</mat-label>
                       <input matInput formControlName="addressProvince" name="addressProvince">
                     </mat-form-field>
                   </div>
-                </div>
-
-                <div fxLayout="row wrap" formGroupName="contactAddress" fxFlex="100">
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>รหัสไปรษณี</mat-label>
@@ -146,11 +128,12 @@
                   </div>
                 </div>
 
+                <!-- {{involvedpartyForm.value | json}} -->
+
               </div>
-            
             </form>
           </mat-tab>
-          
+
         </mat-tab-group>
         <!--  -->
       </div>

@@ -45,22 +45,23 @@ export class InvolvedpartyFormComponent implements OnInit {
           firstName: "",
           lastName: ""
         },
-        directContact: [
-          {
-            method: "mobile",
-            value: "0987685678"
-          },
-          {
-            method: "home",
-            value: "0890007654"
-          },
-          {
-            method: "other",
-            value: "0876541234"
-          }
-        ],
+        // directContact: [
+        //   {
+        //     method: "mobile",
+        //     value: ""
+        //   },
+        //   {
+        //     method: "home",
+        //     value: ""
+        //   },
+        //   {
+        //     method: "other",
+        //     value: ""
+        //   }
+        // ],
         contactAddress: {
           addressLine1: "",
+          addressStreet: "",
           addressSubDistrict: "",
           addressDistrict: "",
           addressProvince: "",
@@ -68,19 +69,40 @@ export class InvolvedpartyFormComponent implements OnInit {
         }
       };
 
-    this.involvedpartyForm = this.createForm();
+    if (this.involvedpartyData.directContact) {
+      console.log('case Edit');
+      this.involvedpartyForm = this.editForm();
+      this.caseEditArray()
+    } else {
+      console.log('case New');
+      this.involvedpartyForm = this.createForm();
+    }
     this.spinner.hide();
   }
 
-  // createForm(): FormGroup {
-  //   return this.formBuilder.group({
-  //     name: [this.involvedpartyData.name, Validators.required]
-  //   });
-  // }
   createForm(): FormGroup {
     return this.formBuilder.group({
       personalInfo: this.createPersonalInfoForm(),
-      directContact: this.formBuilder.array([this.createItem()]),
+      directContact: this.formBuilder.array([
+        this.formBuilder.group(
+          {
+            method: "mobile",
+            value: ""
+          }
+        ),
+        this.formBuilder.group(
+          {
+            method: "home",
+            value: ""
+          }
+        ),
+        this.formBuilder.group(
+          {
+            method: "other",
+            value: ""
+          }
+        )
+      ]),
       contactAddress: this.createContactAddressForm(),
     });
   }
@@ -93,16 +115,19 @@ export class InvolvedpartyFormComponent implements OnInit {
     });
   }
 
-  createItem(): FormGroup {
-    return this.formBuilder.group({
-      method: "",
-      value: ""
-    });
-  }
+  // createItem(): FormGroup {
+  //   return this.formBuilder.group(
+  //     {
+  //       method: "",
+  //       value: ""
+  //     }
+  //   );
+  // }
 
   createContactAddressForm(): FormGroup {
     return this.formBuilder.group({
       addressLine1: [this.involvedpartyData.contactAddress.addressLine1],
+      addressStreet: [this.involvedpartyData.contactAddress.addressStreet],
       addressSubDistrict: [this.involvedpartyData.contactAddress.addressSubDistrict],
       addressDistrict: [this.involvedpartyData.contactAddress.addressDistrict],
       addressProvince: [this.involvedpartyData.contactAddress.addressProvince],
@@ -112,18 +137,20 @@ export class InvolvedpartyFormComponent implements OnInit {
 
   editForm(): FormGroup {
     return this.formBuilder.group({
-      method: [this.involvedpartyData.directContact.method],
-      value: [this.involvedpartyData.directContact.value]
-
+      personalInfo: this.createPersonalInfoForm(),
+      directContact: this.formBuilder.array([]),
+      contactAddress: this.createContactAddressForm(),
     });
   }
   caseEditArray() {
     this.directContact = this.involvedpartyForm.get('directContact') as FormArray;
     this.involvedpartyData.directContact.forEach(el => {
-      this.directContact.push(this.formBuilder.group({
-        method: "",
-        value: ""
-      }));
+      this.directContact.push(this.formBuilder.group(
+        {
+          method: el.method,
+          value: el.value
+        }
+      ));
     });
   }
 
