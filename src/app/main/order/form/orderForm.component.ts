@@ -23,6 +23,7 @@ import { CarAndDateComponent } from '../car-and-date/car-and-date.component';
 export class OrderFormComponent implements OnInit {
 
   orderData: any = {};
+  vehicleData: Array<any> = [];
 
   markers: Array<any> = [];
 
@@ -57,12 +58,13 @@ export class OrderFormComponent implements OnInit {
 
     this.getVehicleData();
     this.getMarkerData();
-    
+
   }
 
   getVehicleData() {
     this.orderService.getVehicleData().then((res) => {
-      this.openCarAndDate(res);
+      this.vehicleData = res;
+      this.openCarAndDate();
       this.spinner.hide();
     }).catch((err) => {
       console.log(err);
@@ -70,11 +72,11 @@ export class OrderFormComponent implements OnInit {
     })
   }
 
-  openCarAndDate(res): void {
+  openCarAndDate(): void {
     const dialogRef = this.dialog.open(CarAndDateComponent, {
       width: '350px',
       disableClose: true,
-      data: { carNo: this.orderData.carNo, docdate: this.orderData.docdate, cars: res }
+      data: { carNo: this.orderData.carNo, docdate: this.orderData.docdate, cars: this.vehicleData }
     });
 
     dialogRef.afterClosed().subscribe(result => {

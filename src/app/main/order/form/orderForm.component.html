@@ -19,11 +19,12 @@
               view_list
             </mat-icon>
             <span class="logo-text h3" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
-              ลายชื่อ
+              รายชื่อสมาชิก
             </span>
           </div>
           <div fxFlex="30">
-            <button class="full-wsize" mat-raised-button color="warn" (click)="onSave()">บันทึก</button>
+            <button class="full-wsize" mat-raised-button color="warn" (click)="onSave()"
+              [disabled]="!orderData.docdate">บันทึก</button>
           </div>
         </div>
 

@@ -37,22 +37,22 @@
           <div class="content">
             <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64"
               [footerHeight]="64" rowHeight="auto" scrollbarH="true" [limit]="10" [rows]="rows">
-              <ngx-datatable-column name="เลขที่ใบสั่งงาน" [flexGrow]="2.5">
+              <ngx-datatable-column name="เลขที่ใบสั่งงาน" [flexGrow]="2.2">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.docno }}
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="วันที่" [flexGrow]="3">
+              <ngx-datatable-column name="วันที่" [flexGrow]="1.8">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.docdate }}
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="รถที่รับผิดชอบ" [flexGrow]="2">
+              <ngx-datatable-column name="รถที่รับผิดชอบ" [flexGrow]="3.8">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.carNo }}
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="จำนวนลูกค้า" [flexGrow]="2">
+              <ngx-datatable-column name="จำนวนลูกค้า" [flexGrow]="1.7">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.cusAmount }}
                 </ng-template>
