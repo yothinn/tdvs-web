@@ -32,23 +32,13 @@ import { GlobalErrorHandler } from "./global-error-handler";
 import { ServerErrorInterceptor } from "./server-error.interceptor";
 
 const appRoutes: Routes = [
-<<<<<<< HEAD
-    // {
-    //     path        : 'auth',
-    //     loadChildren: './authentication/authentication.module#AuthenticationModule'
-    // },
-    {
-        path        : 'member',
-        loadChildren: './main/member/member.module#MemberModule'
-    },
-    {
-        path      : '**',
-        redirectTo: 'member'
-    }
-=======
+  // {
+  //     path        : 'auth',
+  //     loadChildren: './authentication/authentication.module#AuthenticationModule'
+  // },
   {
-    path: 'auth',
-    loadChildren: './authentication/authentication.module#AuthenticationModule'
+    path: 'member',
+    loadChildren: './main/member/member.module#MemberModule'
   },
   {
     path: 'order',
@@ -56,9 +46,8 @@ const appRoutes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'sample'
+    redirectTo: 'member'
   }
->>>>>>> d112fd239d7adcbf38f6244bd51c1ca1bc9df587
 ];
 
 export const MY_FORMATS = {
