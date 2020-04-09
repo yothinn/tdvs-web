@@ -53,23 +53,28 @@ export class OrderFormComponent implements OnInit {
         "cusAmount": null,
         "orderStatus": "draft"
       };
-
     console.log(this.orderData);
 
-    this.spinner.hide();
-
-    setTimeout(() => {
-      this.openCarAndDate();
-    });
-
+    this.getVehicleData();
     this.getMarkerData();
+    
   }
 
-  openCarAndDate(): void {
+  getVehicleData() {
+    this.orderService.getVehicleData().then((res) => {
+      this.openCarAndDate(res);
+      this.spinner.hide();
+    }).catch((err) => {
+      console.log(err);
+      this.spinner.hide();
+    })
+  }
+
+  openCarAndDate(res): void {
     const dialogRef = this.dialog.open(CarAndDateComponent, {
       width: '350px',
       disableClose: true,
-      data: { carNo: this.orderData.carNo, docdate: this.orderData.docdate }
+      data: { carNo: this.orderData.carNo, docdate: this.orderData.docdate, cars: res }
     });
 
     dialogRef.afterClosed().subscribe(result => {

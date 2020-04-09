@@ -5,6 +5,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { environment } from "environments/environment";
 
 const api_url = environment.apiUrl + "/api/orders/";
+const api_url_vehicle = environment.apiUrl + "/api/vehicles/";
 
 @Injectable({
   providedIn: "root"
@@ -43,6 +44,16 @@ export class OrderService {
   getOrderData(id: any) {
     return this.http.get(api_url + id, {
       headers: this.authorizationHeader()
+    });
+  }
+
+  getVehicleData(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http
+        .get(api_url_vehicle, { headers: this.authorizationHeader() })
+        .subscribe((res: any) => {
+          resolve(res.data);
+        }, reject);
     });
   }
 
