@@ -6,28 +6,14 @@
   <!-- CENTER -->
   <div class="center">
     <!-- HEADER -->
-    <div
-      class="header accent"
-      fxLayout="row wrap"
-      fxLayoutAlign="space-between center"
-    >
+    <div class="header accent" fxLayout="row wrap" fxLayoutAlign="space-between center">
       <!-- APP TITLE -->
-      <div
-        class="logo mb-24 mb-md-0"
-        fxLayout="row"
-        fxLayoutAlign="start center"
-      >
-        <mat-icon
-          class="logo-icon s-32 mr-16"
-          [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }"
-        >
+      <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
           format_list_numbered
         </mat-icon>
-        <span
-          class="logo-text h1"
-          [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }"
-        >
-        involvedpartyList
+        <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
+          involvedpartyList
         </span>
       </div>
       <!-- / APP TITLE -->
@@ -49,22 +35,38 @@
       <div class="content">
         <div class="content-card">
           <div class="content">
-            <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64" [footerHeight]="64"
-              rowHeight="auto" scrollbarH="true" [limit]="10" [rows]="rows">
-              <ngx-datatable-column name="ชื่อ" [flexGrow]="2.5">
+            <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64"
+              [footerHeight]="64" rowHeight="auto" scrollbarH="true" [limit]="10" [rows]="rows">
+              <ngx-datatable-column name="ชื่อ-นามสกุล" [flexGrow]="3">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  {{ row.name }}
+                  {{ row.personalInfo.title }} {{ row.personalInfo.firstName }} {{ row.personalInfo.lastName }}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="ที่อยู่" [flexGrow]="5">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                  {{ row.contactAddress.addressLine1 }} {{ row.contactAddress.addressSubDistrict }}
+                  {{ row.contactAddress.addressDistrict }} {{ row.contactAddress.addressProvince }}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="รหัสไปรษณี" [flexGrow]="2.5">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                  {{ row.contactAddress.addressPostalCode }}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="เบอร์โทรศัพท์" [flexGrow]="2.5">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                  {{ row.directContact[0].value }}
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column [flexGrow]="1">
-                <ng-template ngx-datatable-cell-template let-row="row" >
+                <ng-template ngx-datatable-cell-template let-row="row">
                   <button class="mat-icon-button" aria-label="More" [matMenuTriggerFor]="moreMenu"
                     (click)="$event.stopPropagation()">
                     <mat-icon class="secondary-text">more_vert</mat-icon>
                   </button>
-        
+
                   <mat-menu #moreMenu>
-                    <button mat-menu-item aria-label="edit"  (click)="editData(row)">
+                    <button mat-menu-item aria-label="edit" (click)="editData(row)">
                       <mat-icon>edit</mat-icon>
                       <span>แก้ไข</span>
                     </button>
@@ -85,13 +87,7 @@
   <!-- /CENTER -->
 </div>
 <!-- ADD CONTACT BUTTON -->
-<button
-  fxLayoutAlign="center center"
-  class="mat-fab warn"
-  id="add-button"
-  aria-label="add"
-  (click)="addData()"
->
+<button fxLayoutAlign="center center" class="mat-fab warn" id="add-button" aria-label="add" (click)="addData()">
   <mat-icon>add</mat-icon>
 </button>
 <!-- / ADD CONTACT BUTTON -->
