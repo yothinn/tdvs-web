@@ -6,17 +6,17 @@ import { locale as english } from '../i18n/en';
 import { locale as thai } from '../i18n/th';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
-import { MemberService } from '../services/member.service';
+import { InvolvedpartyService } from '../services/involvedparty.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
-  selector: 'app-member-list',
-  templateUrl: './memberList.component.html',
-  styleUrls: ['./memberList.component.scss'],
+  selector: 'app-involvedparty-list',
+  templateUrl: './involvedpartyList.component.html',
+  styleUrls: ['./involvedpartyList.component.scss'],
   encapsulation: ViewEncapsulation.None,
   animations: fuseAnimations
 })
-export class MemberListComponent implements OnInit {
+export class InvolvedpartyListComponent implements OnInit {
 
   rows: Array<any>;
   temp = [];
@@ -26,7 +26,7 @@ export class MemberListComponent implements OnInit {
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private router: Router,
     private route: ActivatedRoute,
-    private memberService: MemberService,
+    private involvedpartyService: InvolvedpartyService,
     private spinner: NgxSpinnerService,
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
@@ -39,16 +39,16 @@ export class MemberListComponent implements OnInit {
   }
 
   addData() {
-    this.router.navigateByUrl("/member/memberForm/new");
+    this.router.navigateByUrl("/involvedparty/involvedpartyForm/new");
   }
 
   editData(item) {
-    this.router.navigateByUrl("/member/memberForm/" + item._id);
+    this.router.navigateByUrl("/involvedparty/involvedpartyForm/" + item._id);
   }
 
   deleteData(item) {
-    this.memberService.deleteMemberData(item).then((res) => {
-      this.memberService.getMemberDataList().subscribe((res: any) => {
+    this.involvedpartyService.deleteInvolvedpartyData(item).then((res) => {
+      this.involvedpartyService.getInvolvedpartyDataList().subscribe((res: any) => {
         this.rows = res.data;
       })
     })

@@ -4,12 +4,12 @@ import { ActivatedRouteSnapshot } from "@angular/router";
 import { Observable, BehaviorSubject } from "rxjs";
 import { environment } from "environments/environment";
 
-const api_url = environment.apiUrl + "/api/members/";
+const api_url = environment.apiUrl + "/api/involvedpartys/";
 
 @Injectable({
   providedIn: "root"
 })
-export class MemberService {
+export class InvolvedpartyService {
   routeParams: any;
   
   constructor(private http: HttpClient) {}
@@ -26,27 +26,27 @@ export class MemberService {
     console.log("resolve with params : " + JSON.stringify(this.routeParams));
     if (this.routeParams.id) {
       if (this.routeParams.id !== "new") {
-        return this.getMemberData(this.routeParams.id);
+        return this.getInvolvedpartyData(this.routeParams.id);
       }
     } else {
-      return this.getMemberDataList();
+      return this.getInvolvedpartyDataList();
     }
   }
 
-  getMemberDataList(){
+  getInvolvedpartyDataList(){
     return this.http
     .get(api_url, {
       headers: this.authorizationHeader()
     });
   }
 
-  getMemberData(id: any) {
+  getInvolvedpartyData(id: any) {
     return this.http.get(api_url + id, {
       headers: this.authorizationHeader()
     });
   }
 
-  createMemberData(body): Promise<any> {
+  createInvolvedpartyData(body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http
         .post(api_url, body, { headers: this.authorizationHeader() })
@@ -56,7 +56,7 @@ export class MemberService {
     });
   }
 
-  updateMemberData(body): Promise<any> {
+  updateInvolvedpartyData(body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http
         .put(api_url + body._id, body, { headers: this.authorizationHeader() })
@@ -66,7 +66,7 @@ export class MemberService {
     });
   }
 
-  deleteMemberData(body): Promise<any> {
+  deleteInvolvedpartyData(body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http
         .delete(api_url + body._id, { headers: this.authorizationHeader() })
