@@ -37,16 +37,16 @@ const appRoutes: Routes = [
   //     loadChildren: './authentication/authentication.module#AuthenticationModule'
   // },
   {
-    path: 'member',
-    loadChildren: './main/member/member.module#MemberModule'
-  },
-  {
     path: 'order',
     loadChildren: './main/order/order.module#OrderModule'
   },
   {
+    path: 'involvedparty',
+    loadChildren: './main/involvedparty/involvedparty.module#InvolvedpartyModule'
+  },
+  {
     path: '**',
-    redirectTo: 'member'
+    redirectTo: 'involvedparty'
   }
 ];
 

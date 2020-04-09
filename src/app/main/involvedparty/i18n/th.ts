@@ -1,7 +1,7 @@
 export const locale = {
     lang: 'th',
     data: {
-        'MEMBER': {
+        'INVOLVEDPARTY': {
             'HELLO': 'สวัสดีชาวโลก!'
         }
     }

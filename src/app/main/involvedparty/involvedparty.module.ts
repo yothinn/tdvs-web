@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { MemberListComponent } from './list/memberList.component';
-import { MemberFormComponent } from './form/memberForm.component';
+import { InvolvedpartyListComponent } from './list/involvedpartyList.component';
+import { InvolvedpartyFormComponent } from './form/involvedpartyForm.component';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { FuseSharedModule } from '@fuse/shared.module';
@@ -8,27 +8,27 @@ import { AuthenGuardService } from 'app/authentication/authen-guard.service';
 import { MatIconModule, MatMenuModule, MatSelectModule, MatDatepickerModule, MatFormFieldModule, MatTableModule, MatRadioModule, MatInputModule, MatListModule, MatButtonModule, MatTabsModule, MatExpansionModule, MatProgressSpinnerModule, MatTreeModule, MatSliderModule, MatToolbarModule, MatDialogModule } from "@angular/material";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
-import { MemberService } from './services/member.service';
+import { InvolvedpartyService } from './services/involvedparty.service';
 
 const routes = [
   {
-    path: "memberForm/:id",
-    component: MemberFormComponent,
-    resolve: { items: MemberService }
+    path: "involvedpartyForm/:id",
+    component: InvolvedpartyFormComponent,
+    resolve: { items: InvolvedpartyService }
     // canActivate: [AuthenGuardService]
   },
   {
-    path: '**',
-    component: MemberListComponent,
-    resolve: { items: MemberService }
-    // canActivate: [AuthenGuardService]
+      path     : '**',
+      component: InvolvedpartyListComponent,
+      resolve: { items: InvolvedpartyService }
+      // canActivate: [AuthenGuardService]
   }
 ];
 
 @NgModule({
   declarations: [
-    MemberListComponent,
-    MemberFormComponent
+    InvolvedpartyListComponent, 
+    InvolvedpartyFormComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -62,8 +62,8 @@ const routes = [
     NgxDatatableModule
   ],
   exports: [
-    MemberListComponent,
-    MemberFormComponent
+    InvolvedpartyListComponent,
+    InvolvedpartyFormComponent
   ]
 })
-export class MemberModule { }
+export class InvolvedpartyModule { }

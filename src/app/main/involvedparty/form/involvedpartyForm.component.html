@@ -6,23 +6,47 @@
   <!-- CENTER -->
   <div class="center">
     <!-- HEADER -->
-    <div class="header accent" fxLayout="row" fxLayoutAlign="space-between center">
+    <div
+      class="header accent"
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+    >
       <!-- APP TITLE -->
       <div fxLayout="row" fxLayoutAlign="start center">
         <button class="mat-icon-button mr-0 mr-sm-16" (click)="goBack()">
           <mat-icon>arrow_back</mat-icon>
         </button>
 
-        <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
+        <div
+          class="logo mb-24 mb-md-0"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+        >
+          <mat-icon
+            class="logo-icon s-32 mr-16"
+            [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }"
+          >
             edit
           </mat-icon>
-          <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
-            memberForm
+          <span
+            class="logo-text h1"
+            [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }"
+          >
+          involvedpartyForm
           </span>
         </div>
-        <div fxFlex="100" fxFlex.gt-sm="40" class="pl-20  pr-16" fxLayoutAlign="end">
-          <button [disabled]="memberForm.invalid" mat-fab color="warn" (click)="onSave()">
+        <div
+          fxFlex="100"
+          fxFlex.gt-sm="40"
+          class="pl-20  pr-16"
+          fxLayoutAlign="end"
+        >
+          <button
+            [disabled]="involvedpartyForm.invalid"
+            mat-fab
+            color="warn"
+            (click)="onSave()"
+          >
             <mat-icon class="icon-position">save</mat-icon>
           </button>
         </div>
@@ -36,8 +60,9 @@
       <!-- CONTENT -->
       <div class="content">
         <mat-tab-group fxFlex>
-          <mat-tab label="member">
-            <form [formGroup]="memberForm">
+          <mat-tab label="involvedparty">
+            <form [formGroup]="involvedpartyForm">
+              
               <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
 
                 <div fxLayout="row wrap" formGroupName="personalInfo" fxFlex="100">
@@ -61,39 +86,27 @@
                   </div>
                 </div>
 
-                <div fxLayout="row wrap" formGroupName="contactNumber" fxFlex="100">
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>เบอร์มือถือ</mat-label>
-                      <input matInput formControlName="mobilePhoneNumber" name="mobilePhoneNumber">
-                    </mat-form-field>
-                  </div>
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>เบอร์บ้าน</mat-label>
-                      <input matInput formControlName="houseNumber" name="houseNumber">
-                    </mat-form-field>
-                  </div>
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>เบอร์อื่น ๆ (1)</mat-label>
-                      <input matInput formControlName="otherNumber1" name="otherNumber1">
-                    </mat-form-field>
-                  </div>
-                </div>
-
-                <div fxLayout="row wrap" formGroupName="contactNumber" fxFlex="100">
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>เบอร์อื่น ๆ (2)</mat-label>
-                      <input matInput formControlName="otherNumber2" name="otherNumber2">
-                    </mat-form-field>
-                  </div>
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>เบอร์อื่น ๆ (3)</mat-label>
-                      <input matInput formControlName="otherNumber3" name="otherNumber3">
-                    </mat-form-field>
+                <div formArrayName="directContact"
+                  *ngFor="let item of involvedpartyForm.get('directContact').controls; let i = index;">
+                  <div [formGroupName]="i" fxLayout="row wrap" fxFlex="100">
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>เบอร์มือถือ</mat-label>
+                        <input matInput formControlName="value">
+                      </mat-form-field>
+                    </div>
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>เบอร์บ้าน</mat-label>
+                        <input matInput formControlName="value">
+                      </mat-form-field>
+                    </div>
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>เบอร์อื่น ๆ</mat-label>
+                        <input matInput formControlName="value">
+                      </mat-form-field>
+                    </div>
                   </div>
                 </div>
 
@@ -134,9 +147,10 @@
                 </div>
 
               </div>
+            
             </form>
           </mat-tab>
-
+          
         </mat-tab-group>
         <!--  -->
       </div>
