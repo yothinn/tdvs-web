@@ -5,13 +5,8 @@
       <mat-sidenav #sidenave class="sidenav-side" mode="side" [(opened)]="sideNaveOpened">
 
         <div fxLayout="row" fxLayoutAlign="start center">
-          <div fxFlex="20">
-            <button class="mat-icon-button mr-0 mr-sm-16 btn-sort-contain" (click)="sidenave.toggle()">
-              <mat-icon class="btn-size">arrow_left</mat-icon>
-            </button>
-          </div>
 
-          <div class="logo mb-24 mb-md-0" fxFlex="50" fxLayoutAlign="start center">
+          <div class="logo mb-24 mb-md-0" fxFlex="70" fxLayoutAlign="start center">
             <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
               view_list
             </mat-icon>
@@ -44,7 +39,7 @@
               lineID:
             </div>
             <div>
-              Status: 
+              Status:
             </div>
             <div>
               <button>send line</button>
@@ -59,12 +54,17 @@
       <mat-sidenav-content>
 
         <div class="btn-nav">
-          <button mat-icon-button  (click)="goBack()">
+          <button mat-icon-button (click)="goBack()">
             <mat-icon>arrow_back</mat-icon>
           </button>
           <div *ngIf="!sideNaveOpened">
-            <button mat-icon-button (click)="sidenave.toggle()">
-              <mat-icon>menu_open</mat-icon>
+            <button mat-icon-button class="btn-sort-contain" (click)="sidenave.toggle()">
+              <mat-icon class="btn-size">arrow_right</mat-icon>
+            </button>
+          </div>
+          <div *ngIf="sideNaveOpened">
+            <button mat-icon-button class="btn-sort-contain" (click)="sidenave.toggle()">
+              <mat-icon class="btn-size">arrow_left</mat-icon>
             </button>
           </div>
         </div>

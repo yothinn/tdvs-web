@@ -12,9 +12,12 @@
 
 .btn-sort-contain {
   display: flex;
+  justify-content: center;
 
   .btn-size {
     font-size: 40px;
+    display: flex;
+    justify-content: center;
   }
 }
 
