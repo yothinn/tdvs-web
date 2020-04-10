@@ -38,6 +38,28 @@
   border-bottom: 1px solid;
 }
 
+.btn-list-status {
+  margin-right: 3px;
+  width: 25%;
+  padding: 0px;
+  text-align: center;
+}
+
+.color-s-btn {
+  background-color: #0e7d0e !important;
+  color: white !important;
+}
+
+.color-c-btn {
+  background-color: #004eff !important;
+  color: white !important;
+}
+
+.color-r-btn {
+  background-color: #5d5d5d !important;
+  color: white !important;
+}
+
 .btn-nav {
   position: absolute;
   top: 20px;

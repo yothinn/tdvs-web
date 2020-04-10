@@ -29,8 +29,6 @@ export class OrderFormComponent implements OnInit {
 
   sideNaveOpened: Boolean;
 
-  markersSelected: Array<any> = [];
-
   zoom: number = 10;
   lat: number = 13.6186285;
   lng: number = 100.5078163;
@@ -57,9 +55,13 @@ export class OrderFormComponent implements OnInit {
         "docdate": "",
         "carNo": "",
         "cusAmount": null,
-        "orderStatus": "draft"
+        "orderStatus": "draft",
+        "contactLists": []
       };
     console.log(this.orderData);
+    if (this.orderData.contactLists.length > 0) {
+      this.sideNaveOpened = true;
+    }
 
     this.getVehicleData();
     this.getMarkerData();
@@ -100,26 +102,47 @@ export class OrderFormComponent implements OnInit {
   }
 
   clickedMarker(item: any, index: number) {
-
-    let mIndex = this.markersSelected.findIndex((el) => {
+    let mIndex = this.orderData.contactLists.findIndex((el) => {
       return el._id === item._id
     });
     // console.log(mIndex)
 
     if (mIndex === -1) {
-      this.markersSelected.push(item);
-    } else {
-      this.markersSelected.splice(mIndex, 1);
-    }
-    // console.log(this.markersSelected);
-    // console.log(this.markersSelected.length);
+      let itemList = {
+        "_id": item._id,
+        "contactStatus": "select",
+        "personalInfo": item.personalInfo,
+        "directContact": item.directContact,
+        "contactAddress": item.contactAddress
+      }
 
-    if(this.markersSelected.length > 0){
+      this.orderData.contactLists.push(itemList);
+    }
+    // console.log(this.orderData.contactLists);
+    // console.log(this.orderData.contactLists.length);
+
+    if (this.orderData.contactLists.length > 0) {
       this.sideNaveOpened = true;
-    } else {
+    };
+  }
+
+  onDeleteList(index) {
+    this.orderData.contactLists.splice(index, 1);
+    if (this.orderData.contactLists.length === 0) {
       this.sideNaveOpened = false;
     }
-    
+  }
+
+  onChangeStatus(status, i) {
+    if (status === "sendLine") {
+      this.orderData.contactLists[i].contactStatus = "waitapprove";
+    };
+    if (status === "confirm") {
+      this.orderData.contactLists[i].contactStatus = "confirm";
+    };
+    if (status === "reject") {
+      this.orderData.contactLists[i].contactStatus = "reject";
+    };
   }
 
   goBack() {

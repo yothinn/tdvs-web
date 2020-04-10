@@ -20,7 +20,7 @@
           </div>
         </div>
 
-        <div class="list-bg" *ngFor="let item of markersSelected; let i = index" (click)="clickedMarker(item, i)">
+        <div class="list-bg" *ngFor="let item of orderData.contactLists; let i = index">
           <div class="list-item">
             <div>
               ชื่อ: {{item.personalInfo.titleThai}}{{item.personalInfo.firstNameThai}}
@@ -36,15 +36,15 @@
               {{contact.method}}: {{contact.value}}
             </div>
             <div>
-              lineID:
+              Status: {{item.contactStatus}}
             </div>
-            <div>
-              Status:
-            </div>
-            <div>
-              <button>send line</button>
-              <button>confirm</button>
-              <button>reject</button>
+            <div class="mt-8">
+              <button mat-flat-button class="btn-list-status color-s-btn" (click)="onChangeStatus('sendLine', i)">Send Line</button>
+              <button mat-flat-button class="btn-list-status color-c-btn" (click)="onChangeStatus('confirm', i)">Confirm</button>
+              <button mat-flat-button class="btn-list-status color-r-btn" (click)="onChangeStatus('reject', i)">Reject</button>
+              <button mat-flat-button color="warn" (click)="onDeleteList(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
             </div>
           </div>
         </div>
