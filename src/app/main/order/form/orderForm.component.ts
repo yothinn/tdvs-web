@@ -100,7 +100,6 @@ export class OrderFormComponent implements OnInit {
   }
 
   clickedMarker(item: any, index: number) {
-
     let mIndex = this.markersSelected.findIndex((el) => {
       return el._id === item._id
     });
@@ -108,18 +107,20 @@ export class OrderFormComponent implements OnInit {
 
     if (mIndex === -1) {
       this.markersSelected.push(item);
-    } else {
-      this.markersSelected.splice(mIndex, 1);
     }
     // console.log(this.markersSelected);
     // console.log(this.markersSelected.length);
 
-    if(this.markersSelected.length > 0){
+    if (this.markersSelected.length > 0) {
       this.sideNaveOpened = true;
-    } else {
+    };
+  }
+
+  onDeleteList(index) {
+    this.markersSelected.splice(index, 1);
+    if (this.markersSelected.length === 0) {
       this.sideNaveOpened = false;
     }
-    
   }
 
   goBack() {
