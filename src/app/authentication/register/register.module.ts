@@ -10,7 +10,7 @@ import { AuthenGuardService } from '../authen-guard.service';
 
 const routes = [
     {
-        path: "registerForm/:id",
+        path: ":id",
         component: RegisterComponent,
         resolve: { items: InvolvedpartyService },
         // canActivate: [AuthenGuardService]

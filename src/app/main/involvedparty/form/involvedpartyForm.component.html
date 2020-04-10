@@ -75,13 +75,11 @@
                   *ngFor="let item of involvedpartyForm.get('directContact').controls; let i = index;"
                   fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                   <mat-form-field class="example-full-width" [formGroupName]="i" appearance="outline" fxFlex>
-                    <!-- <mat-label>{{item.value.method}}</mat-label> -->
                     <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ</mat-label>
                     <mat-label *ngIf="item.value.method==='home'">เบอร์บ้าน</mat-label>
                     <mat-label *ngIf="item.value.method==='other'">เบอร์อื่น ๆ</mat-label>
                     <input matInput formControlName="value">
                   </mat-form-field>
-                  <!-- {{item.value.method | json}} -->
                 </div>
 
 
@@ -126,8 +124,6 @@
                     </mat-form-field>
                   </div>
                 </div>
-
-                <!-- {{involvedpartyForm.value | json}} -->
 
               </div>
             </form>
