@@ -15,19 +15,19 @@ const routes = [
     path: "involvedpartyForm/:id",
     component: InvolvedpartyFormComponent,
     resolve: { items: InvolvedpartyService },
-    canActivate: [AuthenGuardService]
+    // canActivate: [AuthenGuardService]
   },
   {
-      path     : '**',
-      component: InvolvedpartyListComponent,
-      resolve: { items: InvolvedpartyService },
-      canActivate: [AuthenGuardService]
+    path: '**',
+    component: InvolvedpartyListComponent,
+    resolve: { items: InvolvedpartyService },
+    // canActivate: [AuthenGuardService]
   }
 ];
 
 @NgModule({
   declarations: [
-    InvolvedpartyListComponent, 
+    InvolvedpartyListComponent,
     InvolvedpartyFormComponent
   ],
   imports: [

@@ -73,7 +73,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
                 personalInfo: {
                     title: "",
                     firstName: "",
-                    lastName: ""
+                    lastName: "",
+                    citizenId: ""
                 },
                 contactAddress: {
                     addressLine1: "",
@@ -127,7 +128,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
         return this.formBuilder.group({
             title: [this.registerData.personalInfo.title],
             firstName: [this.registerData.personalInfo.firstName],
-            lastName: [this.registerData.personalInfo.lastName]
+            lastName: [this.registerData.personalInfo.lastName],
+            citizenId: [this.registerData.personalInfo.citizenId]
         });
     }
 
@@ -173,22 +175,26 @@ export class RegisterComponent implements OnInit, OnDestroy {
             this.registerForm.value._id = this.registerData._id;
             this.involvedpartyService
                 .updateInvolvedpartyData(this.registerForm.value)
-                .then(res => {
-                    // console.log(res);
-                    this.location.back();
-                })
-                .catch(err => {
-                    this.spinner.hide();
-                });
+            window.alert("update");
+            window.close();
+            // .then(res => {
+            //     // console.log(res);
+            //     this.location.back();
+            // })
+            // .catch(err => {
+            //     this.spinner.hide();
+            // });
         } else {
             this.involvedpartyService
                 .createInvolvedpartyData(this.registerForm.value)
-                .then(() => {
-                    // this.location.back();
-                })
-                .catch(err => {
-                    this.spinner.hide();
-                });
+            window.alert("create");
+            window.close();
+            // .then(() => {
+            //     // this.location.back();
+            // })
+            // .catch(err => {
+            //     this.spinner.hide();
+            // });
         }
     }
 
