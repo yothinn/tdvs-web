@@ -64,16 +64,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        // this.registerForm = this._formBuilder.group({
-        //     name: ['', Validators.required],
-        // });
         this.registerData = this.route.snapshot.data.items
             ? this.route.snapshot.data.items.data
             : {
                 personalInfo: {
                     title: "",
                     firstName: "",
-                    lastName: ""
+                    lastName: "",
+                    citizenId: ""
                 },
                 contactAddress: {
                     addressLine1: "",
@@ -85,7 +83,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
                 }
             };
 
-        if (this.registerData.directContact) {
+        if (this.registerData._id) {
             console.log('case Edit');
             this.registerForm = this.editForm();
             this.caseEditArray()
@@ -127,7 +125,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
         return this.formBuilder.group({
             title: [this.registerData.personalInfo.title],
             firstName: [this.registerData.personalInfo.firstName],
-            lastName: [this.registerData.personalInfo.lastName]
+            lastName: [this.registerData.personalInfo.lastName],
+            citizenId: [this.registerData.personalInfo.citizenId]
         });
     }
 
@@ -173,22 +172,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
             this.registerForm.value._id = this.registerData._id;
             this.involvedpartyService
                 .updateInvolvedpartyData(this.registerForm.value)
-                .then(res => {
-                    // console.log(res);
-                    this.location.back();
-                })
-                .catch(err => {
-                    this.spinner.hide();
-                });
         } else {
             this.involvedpartyService
                 .createInvolvedpartyData(this.registerForm.value)
-                .then(() => {
-                    // this.location.back();
-                })
-                .catch(err => {
-                    this.spinner.hide();
-                });
         }
     }
 
@@ -204,21 +190,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     /**
      * On register button click
      */
-
-    // register(): void{
-    //     const data = this.registerForm.getRawValue();
-    //     data.username = data.email;
-    //     data.firstname = data.name;
-    //     data.lastname = '-';
-    //     data.ref1 = '-';
-    //     this.auth.register(data)
-    //         .then((result) => {
-    //             this.router.navigate(['']);
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //         });
-    // }
 }
 
 /**

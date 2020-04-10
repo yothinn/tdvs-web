@@ -43,7 +43,8 @@ export class InvolvedpartyFormComponent implements OnInit {
         personalInfo: {
           title: "",
           firstName: "",
-          lastName: ""
+          lastName: "",
+          citizenId: ""
         },
         contactAddress: {
           addressLine1: "",
@@ -97,7 +98,8 @@ export class InvolvedpartyFormComponent implements OnInit {
     return this.formBuilder.group({
       title: [this.involvedpartyData.personalInfo.title],
       firstName: [this.involvedpartyData.personalInfo.firstName],
-      lastName: [this.involvedpartyData.personalInfo.lastName]
+      lastName: [this.involvedpartyData.personalInfo.lastName],
+      citizenId: [this.involvedpartyData.personalInfo.citizenId]
     });
   }
 

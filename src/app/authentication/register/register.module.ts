@@ -10,23 +10,24 @@ import { AuthenGuardService } from '../authen-guard.service';
 
 const routes = [
     {
-        path     : 'register',
-        component: RegisterComponent
-    },
-    {
-        path: "registerForm/:id",
+        path: ":id",
         component: RegisterComponent,
         resolve: { items: InvolvedpartyService },
-        canActivate: [AuthenGuardService]
-      }
-  
+        // canActivate: [AuthenGuardService]
+    },
+    {
+        path: '**',
+        component: RegisterComponent,
+        // canActivate: [AuthenGuardService]
+    }
+
 ];
 
 @NgModule({
     declarations: [
         RegisterComponent
     ],
-    imports     : [
+    imports: [
         RouterModule.forChild(routes),
 
         MatButtonModule,
@@ -38,6 +39,5 @@ const routes = [
         FuseSharedModule
     ]
 })
-export class RegisterModule
-{
+export class RegisterModule {
 }
