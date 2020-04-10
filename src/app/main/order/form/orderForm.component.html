@@ -2,12 +2,12 @@
   <div class="content">
     <mat-sidenav-container class="full-d-hsize">
 
-      <mat-sidenav class="sidenav-side" mode="side" [(opened)]="sideNaveOpened">
+      <mat-sidenav #sidenave class="sidenav-side" mode="side" [(opened)]="sideNaveOpened">
 
         <div fxLayout="row" fxLayoutAlign="start center">
           <div fxFlex="20">
-            <button class="mat-icon-button mr-0 mr-sm-16" (click)="goBack()">
-              <mat-icon>arrow_back</mat-icon>
+            <button class="mat-icon-button mr-0 mr-sm-16 btn-sort-contain" (click)="sidenave.toggle()">
+              <mat-icon class="btn-size">arrow_left</mat-icon>
             </button>
           </div>
 
@@ -57,6 +57,18 @@
       </mat-sidenav>
 
       <mat-sidenav-content>
+
+        <div class="btn-nav">
+          <button mat-icon-button  (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <div *ngIf="!sideNaveOpened">
+            <button mat-icon-button (click)="sidenave.toggle()">
+              <mat-icon>menu_open</mat-icon>
+            </button>
+          </div>
+        </div>
+
         <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false"
           [zoomControl]="false">
 

@@ -2,20 +2,24 @@
   height: 64px;
 }
 
-.map-size {
-  height: 100vh;
-}
-
-.full-wsize {
-  width: 100%;
-}
-
 .full-d-hsize {
   height: 100vh;
 }
 
 .sidenav-side {
   width: 30vw;
+}
+
+.btn-sort-contain {
+  display: flex;
+
+  .btn-size {
+    font-size: 40px;
+  }
+}
+
+.full-wsize {
+  width: 100%;
 }
 
 .list-bg {
@@ -29,4 +33,20 @@
   padding-top: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid;
+}
+
+.btn-nav {
+  position: absolute;
+  top: 20px;
+  left: 15px;
+  z-index: 1;
+  background-color: #fff;
+  border-radius: 8px 8px 8px 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: 55px;
+  padding: 8px;
+}
+
+.map-size {
+  height: 100vh;
 }
