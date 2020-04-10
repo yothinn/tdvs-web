@@ -90,6 +90,8 @@ export class OrderFormComponent implements OnInit {
       if (result) {
         this.orderData.carNo = result.carNo
         this.orderData.docdate = result.docdate
+      } else {
+        this.location.back();
       }
     });
   }
@@ -98,7 +100,40 @@ export class OrderFormComponent implements OnInit {
     this.involvedpartyService.getInvolvedpartyDataList().subscribe((res: any) => {
       this.markersData = res.data;
       // console.log(this.markersData);
+      this.defaultIconMarkers();
     });
+  }
+
+  defaultIconMarkers() {
+    let bg = ""
+    let label = ""
+
+    this.markersData.forEach((el) => {
+      if (el.relationType === "shareholder") {
+        bg = "167eff"; //สีน้ำเงิน
+      } else {
+        bg = "ff2a2a"; //สีแดง
+      }
+      el.icon = {
+        url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
+        scaledSize: {
+          width: 34,
+          height: 34
+        }
+      }
+    });
+    // console.log(this.markersData);
+
+    // let bg = "ff2a2a"; //167eff //blue
+    // let label = ""
+
+    // this.icon = {
+    //   url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
+    //   scaledSize: {
+    //     width: 34,
+    //     height: 34
+    //   }
+    // }
   }
 
   clickedMarker(item: any, index: number) {
@@ -117,6 +152,7 @@ export class OrderFormComponent implements OnInit {
       }
 
       this.orderData.contactLists.push(itemList);
+      this.changeIconMarker(item, "S");
     }
     // console.log(this.orderData.contactLists);
     // console.log(this.orderData.contactLists.length);
@@ -127,6 +163,7 @@ export class OrderFormComponent implements OnInit {
   }
 
   onDeleteList(index) {
+    this.findOnMap(this.orderData.contactLists[index], "");
     this.orderData.contactLists.splice(index, 1);
     if (this.orderData.contactLists.length === 0) {
       this.sideNaveOpened = false;
@@ -136,13 +173,45 @@ export class OrderFormComponent implements OnInit {
   onChangeStatus(status, i) {
     if (status === "sendLine") {
       this.orderData.contactLists[i].contactStatus = "waitapprove";
+      this.findOnMap(this.orderData.contactLists[i], "W");
     };
     if (status === "confirm") {
       this.orderData.contactLists[i].contactStatus = "confirm";
+      this.findOnMap(this.orderData.contactLists[i], "C");
     };
     if (status === "reject") {
       this.orderData.contactLists[i].contactStatus = "reject";
+      this.findOnMap(this.orderData.contactLists[i], "R");
     };
+  }
+
+  findOnMap(orderDataItem, txt) {
+    // console.log(item._id)
+    // console.log(this.markersData)
+
+    let mIndex = this.markersData.findIndex((el) => {
+      return el._id === orderDataItem._id
+    });
+    // console.log(this.markersData[mIndex])
+    this.changeIconMarker(this.markersData[mIndex], txt);
+  }
+
+  changeIconMarker(markerItem, txt) {
+    // console.log(markerItem)
+    let bg = ""
+    let label = txt
+    if (markerItem.relationType === "shareholder") {
+      bg = "167eff"; //สีน้ำเงิน
+    } else {
+      bg = "ff2a2a"; //สีแดง
+    }
+    markerItem.icon = {
+      url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
+      scaledSize: {
+        width: 34,
+        height: 34
+      }
+    }
   }
 
   goBack() {

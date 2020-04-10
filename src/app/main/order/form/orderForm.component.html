@@ -39,9 +39,12 @@
               Status: {{item.contactStatus}}
             </div>
             <div class="mt-8">
-              <button mat-flat-button class="btn-list-status color-s-btn" (click)="onChangeStatus('sendLine', i)">Send Line</button>
-              <button mat-flat-button class="btn-list-status color-c-btn" (click)="onChangeStatus('confirm', i)">Confirm</button>
-              <button mat-flat-button class="btn-list-status color-r-btn" (click)="onChangeStatus('reject', i)">Reject</button>
+              <button mat-flat-button class="btn-list-status color-s-btn" (click)="onChangeStatus('sendLine', i)">Send
+                Line</button>
+              <button mat-flat-button class="btn-list-status color-c-btn"
+                (click)="onChangeStatus('confirm', i)">Confirm</button>
+              <button mat-flat-button class="btn-list-status color-r-btn"
+                (click)="onChangeStatus('reject', i)">Reject</button>
               <button mat-flat-button color="warn" (click)="onDeleteList(i)">
                 <mat-icon>delete</mat-icon>
               </button>
@@ -73,7 +76,8 @@
           [zoomControl]="false">
 
           <agm-marker *ngFor="let markerItem of markersData; let i = index" (markerClick)="clickedMarker(markerItem, i)"
-            [latitude]="markerItem.contactAddress.latitude" [longitude]="markerItem.contactAddress.longitude">
+            [latitude]="markerItem.contactAddress.latitude" [longitude]="markerItem.contactAddress.longitude"
+            [iconUrl]="markerItem.icon">
           </agm-marker>
 
         </agm-map>
