@@ -105,7 +105,12 @@ export class InvolvedpartyFormComponent implements OnInit {
       title: [this.involvedpartyData.personalInfo.title],
       firstName: [this.involvedpartyData.personalInfo.firstName],
       lastName: [this.involvedpartyData.personalInfo.lastName],
-      citizenId: [this.involvedpartyData.personalInfo.citizenId]
+      citizenId: [this.involvedpartyData.personalInfo.citizenId, [
+        Validators.required,
+        Validators.pattern("^[0-9]*$"),
+        Validators.minLength(13),
+        Validators.maxLength(13)
+      ]]
     });
   }
 

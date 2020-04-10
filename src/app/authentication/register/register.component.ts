@@ -133,7 +133,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
             title: [this.registerData.personalInfo.title],
             firstName: [this.registerData.personalInfo.firstName],
             lastName: [this.registerData.personalInfo.lastName],
-            citizenId: [this.registerData.personalInfo.citizenId]
+            citizenId: [this.registerData.personalInfo.citizenId, [
+                Validators.required,
+                Validators.pattern("^[0-9]*$"),
+                Validators.minLength(13),
+                Validators.maxLength(13)
+            ]]
         });
     }
 
