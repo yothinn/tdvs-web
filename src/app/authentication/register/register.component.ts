@@ -63,6 +63,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
     /**
      * On init
      */
+
+    title: Array<any> = [
+        { value: 'นาย', viewValue: 'นาย' },
+        { value: 'นาง', viewValue: 'นาง' },
+        { value: 'นางสาว', viewValue: 'นางสาว' }
+    ];
+
     ngOnInit(): void {
         this.registerData = this.route.snapshot.data.items
             ? this.route.snapshot.data.items.data

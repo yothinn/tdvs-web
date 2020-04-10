@@ -25,12 +25,17 @@
 
                 <mat-form-field appearance="outline" formGroupName="personalInfo">
                     <mat-label>คำนำหน้าชื่อ</mat-label>
-                    <input matInput formControlName="title">
+                    <mat-select formControlName="title">
+                        <mat-option *ngFor="let itemtitle of title" [value]="itemtitle.value">
+                            {{itemtitle.viewValue}}
+                        </mat-option>
+                    </mat-select>
                     <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
                     <mat-error>
-                        Name is required
+                        title is required
                     </mat-error>
                 </mat-form-field>
+
                 <mat-form-field appearance="outline" formGroupName="personalInfo">
                     <mat-label>ชื่อ</mat-label>
                     <input matInput formControlName="firstName">
@@ -49,8 +54,8 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" formGroupName="personalInfo">
-                    <mat-label>เลขที่บัตรประชาชน (เพื่อตรวจสอบว่าเป็นผู้ถือหุ้น หรือ ไม่)</mat-label>
-                    <input matInput formControlName="citizenId">
+                    <mat-label>เลขที่บัตรประชาชน</mat-label>
+                    <input matInput formControlName="citizenId" placeholder="(เพื่อตรวจสอบว่าเป็นผู้ถือหุ้น หรือ ไม่)">
                     <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
                     <mat-error>
                         เลขที่บัตรประชาชน is required
@@ -76,7 +81,6 @@
                     </mat-form-field>
                 </div>
 
-
                 <mat-form-field appearance="outline" formGroupName="contactAddress">
                     <mat-label>ที่อยู่ปัจจุบันเลขที่</mat-label>
                     <input matInput formControlName="addressLine1">
@@ -94,6 +98,14 @@
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" formGroupName="contactAddress">
+                    <mat-label>รหัสไปรษณี</mat-label>
+                    <input matInput formControlName="addressPostalCode">
+                    <mat-icon matSuffix class="secondary-text">local_post_office</mat-icon>
+                    <mat-error>
+                        addressPostalCode is required
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" formGroupName="contactAddress">
                     <mat-label>ตำบล/แขวง</mat-label>
                     <input matInput formControlName="addressSubDistrict">
                     <mat-icon matSuffix class="secondary-text">location_city</mat-icon>
@@ -101,6 +113,7 @@
                         addressSubDistrict is required
                     </mat-error>
                 </mat-form-field>
+
                 <mat-form-field appearance="outline" formGroupName="contactAddress">
                     <mat-label>อำเภอ/เขต</mat-label>
                     <input matInput formControlName="addressDistrict">
@@ -109,21 +122,12 @@
                         addressDistrict is required
                     </mat-error>
                 </mat-form-field>
-
                 <mat-form-field appearance="outline" formGroupName="contactAddress">
                     <mat-label>จังหวัด</mat-label>
                     <input matInput formControlName="addressProvince">
                     <mat-icon matSuffix class="secondary-text">location_city</mat-icon>
                     <mat-error>
                         addressProvince is required
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" formGroupName="contactAddress">
-                    <mat-label>รหัสไปรษณี</mat-label>
-                    <input matInput formControlName="addressPostalCode">
-                    <mat-icon matSuffix class="secondary-text">local_post_office</mat-icon>
-                    <mat-error>
-                        addressPostalCode is required
                     </mat-error>
                 </mat-form-field>
 

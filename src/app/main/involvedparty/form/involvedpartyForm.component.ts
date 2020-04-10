@@ -34,6 +34,12 @@ export class InvolvedpartyFormComponent implements OnInit {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
+  title: Array<any> = [
+    { value: 'นาย', viewValue: 'นาย' },
+    { value: 'นาง', viewValue: 'นาง' },
+    { value: 'นางสาว', viewValue: 'นางสาว' }
+  ];
+
 
   ngOnInit(): void {
 

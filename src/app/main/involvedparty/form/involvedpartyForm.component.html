@@ -43,9 +43,13 @@
 
                 <div fxLayout="row wrap" formGroupName="personalInfo" fxFlex="100">
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                    <mat-form-field appearance="outline" fxFlex>
                       <mat-label>คำนำหน้าชื่อ</mat-label>
-                      <input matInput formControlName="title" name="title">
+                      <mat-select formControlName="title" name="title">
+                        <mat-option *ngFor="let itemtitle of title" [value]="itemtitle.value">
+                          {{itemtitle.viewValue}}
+                        </mat-option>
+                      </mat-select>
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="37.5" class="pl-20 pr-16">
@@ -65,8 +69,9 @@
                 <div fxLayout="row wrap" formGroupName="personalInfo" fxFlex="100">
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>เลขที่บัตรประชาชน (เพื่อตรวจสอบว่าเป็นผู้ถือหุ้น หรือ ไม่)</mat-label>
-                      <input matInput formControlName="citizenId" name="citizenId">
+                      <mat-label>เลขที่บัตรประชาชน</mat-label>
+                      <input matInput formControlName="citizenId" name="citizenId"
+                        placeholder="(เพื่อตรวจสอบว่าเป็นผู้ถือหุ้น หรือ ไม่)">
                     </mat-form-field>
                   </div>
                 </div>
@@ -98,14 +103,14 @@
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>ตำบล/แขวง</mat-label>
-                      <input matInput formControlName="addressSubDistrict" name="addressSubDistrict">
+                      <mat-label>รหัสไปรษณี</mat-label>
+                      <input matInput formControlName="addressPostalCode" name="addressPostalCode">
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>อำเภอ/เขต</mat-label>
-                      <input matInput formControlName="addressDistrict" name="addressDistrict">
+                      <mat-label>ตำบล/แขวง</mat-label>
+                      <input matInput formControlName="addressSubDistrict" name="addressSubDistrict">
                     </mat-form-field>
                   </div>
                 </div>
@@ -113,18 +118,17 @@
                 <div fxLayout="row wrap" formGroupName="contactAddress" fxFlex="100">
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>จังหวัด</mat-label>
-                      <input matInput formControlName="addressProvince" name="addressProvince">
+                      <mat-label>อำเภอ/เขต</mat-label>
+                      <input matInput formControlName="addressDistrict" name="addressDistrict">
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>รหัสไปรษณี</mat-label>
-                      <input matInput formControlName="addressPostalCode" name="addressPostalCode">
+                      <mat-label>จังหวัด</mat-label>
+                      <input matInput formControlName="addressProvince" name="addressProvince">
                     </mat-form-field>
                   </div>
                 </div>
-
               </div>
             </form>
           </mat-tab>
