@@ -45,20 +45,6 @@ export class InvolvedpartyFormComponent implements OnInit {
           firstName: "",
           lastName: ""
         },
-        // directContact: [
-        //   {
-        //     method: "mobile",
-        //     value: ""
-        //   },
-        //   {
-        //     method: "home",
-        //     value: ""
-        //   },
-        //   {
-        //     method: "other",
-        //     value: ""
-        //   }
-        // ],
         contactAddress: {
           addressLine1: "",
           addressStreet: "",
@@ -114,15 +100,6 @@ export class InvolvedpartyFormComponent implements OnInit {
       lastName: [this.involvedpartyData.personalInfo.lastName]
     });
   }
-
-  // createItem(): FormGroup {
-  //   return this.formBuilder.group(
-  //     {
-  //       method: "",
-  //       value: ""
-  //     }
-  //   );
-  // }
 
   createContactAddressForm(): FormGroup {
     return this.formBuilder.group({
