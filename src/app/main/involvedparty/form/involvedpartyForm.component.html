@@ -62,15 +62,14 @@
                   </div>
                 </div>
 
-                <!-- <div fxLayout="row wrap" formArrayName="directContact"
-                  *ngFor="let item of involvedpartyForm.get('directContact').controls; let i = index;">
-                  <div [formGroupName]="i" fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="30" class="pl-20 pr-16">
+                <div fxLayout="row wrap" formGroupName="contactAddress" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>เบอร์โทรศัพท์</mat-label>
-                      <input matInput formControlName="value">
+                      <mat-label>เลขที่บัตรประชาชน (เพื่อตรวจสอบว่าเป็นผู้ถือหุ้น หรือ ไม่)</mat-label>
+                      <input matInput>
                     </mat-form-field>
                   </div>
-                </div> -->
+                </div>
 
                 <div fxLayout="row wrap" formArrayName="directContact"
                   *ngFor="let item of involvedpartyForm.get('directContact').controls; let i = index;"
