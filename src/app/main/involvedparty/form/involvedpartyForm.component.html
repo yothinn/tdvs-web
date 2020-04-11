@@ -77,7 +77,7 @@
                 </div>
 
                 <div fxLayout="row wrap" formArrayName="directContact"
-                  *ngFor="let item of involvedpartyForm.get('directContact').controls; let i = index;"
+                  *ngFor="let item of formData.controls; let i = index;"
                   fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                   <mat-form-field class="example-full-width" [formGroupName]="i" appearance="outline" fxFlex>
                     <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ</mat-label>

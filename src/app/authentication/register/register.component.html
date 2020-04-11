@@ -63,7 +63,7 @@
                 </mat-form-field>
 
                 <div formArrayName="directContact"
-                    *ngFor="let item of registerForm.get('directContact').controls; let i = index;">
+                    *ngFor="let item of formData.controls; let i = index;">
                     <mat-form-field appearance="outline" [formGroupName]="i">
                         <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ</mat-label>
                         <mat-label *ngIf="item.value.method==='home'">เบอร์บ้าน</mat-label>

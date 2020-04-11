@@ -220,7 +220,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       });
     }
   }
-
+  get formData() { return <FormArray>this.registerForm.get('directContact'); }
   /**
    * On destroy
    */

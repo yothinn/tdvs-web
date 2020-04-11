@@ -73,6 +73,8 @@ export class InvolvedpartyFormComponent implements OnInit {
     this.spinner.hide();
   }
 
+  get formData() { return <FormArray>this.involvedpartyForm.get('directContact'); }
+
   createForm(): FormGroup {
     return this.formBuilder.group({
       personalInfo: this.createPersonalInfoForm(),
