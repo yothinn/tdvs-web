@@ -35,21 +35,17 @@ export class InvolvedpartyService {
 
   getInvolvedpartyDataList() {
     return this.http
-      .get(api_url, {
-        headers: this.authorizationHeader()
-      });
+      .get(api_url);
   }
 
   getInvolvedpartyData(id: any) {
-    return this.http.get(api_url + id, {
-      headers: this.authorizationHeader()
-    });
+    return this.http.get(api_url + id);
   }
 
   createInvolvedpartyData(body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http
-        .post(api_url, body, { headers: this.authorizationHeader() })
+        .post(api_url, body)
         .subscribe((res: any) => {
           resolve(res.data);
         }, reject);
@@ -59,7 +55,7 @@ export class InvolvedpartyService {
   updateInvolvedpartyData(body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http
-        .put(api_url + body._id, body, { headers: this.authorizationHeader() })
+        .put(api_url + body._id, body)
         .subscribe((res: any) => {
           resolve(res.data);
         }, reject);
@@ -69,7 +65,7 @@ export class InvolvedpartyService {
   deleteInvolvedpartyData(body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http
-        .delete(api_url + body._id, { headers: this.authorizationHeader() })
+        .delete(api_url + body._id)
         .subscribe((res: any) => {
           resolve(res.data);
         }, reject);

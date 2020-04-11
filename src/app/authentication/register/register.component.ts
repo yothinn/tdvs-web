@@ -85,41 +85,40 @@ export class RegisterComponent implements OnInit, OnDestroy {
     liff.init(
       (data) => {
         this.userProfile = liff.getProfile();
-        this.registerData = this.route.snapshot.data.items
-          ? this.route.snapshot.data.items.data
-          : {
-              personalInfo: {
-                title: "",
-                firstName: this.userProfile ? this.userProfile.displayName : "",
-                lastName: "",
-                citizenId: "",
-              },
-              contactAddress: {
-                addressLine1: "",
-                addressStreet: "",
-                addressSubDistrict: "",
-                addressDistrict: "",
-                addressProvince: "",
-                addressPostalCode: "",
-              },
-            };
-
-        if (this.registerData._id) {
-          console.log("case Edit");
-          this.registerForm = this.editForm();
-          this.caseEditArray();
-        } else {
-          console.log("case New");
-          this.registerForm = this.createForm();
-        }
-
-        this.spinner.hide();
       },
       (err) => {
         alert(JSON.stringify(err));
       }
     );
+    this.registerData = this.route.snapshot.data.items
+      ? this.route.snapshot.data.items.data
+      : {
+          personalInfo: {
+            title: "",
+            firstName: this.userProfile ? this.userProfile.displayName : "",
+            lastName: "",
+            citizenId: "",
+          },
+          contactAddress: {
+            addressLine1: "",
+            addressStreet: "",
+            addressSubDistrict: "",
+            addressDistrict: "",
+            addressProvince: "",
+            addressPostalCode: "",
+          },
+        };
 
+    if (this.registerData._id) {
+      console.log("case Edit");
+      this.registerForm = this.editForm();
+      this.caseEditArray();
+    } else {
+      console.log("case New");
+      this.registerForm = this.createForm();
+    }
+
+    this.spinner.hide();
     // alert(`Hi ${this.userProfile.displayName}!`);
   }
 
@@ -207,7 +206,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
           try {
             alert("sdf");
             liff.closeWindow();
-          } catch (error) {}
+          } catch (error) {
+            alert(error);
+          }
         });
     } else {
       this.involvedpartyService
@@ -216,7 +217,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
           try {
             alert("sdf");
             liff.closeWindow();
-          } catch (error) {}
+          } catch (error) {
+            alert(error);
+          }
         });
     }
   }
