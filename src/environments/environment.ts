@@ -6,7 +6,7 @@ export const environment = {
     production: false,
     hmr       : false,
     appName : 'tvds-dev',
-    apiUrl : 'http://localhost:3000'
+    apiUrl : 'https://tvds-service.herokuapp.com'
 };
 
 /*
