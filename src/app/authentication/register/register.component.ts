@@ -111,8 +111,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.registerForm = this.createForm();
     }
     try {
-      await liff.init();
-      this.userProfile = await liff.getProfile();
+      // await liff.init();
+      // this.userProfile = await liff.getProfile();
+
+      liff.init(data => {
+        this.userProfile = liff.getProfile();
+      });
     } catch (error) {
       
     }
