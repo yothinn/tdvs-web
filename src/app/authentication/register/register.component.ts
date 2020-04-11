@@ -116,9 +116,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
       liff.init(data => {
         this.userProfile = liff.getProfile();
-      });
+      },err => alert(JSON.stringify(err)));
     } catch (error) {
-      
+      alert(JSON.stringify(error));
     }
     this.spinner.hide();
     
