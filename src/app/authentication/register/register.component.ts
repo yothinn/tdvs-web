@@ -81,47 +81,45 @@ export class RegisterComponent implements OnInit, OnDestroy {
     { value: "นางสาว", viewValue: "นางสาว" },
   ];
 
-  async ngOnInit(): Promise<void> {
-    
-    this.registerData = this.route.snapshot.data.items
-      ? this.route.snapshot.data.items.data
-      : {
-          personalInfo: {
-            title: "",
-            firstName: "",
-            lastName: "",
-            citizenId: "",
-          },
-          contactAddress: {
-            addressLine1: "",
-            addressStreet: "",
-            addressSubDistrict: "",
-            addressDistrict: "",
-            addressProvince: "",
-            addressPostalCode: "",
-          },
-        };
-
-    if (this.registerData._id) {
-      console.log("case Edit");
-      this.registerForm = this.editForm();
-      this.caseEditArray();
-    } else {
-      console.log("case New");
-      this.registerForm = this.createForm();
-    }
-    try {
-      // await liff.init();
-      // this.userProfile = await liff.getProfile();
-
-      liff.init(data => {
+  async ngOnInit() {
+    liff.init(
+      (data) => {
         this.userProfile = liff.getProfile();
-      },err => alert(JSON.stringify(err)));
-    } catch (error) {
-      alert(JSON.stringify(error));
-    }
-    this.spinner.hide();
-    
+        this.registerData = this.route.snapshot.data.items
+          ? this.route.snapshot.data.items.data
+          : {
+              personalInfo: {
+                title: "",
+                firstName: this.userProfile ? this.userProfile.displayName : "",
+                lastName: "",
+                citizenId: "",
+              },
+              contactAddress: {
+                addressLine1: "",
+                addressStreet: "",
+                addressSubDistrict: "",
+                addressDistrict: "",
+                addressProvince: "",
+                addressPostalCode: "",
+              },
+            };
+
+        if (this.registerData._id) {
+          console.log("case Edit");
+          this.registerForm = this.editForm();
+          this.caseEditArray();
+        } else {
+          console.log("case New");
+          this.registerForm = this.createForm();
+        }
+
+        this.spinner.hide();
+      },
+      (err) => {
+        alert(JSON.stringify(err));
+      }
+    );
+
     // alert(`Hi ${this.userProfile.displayName}!`);
   }
 
@@ -203,30 +201,28 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     if (this.registerData._id) {
       this.registerForm.value._id = this.registerData._id;
-      this.involvedpartyService.updateInvolvedpartyData(
-        this.registerForm.value
-      ).then(res=>{
-        try {
-          alert("sdf");
-          liff.closeWindow()
-        } catch (error) {
-          
-        }
-      })
+      this.involvedpartyService
+        .updateInvolvedpartyData(this.registerForm.value)
+        .then((res) => {
+          try {
+            alert("sdf");
+            liff.closeWindow();
+          } catch (error) {}
+        });
     } else {
-      this.involvedpartyService.createInvolvedpartyData(
-        this.registerForm.value
-      ).then((res)=>{
-        try {
-          alert("sdf");
-          liff.closeWindow()
-        } catch (error) {
-          
-        }
-      });
+      this.involvedpartyService
+        .createInvolvedpartyData(this.registerForm.value)
+        .then((res) => {
+          try {
+            alert("sdf");
+            liff.closeWindow();
+          } catch (error) {}
+        });
     }
   }
-  get formData() { return <FormArray>this.registerForm.get('directContact'); }
+  get formData() {
+    return <FormArray>this.registerForm.get("directContact");
+  }
   /**
    * On destroy
    */
