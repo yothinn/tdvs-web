@@ -111,6 +111,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.registerForm = this.createForm();
     }
     try {
+      liff.init();
       this.userProfile = await liff.getProfile();
     } catch (error) {
       
@@ -200,19 +201,20 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.registerForm.value._id = this.registerData._id;
       this.involvedpartyService.updateInvolvedpartyData(
         this.registerForm.value
-      ).then((res=>{
-          try {
-            liff.closeWindow()
-          } catch (error) {
-            
-          }
+      ).then(res=>{
+        try {
+          alert("sdf");
+          liff.closeWindow()
+        } catch (error) {
           
-      }));
+        }
+      })
     } else {
       this.involvedpartyService.createInvolvedpartyData(
         this.registerForm.value
       ).then((res)=>{
         try {
+          alert("sdf");
           liff.closeWindow()
         } catch (error) {
           
