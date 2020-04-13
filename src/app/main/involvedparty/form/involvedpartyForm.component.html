@@ -77,7 +77,7 @@
                 </div>
 
                 <div fxLayout="row wrap" formArrayName="directContact"
-                  *ngFor="let item of formData.controls; let i = index;"
+                  *ngFor="let item of involvedpartyForm.get('directContact').controls; let i = index;"
                   fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                   <mat-form-field class="example-full-width" [formGroupName]="i" appearance="outline" fxFlex>
                     <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ</mat-label>
@@ -102,17 +102,25 @@
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width example-form" appearance="outline">
-                      <mat-label>รหัสไปรษณี</mat-label>
-                      <input matInput [matAutocomplete]="auto"
-                        [formControl]="postcodesCtrl">
+                    <!-- <mat-form-field class="example-full-width example-form" appearance="outline">
+                      <input matInput placeholder="State" aria-label="State" [matAutocomplete]="auto" [formControl]="stateCtrl">
                       <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let postcode of postcodes" [value]="postcode.postcode">
-                          <span>{{postcode.postcode}}</span>
+                          <mat-option *ngFor="let state of filteredStates | async" [value]="state.name">
+                              <img class="example-option-img" aria-hidden [src]="state.flag" height="25">
+                              <span>{{state.name}}</span> |
+                              <small>Population: {{state.population}}</small>
+                          </mat-option>
+                      </mat-autocomplete>
+                  </mat-form-field> -->
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>รหัสไปรษณี</mat-label>
+                      <input matInput formControlName="addressPostalCode" name="addressPostalCode" [matAutocomplete]="auto">
+                      <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                          {{option}}
                         </mat-option>
                       </mat-autocomplete>
                     </mat-form-field>
-
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
@@ -136,6 +144,24 @@
                     </mat-form-field>
                   </div>
                 </div>
+
+
+                <!-- <mat-form-field class="example-full-width example-form" appearance="outline">
+                  <input matInput placeholder="State" aria-label="State" [matAutocomplete]="auto" [formControl]="stateCtrl">
+                  <mat-autocomplete #auto="matAutocomplete">
+                      <mat-option *ngFor="let state of filteredStates | async" [value]="state.name">
+                          <img class="example-option-img" aria-hidden [src]="state.flag" height="25">
+                          <span>{{state.name}}</span> |
+                          <small>Population: {{state.population}}</small>
+                      </mat-option>
+                  </mat-autocomplete>
+              </mat-form-field>
+              <br>
+              <mat-slide-toggle [checked]="stateCtrl.disabled"
+                  (change)="stateCtrl.disabled ? stateCtrl.enable() : stateCtrl.disable()">
+                  Disable Input?
+              </mat-slide-toggle> -->
+
 
               </div>
             </form>

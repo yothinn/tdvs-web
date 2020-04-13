@@ -27,9 +27,8 @@ export class InvolvedpartyFormComponent implements OnInit {
   directContact: FormArray;
   involvedpartyData: any = {};
 
-  postcodes: string[];
-  postcodesCtrl = new FormControl();
-  filteredPostcodes: Observable<string[]>;
+  postcodes: Array<any>;
+  filteredOptions: Observable<Array<any>>;
 
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
@@ -85,8 +84,20 @@ export class InvolvedpartyFormComponent implements OnInit {
       this.involvedpartyForm = this.createForm();
     }
     this.spinner.hide();
+
+    // console.log(this.involvedpartyForm.controls.contactAddress.controls.addressPostalCode);
+    this.filteredOptions = this.involvedpartyForm.controls.contactAddress.controls.addressPostalCode.valueChanges
+      .pipe(
+        startWith(''),
+        map((value) => this._filter(value))
+      )
   }
- 
+
+  private _filter(value: string): Array<any> {
+    const filterValue = value.toLowerCase();
+    return this.postcodes.filter(postcode => postcode.postcode.toLowerCase().indexOf(filterValue) === 0);
+  }
+
 
 
   get formData() { return <FormArray>this.involvedpartyForm.get('directContact'); }
