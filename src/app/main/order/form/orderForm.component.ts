@@ -8,7 +8,6 @@ import { locale as english } from '../i18n/en';
 import { locale as thai } from '../i18n/th';
 
 import { OrderService } from '../services/order.service';
-import { InvolvedpartyService } from './../../involvedparty/services/involvedparty.service';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDialog } from '@angular/material';
@@ -37,7 +36,6 @@ export class OrderFormComponent implements OnInit {
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
     private orderService: OrderService,
-    private involvedpartyService: InvolvedpartyService,
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     public dialog: MatDialog
@@ -64,7 +62,6 @@ export class OrderFormComponent implements OnInit {
     }
 
     this.getVehicleData();
-    this.getMarkerData();
 
   }
 
@@ -90,16 +87,21 @@ export class OrderFormComponent implements OnInit {
       if (result) {
         this.orderData.carNo = result.carNo
         this.orderData.docdate = result.docdate
+
+        let docdate = {
+          docdate: result.docdate
+        };
+        this.getMarkerData(docdate);
       } else {
         this.location.back();
       }
     });
   }
 
-  getMarkerData() {
-    this.involvedpartyService.getInvolvedpartyDataList().subscribe((res: any) => {
-      this.markersData = res.data;
-      // console.log(this.markersData);
+  getMarkerData(docdate) {
+    this.orderService.getMarkerDataList(docdate).then((res) => {
+      this.markersData = res;
+      console.log(this.markersData);
       this.defaultIconMarkers();
     });
   }

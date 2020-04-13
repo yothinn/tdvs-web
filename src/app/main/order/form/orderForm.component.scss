@@ -72,6 +72,18 @@
   padding: 8px;
 }
 
+.btn-nav2 {
+  position: absolute;
+  top: 126px;
+  left: 15px;
+  z-index: 1;
+  background-color: #fff;
+  border-radius: 8px 8px 8px 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: auto;
+  padding: 8px;
+}
+
 .map-size {
   height: 100vh;
 }
