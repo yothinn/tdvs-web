@@ -159,13 +159,26 @@ export class OrderFormComponent implements OnInit {
     });
     // console.log(mIndex)
 
+    let memberShip;
+    for (let i = 0; i < item.membership.length; i++) {
+      const member = item.membership[i];
+      // console.log(member.activity)
+      if (member.activity === "shareholder") {
+        memberShip = "shareholder";
+        break;
+      } else {
+        memberShip = "delivery";
+      };
+    };
+
     if (mIndex === -1) {
       let itemList = {
         "_id": item._id,
         "contactStatus": "select",
         "personalInfo": item.personalInfo,
         "directContact": item.directContact,
-        "contactAddress": item.contactAddress
+        "contactAddress": item.contactAddress,
+        "membership": memberShip
       }
 
       this.orderData.contactLists.push(itemList);
@@ -217,18 +230,23 @@ export class OrderFormComponent implements OnInit {
     // console.log(markerItem)
     let bg = ""
     let label = txt
-    if (markerItem.relationType === "shareholder") {
-      bg = "167eff"; //สีน้ำเงิน
-    } else {
-      bg = "ff2a2a"; //สีแดง
-    }
+
+    for (let i = 0; i < markerItem.membership.length; i++) {
+      const member = markerItem.membership[i];
+      if (member.activity === "shareholder") {
+        bg = "167eff"; //สีน้ำเงิน
+        break;
+      } else {
+        bg = "ff2a2a"; //สีแดง
+      };
+    };
     markerItem.icon = {
       url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
       scaledSize: {
         width: 34,
         height: 34
       }
-    }
+    };
   }
 
   goBack() {
