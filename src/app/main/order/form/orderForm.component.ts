@@ -112,7 +112,8 @@ export class OrderFormComponent implements OnInit {
 
     for (let i = 0; i < this.markersData.length; i++) {
       const marker = this.markersData[i];
-      // console.log(marker._id)
+      label = this.checkSymbolMarkersDefault(marker.contactStatus);
+      
       for (let j = 0; j < marker.membership.length; j++) {
         const member = marker.membership[j];
         // console.log(member.activity);
@@ -151,6 +152,24 @@ export class OrderFormComponent implements OnInit {
     // });
     // console.log(this.markersData);
 
+  }
+
+  checkSymbolMarkersDefault(contactStatus) {
+    if (contactStatus === "waitapprove") {
+      return "W"
+    };
+    if (contactStatus === "confirm") {
+      return "C"
+    };
+    if (contactStatus === "reject") {
+      return "R"
+    };
+    if (contactStatus === "select") {
+      return "S"
+    };
+    if(contactStatus === ""){
+      return ""
+    };
   }
 
   clickedMarker(item: any, index: number) {
