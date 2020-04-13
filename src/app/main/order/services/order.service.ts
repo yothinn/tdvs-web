@@ -6,6 +6,7 @@ import { environment } from "environments/environment";
 
 const api_url = environment.apiUrl + "/api/orders/";
 const api_url_vehicle = environment.apiUrl + "/api/vehicles/";
+const api_url_markers = environment.apiUrl + "/api/ordersupdatemap/";
 
 @Injectable({
   providedIn: "root"
@@ -51,6 +52,16 @@ export class OrderService {
     return new Promise((resolve, reject) => {
       this.http
         .get(api_url_vehicle, { headers: this.authorizationHeader() })
+        .subscribe((res: any) => {
+          resolve(res.data);
+        }, reject);
+    });
+  }
+
+  getMarkerDataList(body): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post(api_url_markers, body, { headers: this.authorizationHeader() })
         .subscribe((res: any) => {
           resolve(res.data);
         }, reject);
