@@ -102,10 +102,17 @@
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                    <mat-form-field class="example-full-width example-form" appearance="outline">
                       <mat-label>รหัสไปรษณี</mat-label>
-                      <input matInput formControlName="addressPostalCode" name="addressPostalCode">
+                      <input matInput [matAutocomplete]="auto"
+                        [formControl]="postcodesCtrl">
+                      <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let postcode of postcodes" [value]="postcode.postcode">
+                          <span>{{postcode.postcode}}</span>
+                        </mat-option>
+                      </mat-autocomplete>
                     </mat-form-field>
+
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
@@ -129,6 +136,7 @@
                     </mat-form-field>
                   </div>
                 </div>
+
               </div>
             </form>
           </mat-tab>

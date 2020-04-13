@@ -10,6 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { InvolvedpartyService } from './services/involvedparty.service';
 
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 const routes = [
   {
     path: "involvedpartyForm/:id",
@@ -56,6 +59,9 @@ const routes = [
     MatTreeModule,
     MatSliderModule,
     MatToolbarModule,
+
+    MatAutocompleteModule,
+    MatSlideToggleModule,
 
     TranslateModule,
     FuseSharedModule,
