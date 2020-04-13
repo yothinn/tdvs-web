@@ -59,7 +59,7 @@ register {
 
                 @include media-breakpoint('xs') {
                     text-align: center;
-                    padding: 24px;
+                    padding: 2px;
                 }
 
                 .logo {
@@ -83,7 +83,7 @@ register {
                         width: 100%;
 
                         @include media-breakpoint('xs') {
-                            width: 80%;
+                            width: 95%;
                         }
                     }
 
