@@ -5,6 +5,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { environment } from "environments/environment";
 
 const api_url = environment.apiUrl + "/api/involvedpartys/";
+const api_url_postcodes = environment.apiUrl + "/api/postcodes";
 
 @Injectable({
   providedIn: "root"
@@ -33,6 +34,12 @@ export class InvolvedpartyService {
     }
   }
 
+  getPostcodesList() {
+    return this.http
+      .get(api_url_postcodes, {
+        headers: this.authorizationHeader()
+      });
+  }
   getInvolvedpartyDataList() {
     return this.http
       .get(api_url);
