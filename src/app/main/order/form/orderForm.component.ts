@@ -29,8 +29,6 @@ export class OrderFormComponent implements OnInit {
 
   sideNaveOpened: Boolean;
 
-  markersSelected: Array<any> = [];
-
   zoom: number = 10;
   lat: number = 13.6186285;
   lng: number = 100.5078163;
@@ -57,9 +55,13 @@ export class OrderFormComponent implements OnInit {
         "docdate": "",
         "carNo": "",
         "cusAmount": null,
-        "orderStatus": "draft"
+        "orderStatus": "draft",
+        "contactLists": []
       };
     console.log(this.orderData);
+    if (this.orderData.contactLists.length > 0) {
+      this.sideNaveOpened = true;
+    }
 
     this.getVehicleData();
     this.getMarkerData();
@@ -88,6 +90,8 @@ export class OrderFormComponent implements OnInit {
       if (result) {
         this.orderData.carNo = result.carNo
         this.orderData.docdate = result.docdate
+      } else {
+        this.location.back();
       }
     });
   }
@@ -96,30 +100,118 @@ export class OrderFormComponent implements OnInit {
     this.involvedpartyService.getInvolvedpartyDataList().subscribe((res: any) => {
       this.markersData = res.data;
       // console.log(this.markersData);
+      this.defaultIconMarkers();
     });
   }
 
-  clickedMarker(item: any, index: number) {
+  defaultIconMarkers() {
+    let bg = ""
+    let label = ""
 
-    let mIndex = this.markersSelected.findIndex((el) => {
+    this.markersData.forEach((el) => {
+      if (el.relationType === "shareholder") {
+        bg = "167eff"; //สีน้ำเงิน
+      } else {
+        bg = "ff2a2a"; //สีแดง
+      }
+      el.icon = {
+        url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
+        scaledSize: {
+          width: 34,
+          height: 34
+        }
+      }
+    });
+    // console.log(this.markersData);
+
+    // let bg = "ff2a2a"; //167eff //blue
+    // let label = ""
+
+    // this.icon = {
+    //   url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
+    //   scaledSize: {
+    //     width: 34,
+    //     height: 34
+    //   }
+    // }
+  }
+
+  clickedMarker(item: any, index: number) {
+    let mIndex = this.orderData.contactLists.findIndex((el) => {
       return el._id === item._id
     });
     // console.log(mIndex)
 
     if (mIndex === -1) {
-      this.markersSelected.push(item);
-    } else {
-      this.markersSelected.splice(mIndex, 1);
-    }
-    // console.log(this.markersSelected);
-    // console.log(this.markersSelected.length);
+      let itemList = {
+        "_id": item._id,
+        "contactStatus": "select",
+        "personalInfo": item.personalInfo,
+        "directContact": item.directContact,
+        "contactAddress": item.contactAddress
+      }
 
-    if(this.markersSelected.length > 0){
+      this.orderData.contactLists.push(itemList);
+      this.changeIconMarker(item, "S");
+    }
+    // console.log(this.orderData.contactLists);
+    // console.log(this.orderData.contactLists.length);
+
+    if (this.orderData.contactLists.length > 0) {
       this.sideNaveOpened = true;
-    } else {
+    };
+  }
+
+  onDeleteList(index) {
+    this.findOnMap(this.orderData.contactLists[index], "");
+    this.orderData.contactLists.splice(index, 1);
+    if (this.orderData.contactLists.length === 0) {
       this.sideNaveOpened = false;
     }
-    
+  }
+
+  onChangeStatus(status, i) {
+    if (status === "sendLine") {
+      this.orderData.contactLists[i].contactStatus = "waitapprove";
+      this.findOnMap(this.orderData.contactLists[i], "W");
+    };
+    if (status === "confirm") {
+      this.orderData.contactLists[i].contactStatus = "confirm";
+      this.findOnMap(this.orderData.contactLists[i], "C");
+    };
+    if (status === "reject") {
+      this.orderData.contactLists[i].contactStatus = "reject";
+      this.findOnMap(this.orderData.contactLists[i], "R");
+    };
+  }
+
+  findOnMap(orderDataItem, txt) {
+    // console.log(item._id)
+    // console.log(this.markersData)
+
+    let mIndex = this.markersData.findIndex((el) => {
+      return el._id === orderDataItem._id
+    });
+    // console.log(this.markersData[mIndex])
+    this.changeIconMarker(this.markersData[mIndex], txt);
+  }
+
+  changeIconMarker(markerItem, txt) {
+    // console.log(markerItem)
+    let bg = ""
+    let label = txt
+    if (markerItem.relationType === "shareholder") {
+      bg = "167eff"; //สีน้ำเงิน
+    } else {
+      bg = "ff2a2a"; //สีแดง
+    }
+    markerItem.icon = {
+      url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
+      scaledSize: {
+        width: 34,
+        height: 34
+      }
+    }
   }
 
   goBack() {

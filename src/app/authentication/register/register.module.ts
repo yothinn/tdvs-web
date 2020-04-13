@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule } from '@angular/material';
 
 import { FuseSharedModule } from '@fuse/shared.module';
 
@@ -10,23 +10,24 @@ import { AuthenGuardService } from '../authen-guard.service';
 
 const routes = [
     {
-        path     : 'register',
-        component: RegisterComponent
-    },
-    {
-        path: "registerForm/:id",
+        path: ":id",
         component: RegisterComponent,
         resolve: { items: InvolvedpartyService },
-        canActivate: [AuthenGuardService]
-      }
-  
+        // canActivate: [AuthenGuardService]
+    },
+    {
+        path: '**',
+        component: RegisterComponent,
+        // canActivate: [AuthenGuardService]
+    }
+
 ];
 
 @NgModule({
     declarations: [
         RegisterComponent
     ],
-    imports     : [
+    imports: [
         RouterModule.forChild(routes),
 
         MatButtonModule,
@@ -34,10 +35,10 @@ const routes = [
         MatFormFieldModule,
         MatIconModule,
         MatInputModule,
+        MatSelectModule,
 
         FuseSharedModule
     ]
 })
-export class RegisterModule
-{
+export class RegisterModule {
 }

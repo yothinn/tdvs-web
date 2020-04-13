@@ -34,6 +34,12 @@ export class InvolvedpartyFormComponent implements OnInit {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
+  title: Array<any> = [
+    { value: 'นาย', viewValue: 'นาย' },
+    { value: 'นาง', viewValue: 'นาง' },
+    { value: 'นางสาว', viewValue: 'นางสาว' }
+  ];
+
 
   ngOnInit(): void {
 
@@ -43,7 +49,8 @@ export class InvolvedpartyFormComponent implements OnInit {
         personalInfo: {
           title: "",
           firstName: "",
-          lastName: ""
+          lastName: "",
+          citizenId: ""
         },
         contactAddress: {
           addressLine1: "",
@@ -65,6 +72,8 @@ export class InvolvedpartyFormComponent implements OnInit {
     }
     this.spinner.hide();
   }
+
+  get formData() { return <FormArray>this.involvedpartyForm.get('directContact'); }
 
   createForm(): FormGroup {
     return this.formBuilder.group({
@@ -97,7 +106,13 @@ export class InvolvedpartyFormComponent implements OnInit {
     return this.formBuilder.group({
       title: [this.involvedpartyData.personalInfo.title],
       firstName: [this.involvedpartyData.personalInfo.firstName],
-      lastName: [this.involvedpartyData.personalInfo.lastName]
+      lastName: [this.involvedpartyData.personalInfo.lastName],
+      citizenId: [this.involvedpartyData.personalInfo.citizenId, [
+        Validators.required,
+        Validators.pattern("^[0-9]*$"),
+        Validators.minLength(13),
+        Validators.maxLength(13)
+      ]]
     });
   }
 
