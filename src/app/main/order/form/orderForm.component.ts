@@ -113,7 +113,7 @@ export class OrderFormComponent implements OnInit {
     for (let i = 0; i < this.markersData.length; i++) {
       const marker = this.markersData[i];
       label = this.checkSymbolMarkersDefault(marker.contactStatus);
-      
+
       for (let j = 0; j < marker.membership.length; j++) {
         const member = marker.membership[j];
         // console.log(member.activity);
@@ -132,25 +132,7 @@ export class OrderFormComponent implements OnInit {
         }
       };
     };
-
     console.log(this.markersData);
-
-
-    // this.markersData.forEach((el) => {
-    //   if (el.relationType === "shareholder") {
-    //     bg = "167eff"; //สีน้ำเงิน
-    //   } else {
-    //     bg = "ff2a2a"; //สีแดง
-    //   }
-    //   el.icon = {
-    //     url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
-    //     scaledSize: {
-    //       width: 34,
-    //       height: 34
-    //     }
-    //   }
-    // });
-    // console.log(this.markersData);
 
   }
 
@@ -167,47 +149,49 @@ export class OrderFormComponent implements OnInit {
     if (contactStatus === "select") {
       return "S"
     };
-    if(contactStatus === ""){
+    if (contactStatus === "") {
       return ""
     };
   }
 
   clickedMarker(item: any, index: number) {
-    let mIndex = this.orderData.contactLists.findIndex((el) => {
-      return el._id === item._id
-    });
-    // console.log(mIndex)
+    if (item.contactStatus === "") {
+      let mIndex = this.orderData.contactLists.findIndex((el) => {
+        return el._id === item._id
+      });
+      // console.log(mIndex)
 
-    let memberShip;
-    for (let i = 0; i < item.membership.length; i++) {
-      const member = item.membership[i];
-      // console.log(member.activity)
-      if (member.activity === "shareholder") {
-        memberShip = "shareholder";
-        break;
-      } else {
-        memberShip = "delivery";
+      let memberShip;
+      for (let i = 0; i < item.membership.length; i++) {
+        const member = item.membership[i];
+        // console.log(member.activity)
+        if (member.activity === "shareholder") {
+          memberShip = "shareholder";
+          break;
+        } else {
+          memberShip = "delivery";
+        };
       };
-    };
 
-    if (mIndex === -1) {
-      let itemList = {
-        "_id": item._id,
-        "contactStatus": "select",
-        "personalInfo": item.personalInfo,
-        "directContact": item.directContact,
-        "contactAddress": item.contactAddress,
-        "membership": memberShip
+      if (mIndex === -1) {
+        let itemList = {
+          "_id": item._id,
+          "contactStatus": "select",
+          "personalInfo": item.personalInfo,
+          "directContact": item.directContact,
+          "contactAddress": item.contactAddress,
+          "membership": memberShip
+        }
+
+        this.orderData.contactLists.push(itemList);
+        this.changeIconMarker(item, "S");
       }
+      // console.log(this.orderData.contactLists);
+      // console.log(this.orderData.contactLists.length);
 
-      this.orderData.contactLists.push(itemList);
-      this.changeIconMarker(item, "S");
-    }
-    // console.log(this.orderData.contactLists);
-    // console.log(this.orderData.contactLists.length);
-
-    if (this.orderData.contactLists.length > 0) {
-      this.sideNaveOpened = true;
+      if (this.orderData.contactLists.length > 0) {
+        this.sideNaveOpened = true;
+      };
     };
   }
 
