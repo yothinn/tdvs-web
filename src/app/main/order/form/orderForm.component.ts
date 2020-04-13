@@ -101,7 +101,7 @@ export class OrderFormComponent implements OnInit {
   getMarkerData(docdate) {
     this.orderService.getMarkerDataList(docdate).then((res) => {
       this.markersData = res;
-      console.log(this.markersData);
+      // console.log(this.markersData);
       this.defaultIconMarkers();
     });
   }
@@ -110,32 +110,47 @@ export class OrderFormComponent implements OnInit {
     let bg = ""
     let label = ""
 
-    this.markersData.forEach((el) => {
-      if (el.relationType === "shareholder") {
-        bg = "167eff"; //สีน้ำเงิน
-      } else {
-        bg = "ff2a2a"; //สีแดง
-      }
-      el.icon = {
+    for (let i = 0; i < this.markersData.length; i++) {
+      const marker = this.markersData[i];
+      // console.log(marker._id)
+      for (let j = 0; j < marker.membership.length; j++) {
+        const member = marker.membership[j];
+        // console.log(member.activity);
+        if (member.activity === "shareholder") {
+          bg = "167eff"; //สีน้ำเงิน
+          break;
+        } else {
+          bg = "ff2a2a"; //สีแดง
+        };
+      };
+      marker.icon = {
         url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
         scaledSize: {
           width: 34,
           height: 34
         }
-      }
-    });
+      };
+    };
+
+    console.log(this.markersData);
+
+
+    // this.markersData.forEach((el) => {
+    //   if (el.relationType === "shareholder") {
+    //     bg = "167eff"; //สีน้ำเงิน
+    //   } else {
+    //     bg = "ff2a2a"; //สีแดง
+    //   }
+    //   el.icon = {
+    //     url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
+    //     scaledSize: {
+    //       width: 34,
+    //       height: 34
+    //     }
+    //   }
+    // });
     // console.log(this.markersData);
 
-    // let bg = "ff2a2a"; //167eff //blue
-    // let label = ""
-
-    // this.icon = {
-    //   url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
-    //   scaledSize: {
-    //     width: 34,
-    //     height: 34
-    //   }
-    // }
   }
 
   clickedMarker(item: any, index: number) {
