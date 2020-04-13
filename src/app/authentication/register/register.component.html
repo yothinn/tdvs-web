@@ -39,26 +39,26 @@
             </mat-option>
           </mat-select>
           <!-- <mat-icon matSuffix class="secondary-text">account_circle</mat-icon> -->
-          <mat-error>
+          <!-- <mat-error>
             title is required
-          </mat-error>
+          </mat-error> -->
         </mat-form-field>
 
         <mat-form-field appearance="outline" formGroupName="personalInfo">
           <mat-label>ชื่อ</mat-label>
           <input matInput formControlName="firstName" />
           <!-- <mat-icon matSuffix class="secondary-text">account_circle</mat-icon> -->
-          <mat-error>
+          <!-- <mat-error>
             firstName is required
-          </mat-error>
+          </mat-error> -->
         </mat-form-field>
         <mat-form-field appearance="outline" formGroupName="personalInfo">
           <mat-label>นามสกุล</mat-label>
           <input matInput formControlName="lastName" />
           <!-- <mat-icon matSuffix class="secondary-text">account_circle</mat-icon> -->
-          <mat-error>
+          <!-- <mat-error>
             lastName is required
-          </mat-error>
+          </mat-error> -->
         </mat-form-field>
 
         <mat-form-field appearance="outline" formGroupName="personalInfo">
@@ -69,9 +69,9 @@
             placeholder="(เพื่อตรวจสอบว่าเป็นผู้ถือหุ้น หรือ ไม่)"
           />
           <!-- <mat-icon matSuffix class="secondary-text">account_circle</mat-icon> -->
-          <mat-error>
+          <!-- <mat-error>
             (เพื่อตรวจสอบว่าเป็นผู้ถือหุ้น หรือ ไม่)
-          </mat-error>
+          </mat-error> -->
         </mat-form-field>
 
         <div
@@ -89,24 +89,6 @@
               >เบอร์อื่น ๆ</mat-label
             >
             <input matInput formControlName="value" />
-            <!-- <mat-icon
-              *ngIf="item.value.method === 'mobile'"
-              matSuffix
-              class="secondary-text"
-              >smartphone
-            </mat-icon>
-            <mat-icon
-              *ngIf="item.value.method === 'home'"
-              matSuffix
-              class="secondary-text"
-              >local_phone
-            </mat-icon>
-            <mat-icon
-              *ngIf="item.value.method === 'other'"
-              matSuffix
-              class="secondary-text"
-              >local_phone
-            </mat-icon> -->
             <mat-error>
               value is required
             </mat-error>
@@ -118,17 +100,17 @@
           <!-- <input matInput formControlName="addressLine1" /> -->
           <textarea rows="4" matInput formControlName="addressLine1"></textarea>
           <!-- <mat-icon matSuffix class="secondary-text">location_city</mat-icon> -->
-          <mat-error>
+          <!-- <mat-error>
             addressLine1 is required
-          </mat-error>
+          </mat-error> -->
         </mat-form-field>
         <mat-form-field appearance="outline" formGroupName="contactAddress">
           <mat-label>ถนน</mat-label>
           <input matInput formControlName="addressStreet" />
           <!-- <mat-icon matSuffix class="secondary-text">directions</mat-icon> -->
-          <mat-error>
+          <!-- <mat-error>
             addressStreet is required
-          </mat-error>
+          </mat-error> -->
         </mat-form-field>
         <mat-form-field appearance="outline" formGroupName="contactAddress">
           <mat-label>รหัสไปรษณี</mat-label>
@@ -144,9 +126,9 @@
           <mat-label>ตำบล/แขวง</mat-label>
           <input matInput formControlName="addressSubDistrict" />
           <!-- <mat-icon matSuffix class="secondary-text">location_city</!--> 
-          <mat-error>
+          <!-- <mat-error>
             addressSubDistrict is required
-          </mat-error>
+          </mat-error> -->
         </mat-form-field>
 
         <mat-form-field appearance="outline" formGroupName="contactAddress">
@@ -161,19 +143,19 @@
           <mat-label>จังหวัด</mat-label>
           <input matInput formControlName="addressProvince" />
           <!-- <mat-icon matSuffix class="secondary-text">location_city</mat-icon> -->
-          <mat-error>
+          <!-- <mat-error>
             addressProvince is required
-          </mat-error>
+          </mat-error> -->
         </mat-form-field>
 
         <div class="terms" fxLayout="row" fxLayoutAlign="center center">
-          <mat-checkbox name="terms" aria-label="Accept" required>
+          <mat-checkbox  aria-label="Accept" formControlName="accepted">
             <span>Accept</span>
           </mat-checkbox>
           <a>terms and conditions</a>
         </div>
-        <!-- <div>{{userProfile | json}}</div>
-        <div>----------------------</div> -->
+        <!-- <div>{{registerForm.value | json}}</!--> -->
+        <!-- <div>----------------------</div>  -->
         <button
           mat-raised-button
           color="accent"
