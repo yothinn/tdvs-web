@@ -50,7 +50,8 @@
                 (click)="onChangeStatus('confirm', i)">Confirm</button>
               <button mat-flat-button class="btn-list-status color-r-btn"
                 (click)="onChangeStatus('reject', i)">Reject</button>
-              <button mat-flat-button color="warn" (click)="onDeleteList(i)">
+              <button mat-flat-button color="warn" (click)="onDeleteList(i)"
+                [disabled]="item.contactStatus === 'confirm' || item.contactStatus === 'reject'">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
