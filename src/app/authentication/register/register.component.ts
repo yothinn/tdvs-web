@@ -33,6 +33,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   directContact: FormArray;
   registerData: any = {};
   userProfile: any;
+  checked: boolean = true;
 
   // Private
   private _unsubscribeAll: Subject<any>;
@@ -128,26 +129,55 @@ export class RegisterComponent implements OnInit, OnDestroy {
       directContact: this.formBuilder.array([
         this.formBuilder.group({
           method: "mobile",
-          value: "",
+          value: [
+            "",
+            [
+              Validators.required,
+              Validators.pattern("^[0-9]*$"),
+              Validators.minLength(10),
+              Validators.maxLength(10),
+            ],
+          ],
         }),
         this.formBuilder.group({
           method: "home",
-          value: "",
+          value: [
+            "",
+            [
+              Validators.pattern("^[0-9]*$"),
+              Validators.minLength(10),
+              Validators.maxLength(10),
+            ],
+          ],
         }),
         this.formBuilder.group({
           method: "other",
-          value: "",
+          value: [
+            "",
+            [
+              Validators.pattern("^[0-9]*$"),
+              Validators.minLength(10),
+              Validators.maxLength(10),
+            ],
+          ],
         }),
       ]),
       contactAddress: this.createContactAddressForm(),
+      accepted: [false, [Validators.required]],
     });
   }
 
   createPersonalInfoForm(): FormGroup {
     return this.formBuilder.group({
-      title: [this.registerData.personalInfo.title],
-      firstName: [this.registerData.personalInfo.firstName],
-      lastName: [this.registerData.personalInfo.lastName],
+      title: [this.registerData.personalInfo.title, [Validators.required]],
+      firstName: [
+        this.registerData.personalInfo.firstName,
+        [Validators.required],
+      ],
+      lastName: [
+        this.registerData.personalInfo.lastName,
+        [Validators.required],
+      ],
       citizenId: [
         this.registerData.personalInfo.citizenId,
         [
