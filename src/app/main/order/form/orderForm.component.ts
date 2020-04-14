@@ -32,6 +32,9 @@ export class OrderFormComponent implements OnInit {
   lat: number = 13.6186285;
   lng: number = 100.5078163;
 
+  infoWindowOpened = null;
+  previous_info_window = null;
+
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
@@ -157,6 +160,22 @@ export class OrderFormComponent implements OnInit {
     };
   }
 
+  clickedInfoWindow(infoWindow) {
+    if (this.previous_info_window == null)
+      this.previous_info_window = infoWindow;
+    else {
+      this.infoWindowOpened = infoWindow;
+      this.previous_info_window.close();
+    };
+    this.previous_info_window = infoWindow;
+  }
+
+  closeInfo() {
+    if (this.previous_info_window != null) {
+      this.previous_info_window.close()
+    }
+  }
+
   clickedMarker(item: any, index: number) {
     if (item.contactStatus === "") {
       let mIndex = this.orderData.contactLists.findIndex((el) => {
@@ -191,6 +210,10 @@ export class OrderFormComponent implements OnInit {
       }
       // console.log(this.orderData.contactLists);
       // console.log(this.orderData.contactLists.length);
+
+      item.docno = this.orderData.docno;
+      item.contactStatus = "S";
+      this.closeInfo();
 
       if (this.orderData.contactLists.length > 0) {
         this.sideNaveOpened = true;
@@ -237,6 +260,12 @@ export class OrderFormComponent implements OnInit {
     let bg = ""
     let label = txt
 
+    //case DELETE
+    if (txt === "") {
+      markerItem.docno = "";
+      markerItem.contactStatus = "";
+    };
+
     for (let i = 0; i < markerItem.membership.length; i++) {
       const member = markerItem.membership[i];
       if (member.activity === "shareholder") {
@@ -253,6 +282,11 @@ export class OrderFormComponent implements OnInit {
         height: 34
       }
     };
+  }
+
+  navigateByItem(contactItem) {
+    this.lat = Number(contactItem.contactAddress.latitude);
+    this.lng = Number(contactItem.contactAddress.longitude);
   }
 
   goBack() {

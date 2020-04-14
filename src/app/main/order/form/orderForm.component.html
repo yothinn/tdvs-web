@@ -23,25 +23,27 @@
 
         <div class="list-bg" *ngFor="let item of orderData.contactLists; let i = index">
           <div class="list-item">
-            <div>
-              ชื่อ: {{item.personalInfo.titleThai}}{{item.personalInfo.firstNameThai}}
-              {{item.personalInfo.middleNameThai}} {{item.personalInfo.lastNameThai}}
-            </div>
-            <div>
-              ที่อยู่: {{item.contactAddress.addressLine1}} {{item.contactAddress.addressStreet}}
-              {{item.contactAddress.addressSubDistrict}} {{item.contactAddress.addressDistrict}}
-              {{item.contactAddress.addressProvince}} {{item.contactAddress.addressCountry}}
-              {{item.contactAddress.addressPostalCode}}
-            </div>
-            <div *ngFor="let contact of item.directContact">
-              {{contact.method}}: {{contact.value}}
-            </div>
-            <div>
-              ประเภท: <span class="shareholder-color" *ngIf="item.membership === 'shareholder'">ผู้ถือหุ้น</span>
-              <span class="delivery-color" *ngIf="item.membership === 'delivery'">รถธรรมธุรกิจ</span>
-            </div>
-            <div>
-              Status: {{item.contactStatus}}
+            <div (click)="navigateByItem(item)">
+              <div>
+                ชื่อ: {{item.personalInfo.titleThai}}{{item.personalInfo.firstNameThai}}
+                {{item.personalInfo.middleNameThai}} {{item.personalInfo.lastNameThai}}
+              </div>
+              <div>
+                ที่อยู่: {{item.contactAddress.addressLine1}} {{item.contactAddress.addressStreet}}
+                {{item.contactAddress.addressSubDistrict}} {{item.contactAddress.addressDistrict}}
+                {{item.contactAddress.addressProvince}} {{item.contactAddress.addressCountry}}
+                {{item.contactAddress.addressPostalCode}}
+              </div>
+              <div *ngFor="let contact of item.directContact">
+                {{contact.method}}: {{contact.value}}
+              </div>
+              <div>
+                ประเภท: <span class="shareholder-color" *ngIf="item.membership === 'shareholder'">ผู้ถือหุ้น</span>
+                <span class="delivery-color" *ngIf="item.membership === 'delivery'">รถธรรมธุรกิจ</span>
+              </div>
+              <div>
+                Status: {{item.contactStatus}}
+              </div>
             </div>
             <div class="mt-8">
               <button mat-flat-button class="btn-list-status color-s-btn" (click)="onChangeStatus('sendLine', i)">Send
@@ -87,12 +89,35 @@
           </div>
         </div>
 
-        <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false"
-          [zoomControl]="false">
+        <agm-map class="map-size" (mapClick)="closeInfo($event)" [latitude]="lat" [longitude]="lng" [zoom]="zoom"
+          [disableDefaultUI]="false" [zoomControl]="false">
 
-          <agm-marker *ngFor="let markerItem of markersData; let i = index" (markerClick)="clickedMarker(markerItem, i)"
-            [latitude]="markerItem.contactAddress.latitude" [longitude]="markerItem.contactAddress.longitude"
-            [iconUrl]="markerItem.icon">
+          <agm-marker *ngFor="let markerItem of markersData; let i = index"
+            (markerClick)="clickedInfoWindow(infoWindow)" [latitude]="markerItem.contactAddress.latitude"
+            [longitude]="markerItem.contactAddress.longitude" [iconUrl]="markerItem.icon">
+
+            <agm-info-window #infoWindow>
+              <div class="h3">
+                {{markerItem.personalInfo.titleThai}} {{markerItem.personalInfo.firstNameThai}}
+                {{markerItem.personalInfo.lastNameThai}}
+              </div>
+              <div class="h4 mt-8">
+                {{markerItem.contactAddress.addressLine1}} {{markerItem.contactAddress.addressStreet}}
+                {{markerItem.contactAddress.addressSubDistrict}} {{markerItem.contactAddress.addressDistrict}}
+              </div>
+              <div class="h4">
+                {{markerItem.contactAddress.addressProvince}} {{markerItem.contactAddress.addressPostalCode}}
+              </div>
+              <div class="mt-8 text-right">
+                <button mat-flat-button color="primary" *ngIf="markerItem.contactStatus === ''"
+                  (click)="clickedMarker(markerItem, i)">เลือก</button>
+                <div *ngIf="markerItem.contactStatus !== ''">
+                  ดำเนินการแล้วที่เอกสาร<span *ngIf="markerItem.docno === orderData.docno">นี้</span>
+                  <span *ngIf="markerItem.docno !== orderData.docno"> {{markerItem.docno}}</span>
+                </div>
+              </div>
+            </agm-info-window>
+
           </agm-marker>
 
         </agm-map>
