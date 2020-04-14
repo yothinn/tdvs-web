@@ -93,6 +93,24 @@
           <agm-marker *ngFor="let markerItem of markersData; let i = index" (markerClick)="clickedMarker(markerItem, i)"
             [latitude]="markerItem.contactAddress.latitude" [longitude]="markerItem.contactAddress.longitude"
             [iconUrl]="markerItem.icon">
+
+            <agm-info-window>
+              <div class="h3">
+                {{markerItem.personalInfo.titleThai}} {{markerItem.personalInfo.firstNameThai}}
+                {{markerItem.personalInfo.lastNameThai}}
+              </div>
+              <div class="h4 mt-8">
+                {{markerItem.contactAddress.addressLine1}} {{markerItem.contactAddress.addressStreet}}
+                {{markerItem.contactAddress.addressSubDistrict}} {{markerItem.contactAddress.addressDistrict}}
+              </div>
+              <div class="h4">
+                {{markerItem.contactAddress.addressProvince}} {{markerItem.contactAddress.addressPostalCode}}
+              </div>
+              <div class="mt-8 text-right">
+                <button mat-flat-button color="primary">เลือก</button>
+              </div>
+            </agm-info-window>
+
           </agm-marker>
 
         </agm-map>
