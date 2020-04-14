@@ -6,7 +6,7 @@ export const environment = {
     production: false,
     hmr       : false,
     appName : 'tvds-dev',
-    apiUrl : 'http://18.139.255.212:3004'
+    apiUrl : 'https://casan-sevice.lamunphan.com'
 };
 
 /*
