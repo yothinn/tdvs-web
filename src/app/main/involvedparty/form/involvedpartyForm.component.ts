@@ -35,7 +35,7 @@ export class InvolvedpartyFormComponent implements OnInit {
   directContact: FormArray;
   involvedpartyData: any = {};
 
-  postcodes: any;
+  postcodes: PostCode[] = [];
 
   postCodeCtrl = new FormControl();
   filteredPostCodes: Observable<PostCode[]>;
@@ -51,156 +51,11 @@ export class InvolvedpartyFormComponent implements OnInit {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
-
   title: Array<any> = [
     { value: 'นาย', viewValue: 'นาย' },
     { value: 'นาง', viewValue: 'นาง' },
     { value: 'นางสาว', viewValue: 'นางสาว' }
   ];
-
-  postCodes: PostCode[] = [
-    {
-      subdistrict: "มะรือโบออก",
-      postcode: "96130",
-      province: "นราธิวาส",
-      district: "อำเภอเจาะไอร้อง",
-      locationcode: "961303",
-    },
-    {
-      subdistrict: "บูกิต",
-      postcode: "96130",
-      province: "นราธิวาส",
-      district: "อำเภอเจาะไอร้อง",
-      locationcode: "961302",
-    },
-    {
-      subdistrict: "จวบ",
-      postcode: "96130",
-      province: "นราธิวาส",
-      district: "อำเภอเจาะไอร้อง",
-      locationcode: "961301",
-    },
-    {
-      subdistrict: "ช้างเผือก",
-      postcode: "96220",
-      province: "นราธิวาส",
-      district: "อำเภอจะแนะ",
-      locationcode: "961204",
-    },
-    {
-      "subdistrict": "ผดุงมาตร",
-      "postcode": "96220",
-      "province": "นราธิวาส",
-      "district": "อำเภอจะแนะ",
-      "locationcode": "961203",
-    },
-    {
-      subdistrict: "ดุซงญอ",
-      postcode: "96220",
-      province: "นราธิวาส",
-      district: "อำเภอจะแนะ",
-      locationcode: "961202",
-    },
-    {
-      subdistrict: "จะแนะ",
-      postcode: "96220",
-      province: "นราธิวาส",
-      district: "อำเภอจะแนะ",
-      locationcode: "961201",
-    },
-    {
-      subdistrict: "กาวะ",
-      postcode: "96140",
-      province: "นราธิวาส",
-      district: "อำเภอสุไหงปาดี",
-      locationcode: "961106",
-    },
-    {
-      subdistrict: "ริโก๋",
-      postcode: "96140",
-      province: "นราธิวาส",
-      district: "อำเภอสุไหงปาดี",
-      locationcode: "961105",
-    },
-    {
-      subdistrict: "สากอ",
-      postcode: "96140",
-      province: "นราธิวาส",
-      district: "อำเภอสุไหงปาดี",
-      locationcode: "961104",
-    },
-    {
-      subdistrict: "โต๊ะเด็ง",
-      postcode: "96140",
-      province: "นราธิวาส",
-      district: "อำเภอสุไหงปาดี",
-      locationcode: "961103",
-    },
-    {
-      subdistrict: "สุไหงปาดี",
-      postcode: "96140",
-      province: "นราธิวาส",
-      district: "อำเภอสุไหงปาดี",
-      locationcode: "961102",
-    },
-    {
-      subdistrict: "ปะลุรู",
-      postcode: "96140",
-      province: "นราธิวาส",
-      district: "อำเภอสุไหงปาดี",
-      locationcode: "961101",
-    },
-    {
-      subdistrict: "ปูโยะ",
-      postcode: "96120",
-      province: "นราธิวาส",
-      district: "อำเภอสุไหงโกลก",
-      locationcode: "961004",
-    },
-    {
-      subdistrict: "มูโนะ",
-      postcode: "96120",
-      province: "นราธิวาส",
-      district: "อำเภอสุไหงโกลก",
-      locationcode: "961003",
-    },
-    {
-      subdistrict: "ปาเสมัส",
-      postcode: "96120",
-      province: "นราธิวาส",
-      district: "อำเภอสุไหงโกลก",
-      locationcode: "961002",
-    },
-    {
-      subdistrict: "ร่มไทร",
-      postcode: "96190",
-      province: "นราธิวาส",
-      district: "อำเภอสุคิริน",
-      locationcode: "960905",
-    },
-    {
-      subdistrict: "สุไหงโก-ลก",
-      postcode: "96120",
-      province: "นราธิวาส",
-      district: "อำเภอสุไหงโกลก",
-      locationcode: "961001",
-    },
-    {
-      subdistrict: "ภูเขาทอง",
-      postcode: "96190",
-      province: "นราธิวาส",
-      district: "อำเภอสุคิริน",
-      locationcode: "960904",
-    },
-    {
-      subdistrict: "เกียร์",
-      postcode: "96190",
-      province: "นราธิวาส",
-      district: "อำเภอสุคิริน",
-      locationcode: "960903",
-    }
-  ];
-
 
   ngOnInit(): void {
 
@@ -241,14 +96,14 @@ export class InvolvedpartyFormComponent implements OnInit {
     this.filteredPostCodes = this.postCodeCtrl.valueChanges
       .pipe(
         startWith(''),
-        map(postCode => postCode ? this._filterStates(postCode) : this.postCodes.slice())
+        map(postCode => postCode ? this._filterStates(postCode) : this.postcodes.slice())
       );
   }
 
   private _filterStates(value: string): PostCode[] {
     const filterValue = value.toLowerCase();
 
-    return this.postCodes.filter(postCode => postCode.postcode.toLowerCase().indexOf(filterValue) === 0);
+    return this.postcodes.filter(postCode => postCode.postcode.toLowerCase().indexOf(filterValue) === 0);
   }
 
 
