@@ -6,7 +6,7 @@ export const environment = {
     production: false,
     hmr       : false,
     appName : 'tvds-dev',
-    apiUrl : 'https://tvds-service.herokuapp.com'
+    apiUrl : 'https://casan-sevice.lamunphan.com'
 };
 
 /*
