@@ -109,9 +109,10 @@
               <div class="mt-8 text-right">
                 <button mat-flat-button color="primary" *ngIf="markerItem.contactStatus === ''"
                   (click)="clickedMarker(markerItem, i)">เลือก</button>
-                <span *ngIf="markerItem.contactStatus !== ''">เว้นไว้ใส่รหัสเอกสาร</span>
-                <button mat-flat-button color="primary" *ngIf="markerItem.contactStatus !== ''"
-                  disabled>เลือกแล้ว</button>
+                <div *ngIf="markerItem.contactStatus !== ''">
+                  ดำเนินการแล้วที่เอกสาร<span *ngIf="markerItem.docno === orderData.docno">นี้</span>
+                  <span *ngIf="markerItem.docno !== orderData.docno"> {{markerItem.docno}}</span>
+                </div>
               </div>
             </agm-info-window>
 

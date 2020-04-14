@@ -211,6 +211,9 @@ export class OrderFormComponent implements OnInit {
       // console.log(this.orderData.contactLists);
       // console.log(this.orderData.contactLists.length);
 
+      item.docno = this.orderData.docno;
+      item.contactStatus = "S";
+
       if (this.orderData.contactLists.length > 0) {
         this.sideNaveOpened = true;
       };
@@ -255,6 +258,12 @@ export class OrderFormComponent implements OnInit {
     // console.log(markerItem)
     let bg = ""
     let label = txt
+
+    //case DELETE
+    if (txt === "") {
+      markerItem.docno = "";
+      markerItem.contactStatus = "";
+    };
 
     for (let i = 0; i < markerItem.membership.length; i++) {
       const member = markerItem.membership[i];
