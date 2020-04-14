@@ -89,7 +89,7 @@
           </div>
         </div>
 
-        <agm-map class="map-size" (mapClick)="closeInfo($event)" [latitude]="lat" [longitude]="lng" [zoom]="zoom"
+        <agm-map class="map-size" (mapClick)="closeInfo()" [latitude]="lat" [longitude]="lng" [zoom]="zoom"
           [disableDefaultUI]="false" [zoomControl]="false">
 
           <agm-marker *ngFor="let markerItem of markersData; let i = index"
