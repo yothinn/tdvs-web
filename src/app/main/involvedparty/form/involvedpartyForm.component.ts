@@ -3,7 +3,7 @@ import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.
 import { fuseAnimations } from '@fuse/animations';
 
 import { Location } from '@angular/common';
-import { FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, FormArray, FormControl } from '@angular/forms';
 
 import { locale as english } from '../i18n/en';
 import { locale as thai } from '../i18n/th';
@@ -11,6 +11,17 @@ import { locale as thai } from '../i18n/th';
 import { InvolvedpartyService } from '../services/involvedparty.service';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
+
+export interface PostCode {
+  locationcode: string,
+  district: string,
+  province: string,
+  postcode: string,
+  subdistrict: string
+}
+
 
 @Component({
   selector: 'app-involvedparty-form',
@@ -23,6 +34,12 @@ export class InvolvedpartyFormComponent implements OnInit {
   involvedpartyForm: FormGroup;
   directContact: FormArray;
   involvedpartyData: any = {};
+
+  postcodes: PostCode[] = [];
+
+  postCodeCtrl = new FormControl();
+  filteredPostCodes: Observable<PostCode[]>;
+
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
@@ -40,8 +57,12 @@ export class InvolvedpartyFormComponent implements OnInit {
     { value: 'นางสาว', viewValue: 'นางสาว' }
   ];
 
-
   ngOnInit(): void {
+
+    this.involvedpartyService.getPostcodesList().subscribe((res: any) => {
+      this.postcodes = res.data;
+      console.log(this.postcodes);
+    })
 
     this.involvedpartyData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
@@ -71,7 +92,21 @@ export class InvolvedpartyFormComponent implements OnInit {
       this.involvedpartyForm = this.createForm();
     }
     this.spinner.hide();
+
+    this.filteredPostCodes = this.postCodeCtrl.valueChanges
+      .pipe(
+        startWith(''),
+        map(postCode => postCode ? this._filterStates(postCode) : this.postcodes.slice())
+      );
   }
+
+  private _filterStates(value: string): PostCode[] {
+    const filterValue = value.toLowerCase();
+
+    return this.postcodes.filter(postCode => postCode.postcode.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+
 
   get formData() { return <FormArray>this.involvedpartyForm.get('directContact'); }
 

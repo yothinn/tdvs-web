@@ -4,6 +4,131 @@
       <img src="assets/images/logos/fuse.svg" />
     </div>
 
+    <div id="register-form-wrapper" fusePerfectScrollbar [@animate]="{value:'*',params:{delay:'300ms',x:'100%'}}">
+
+        <div id="register-form">
+
+            <form name="registerForm" [formGroup]="registerForm" novalidate>
+
+                <mat-form-field appearance="outline" formGroupName="personalInfo">
+                    <mat-label>คำนำหน้าชื่อ</mat-label>
+                    <mat-select formControlName="title">
+                        <mat-option *ngFor="let itemtitle of title" [value]="itemtitle.value">
+                            {{itemtitle.viewValue}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
+                    <mat-error>
+                        title is required
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" formGroupName="personalInfo">
+                    <mat-label>ชื่อ</mat-label>
+                    <input matInput formControlName="firstName">
+                    <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
+                    <mat-error>
+                        firstName is required
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" formGroupName="personalInfo">
+                    <mat-label>นามสกุล</mat-label>
+                    <input matInput formControlName="lastName">
+                    <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
+                    <mat-error>
+                        lastName is required
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" formGroupName="personalInfo">
+                    <mat-label>เลขที่บัตรประชาชน</mat-label>
+                    <input matInput formControlName="citizenId" placeholder="(เพื่อตรวจสอบว่าเป็นผู้ถือหุ้น หรือ ไม่)">
+                    <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
+                    <mat-error>
+                        (เพื่อตรวจสอบว่าเป็นผู้ถือหุ้น หรือ ไม่)
+                    </mat-error>
+                </mat-form-field>
+
+                <div formArrayName="directContact"
+                    *ngFor="let item of registerForm.get('directContact').controls; let i = index;">
+                    <mat-form-field appearance="outline" [formGroupName]="i">
+                        <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ</mat-label>
+                        <mat-label *ngIf="item.value.method==='home'">เบอร์บ้าน</mat-label>
+                        <mat-label *ngIf="item.value.method==='other'">เบอร์อื่น ๆ</mat-label>
+                        <input matInput formControlName="value">
+                        <mat-icon *ngIf="item.value.method==='mobile'" matSuffix class="secondary-text">smartphone
+                        </mat-icon>
+                        <mat-icon *ngIf="item.value.method==='home'" matSuffix class="secondary-text">local_phone
+                        </mat-icon>
+                        <mat-icon *ngIf="item.value.method==='other'" matSuffix class="secondary-text">local_phone
+                        </mat-icon>
+                        <mat-error>
+                            value is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline" formGroupName="contactAddress">
+                    <mat-label>ที่อยู่ปัจจุบันเลขที่</mat-label>
+                    <input matInput formControlName="addressLine1">
+                    <mat-icon matSuffix class="secondary-text">location_city</mat-icon>
+                    <mat-error>
+                        addressLine1 is required
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" formGroupName="contactAddress">
+                    <mat-label>ถนน</mat-label>
+                    <input matInput formControlName="addressStreet">
+                    <mat-icon matSuffix class="secondary-text">directions</mat-icon>
+                    <mat-error>
+                        addressStreet is required
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" formGroupName="contactAddress">
+                    <mat-label>รหัสไปรษณี</mat-label>
+                    <input matInput formControlName="addressPostalCode">
+                    <mat-icon matSuffix class="secondary-text">local_post_office</mat-icon>
+                    <mat-error>
+                        addressPostalCode is required
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" formGroupName="contactAddress">
+                    <mat-label>ตำบล/แขวง</mat-label>
+                    <input matInput formControlName="addressSubDistrict">
+                    <mat-icon matSuffix class="secondary-text">location_city</mat-icon>
+                    <mat-error>
+                        addressSubDistrict is required
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" formGroupName="contactAddress">
+                    <mat-label>อำเภอ/เขต</mat-label>
+                    <input matInput formControlName="addressDistrict">
+                    <mat-icon matSuffix class="secondary-text">location_city</mat-icon>
+                    <mat-error>
+                        addressDistrict is required
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" formGroupName="contactAddress">
+                    <mat-label>จังหวัด</mat-label>
+                    <input matInput formControlName="addressProvince">
+                    <mat-icon matSuffix class="secondary-text">location_city</mat-icon>
+                    <mat-error>
+                        addressProvince is required
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="terms" fxLayout="row wrap" fxLayoutAlign="center center">
+                    <mat-checkbox name="terms" aria-label="Accept" required>
+                        <span>ข้าพเจ้าได้อ่านและรับทราบข้อตกลง</span>
+                    </mat-checkbox>
+                    <a>เงื่อนไขการสมัครสมาชิก</a>
+                </div>
+
+                <button mat-raised-button color="accent" class="submit-button" aria-label="CREATE AN ACCOUNT"
+                    [disabled]="registerForm.invalid" (click)="onSave()">
+                    CREATE AN ACCOUNT
+                </button>
     <div
       class="title"
       [@animate]="{ value: '*', params: { delay: '50ms', y: '25px' } }"

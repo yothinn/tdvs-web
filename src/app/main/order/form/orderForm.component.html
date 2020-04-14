@@ -37,6 +37,10 @@
               {{contact.method}}: {{contact.value}}
             </div>
             <div>
+              ประเภท: <span class="shareholder-color" *ngIf="item.membership === 'shareholder'">ผู้ถือหุ้น</span>
+              <span class="delivery-color" *ngIf="item.membership === 'delivery'">รถธรรมธุรกิจ</span>
+            </div>
+            <div>
               Status: {{item.contactStatus}}
             </div>
             <div class="mt-8">
@@ -46,7 +50,8 @@
                 (click)="onChangeStatus('confirm', i)">Confirm</button>
               <button mat-flat-button class="btn-list-status color-r-btn"
                 (click)="onChangeStatus('reject', i)">Reject</button>
-              <button mat-flat-button color="warn" (click)="onDeleteList(i)">
+              <button mat-flat-button color="warn" (click)="onDeleteList(i)"
+                [disabled]="item.contactStatus === 'confirm' || item.contactStatus === 'reject'">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
@@ -75,10 +80,10 @@
 
         <div class="btn-nav2">
           <div>
-            <span></span><span style="color: blue;">ผู้ถือหุ้น</span>
+            <span></span><span class="shareholder-color">ผู้ถือหุ้น</span>
           </div>
           <div>
-            <span></span><span style="color: red;">สมาชิก</span>
+            <span></span><span class="delivery-color">รถธรรมธุรกิจ</span>
           </div>
         </div>
 

@@ -101,7 +101,7 @@ export class OrderFormComponent implements OnInit {
   getMarkerData(docdate) {
     this.orderService.getMarkerDataList(docdate).then((res) => {
       this.markersData = res;
-      console.log(this.markersData);
+      // console.log(this.markersData);
       this.defaultIconMarkers();
     });
   }
@@ -110,57 +110,88 @@ export class OrderFormComponent implements OnInit {
     let bg = ""
     let label = ""
 
-    this.markersData.forEach((el) => {
-      if (el.relationType === "shareholder") {
-        bg = "167eff"; //สีน้ำเงิน
-      } else {
-        bg = "ff2a2a"; //สีแดง
-      }
-      el.icon = {
+    for (let i = 0; i < this.markersData.length; i++) {
+      const marker = this.markersData[i];
+      label = this.checkSymbolMarkersDefault(marker.contactStatus);
+
+      for (let j = 0; j < marker.membership.length; j++) {
+        const member = marker.membership[j];
+        // console.log(member.activity);
+        if (member.activity === "shareholder") {
+          bg = "167eff"; //สีน้ำเงิน
+          break;
+        } else {
+          bg = "ff2a2a"; //สีแดง
+        };
+      };
+      marker.icon = {
         url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
         scaledSize: {
           width: 34,
           height: 34
         }
-      }
-    });
-    // console.log(this.markersData);
+      };
+    };
+    console.log(this.markersData);
 
-    // let bg = "ff2a2a"; //167eff //blue
-    // let label = ""
+  }
 
-    // this.icon = {
-    //   url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
-    //   scaledSize: {
-    //     width: 34,
-    //     height: 34
-    //   }
-    // }
+  checkSymbolMarkersDefault(contactStatus) {
+    if (contactStatus === "waitapprove") {
+      return "W"
+    };
+    if (contactStatus === "confirm") {
+      return "C"
+    };
+    if (contactStatus === "reject") {
+      return "R"
+    };
+    if (contactStatus === "select") {
+      return "S"
+    };
+    if (contactStatus === "") {
+      return ""
+    };
   }
 
   clickedMarker(item: any, index: number) {
-    let mIndex = this.orderData.contactLists.findIndex((el) => {
-      return el._id === item._id
-    });
-    // console.log(mIndex)
+    if (item.contactStatus === "") {
+      let mIndex = this.orderData.contactLists.findIndex((el) => {
+        return el._id === item._id
+      });
+      // console.log(mIndex)
 
-    if (mIndex === -1) {
-      let itemList = {
-        "_id": item._id,
-        "contactStatus": "select",
-        "personalInfo": item.personalInfo,
-        "directContact": item.directContact,
-        "contactAddress": item.contactAddress
+      let memberShip;
+      for (let i = 0; i < item.membership.length; i++) {
+        const member = item.membership[i];
+        // console.log(member.activity)
+        if (member.activity === "shareholder") {
+          memberShip = "shareholder";
+          break;
+        } else {
+          memberShip = "delivery";
+        };
+      };
+
+      if (mIndex === -1) {
+        let itemList = {
+          "_id": item._id,
+          "contactStatus": "select",
+          "personalInfo": item.personalInfo,
+          "directContact": item.directContact,
+          "contactAddress": item.contactAddress,
+          "membership": memberShip
+        }
+
+        this.orderData.contactLists.push(itemList);
+        this.changeIconMarker(item, "S");
       }
+      // console.log(this.orderData.contactLists);
+      // console.log(this.orderData.contactLists.length);
 
-      this.orderData.contactLists.push(itemList);
-      this.changeIconMarker(item, "S");
-    }
-    // console.log(this.orderData.contactLists);
-    // console.log(this.orderData.contactLists.length);
-
-    if (this.orderData.contactLists.length > 0) {
-      this.sideNaveOpened = true;
+      if (this.orderData.contactLists.length > 0) {
+        this.sideNaveOpened = true;
+      };
     };
   }
 
@@ -202,18 +233,23 @@ export class OrderFormComponent implements OnInit {
     // console.log(markerItem)
     let bg = ""
     let label = txt
-    if (markerItem.relationType === "shareholder") {
-      bg = "167eff"; //สีน้ำเงิน
-    } else {
-      bg = "ff2a2a"; //สีแดง
-    }
+
+    for (let i = 0; i < markerItem.membership.length; i++) {
+      const member = markerItem.membership[i];
+      if (member.activity === "shareholder") {
+        bg = "167eff"; //สีน้ำเงิน
+        break;
+      } else {
+        bg = "ff2a2a"; //สีแดง
+      };
+    };
     markerItem.icon = {
       url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
       scaledSize: {
         width: 34,
         height: 34
       }
-    }
+    };
   }
 
   goBack() {
