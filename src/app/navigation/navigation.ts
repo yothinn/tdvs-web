@@ -2,24 +2,26 @@ import { FuseNavigation } from '@fuse/types';
 
 export const navigation: FuseNavigation[] = [
     {
-        id       : 'applications',
-        title    : 'Applications',
-        translate: 'NAV.APPLICATIONS',
-        type     : 'group',
-        children : [
+        id: 'Menu',
+        title: 'Menu',
+        translate: 'เมนู',
+        type: 'group',
+        children: [
             {
-                id       : 'sample',
-                title    : 'Sample',
-                translate: 'NAV.SAMPLE.TITLE',
-                type     : 'item',
-                icon     : 'email',
-                url      : '/sample',
-                badge    : {
-                    title    : '25',
-                    translate: 'NAV.SAMPLE.BADGE',
-                    bg       : '#F44336',
-                    fg       : '#FFFFFF'
-                }
+                id: 'order',
+                title: 'order',
+                translate: 'จัดการใบสั่งงาน',
+                type: 'item',
+                icon: 'description',
+                url: '/order'
+            },
+            {
+                id: 'involvedparty',
+                title: 'involvedparty',
+                translate: 'จัดการข้อมูลสมาชิก',
+                type: 'item',
+                icon: 'account_box',
+                url: '/involvedparty'
             }
         ]
     }
