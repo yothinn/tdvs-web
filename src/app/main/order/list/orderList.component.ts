@@ -37,6 +37,7 @@ export class OrderListComponent implements OnInit {
   ngOnInit(): void {
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
+    this.temp = this.route.snapshot.data.items.data;
     console.log(this.rows)
     this.formatMoment();
   }
@@ -81,10 +82,17 @@ export class OrderListComponent implements OnInit {
 
   updateFilter(event) {
     //change search keyword to lower case
-    // const val = event.target.value.toLowerCase();
+    const val = event.target.value.toLowerCase();
 
     // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.docno.toLowerCase().indexOf(val) !== -1 
+      || d.carNo.toLowerCase().indexOf(val) !== -1
+      || !val;
+    });
 
+    // update the rows
+    this.rows = temp;
   }
 
 }
