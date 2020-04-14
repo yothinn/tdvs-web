@@ -32,10 +32,10 @@ import { GlobalErrorHandler } from "./global-error-handler";
 import { ServerErrorInterceptor } from "./server-error.interceptor";
 
 const appRoutes: Routes = [
-  // {
-  //     path        : 'auth',
-  //     loadChildren: './authentication/authentication.module#AuthenticationModule'
-  // },
+  {
+      path        : 'auth',
+      loadChildren: './authentication/authentication.module#AuthenticationModule'
+  },
   {
     path: 'order',
     loadChildren: './main/order/order.module#OrderModule'
