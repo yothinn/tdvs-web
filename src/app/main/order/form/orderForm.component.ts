@@ -59,6 +59,9 @@ export class OrderFormComponent implements OnInit {
     console.log(this.orderData);
     if (this.orderData.contactLists.length > 0) {
       this.sideNaveOpened = true;
+      this.zoom = 13;
+      this.lat = Number(this.orderData.contactLists[0].contactAddress.latitude);
+      this.lng = Number(this.orderData.contactLists[0].contactAddress.longitude);
     }
 
     this.getVehicleData();
