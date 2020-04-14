@@ -46,11 +46,14 @@ export class InvolvedpartyListComponent implements OnInit {
   }
 
   deleteData(item) {
+    this.spinner.show();
     this.involvedpartyService.deleteInvolvedpartyData(item).then((res) => {
       this.involvedpartyService
         .getInvolvedpartyDataList()
         .subscribe((res: any) => {
+          this.spinner.hide;
           this.rows = res.data;
+          this.temp = res.data;
         });
     });
   }
