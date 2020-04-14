@@ -23,25 +23,27 @@
 
         <div class="list-bg" *ngFor="let item of orderData.contactLists; let i = index">
           <div class="list-item">
-            <div>
-              ชื่อ: {{item.personalInfo.titleThai}}{{item.personalInfo.firstNameThai}}
-              {{item.personalInfo.middleNameThai}} {{item.personalInfo.lastNameThai}}
-            </div>
-            <div>
-              ที่อยู่: {{item.contactAddress.addressLine1}} {{item.contactAddress.addressStreet}}
-              {{item.contactAddress.addressSubDistrict}} {{item.contactAddress.addressDistrict}}
-              {{item.contactAddress.addressProvince}} {{item.contactAddress.addressCountry}}
-              {{item.contactAddress.addressPostalCode}}
-            </div>
-            <div *ngFor="let contact of item.directContact">
-              {{contact.method}}: {{contact.value}}
-            </div>
-            <div>
-              ประเภท: <span class="shareholder-color" *ngIf="item.membership === 'shareholder'">ผู้ถือหุ้น</span>
-              <span class="delivery-color" *ngIf="item.membership === 'delivery'">รถธรรมธุรกิจ</span>
-            </div>
-            <div>
-              Status: {{item.contactStatus}}
+            <div (click)="navigateByItem(item)">
+              <div>
+                ชื่อ: {{item.personalInfo.titleThai}}{{item.personalInfo.firstNameThai}}
+                {{item.personalInfo.middleNameThai}} {{item.personalInfo.lastNameThai}}
+              </div>
+              <div>
+                ที่อยู่: {{item.contactAddress.addressLine1}} {{item.contactAddress.addressStreet}}
+                {{item.contactAddress.addressSubDistrict}} {{item.contactAddress.addressDistrict}}
+                {{item.contactAddress.addressProvince}} {{item.contactAddress.addressCountry}}
+                {{item.contactAddress.addressPostalCode}}
+              </div>
+              <div *ngFor="let contact of item.directContact">
+                {{contact.method}}: {{contact.value}}
+              </div>
+              <div>
+                ประเภท: <span class="shareholder-color" *ngIf="item.membership === 'shareholder'">ผู้ถือหุ้น</span>
+                <span class="delivery-color" *ngIf="item.membership === 'delivery'">รถธรรมธุรกิจ</span>
+              </div>
+              <div>
+                Status: {{item.contactStatus}}
+              </div>
             </div>
             <div class="mt-8">
               <button mat-flat-button class="btn-list-status color-s-btn" (click)="onChangeStatus('sendLine', i)">Send

@@ -213,6 +213,7 @@ export class OrderFormComponent implements OnInit {
 
       item.docno = this.orderData.docno;
       item.contactStatus = "S";
+      this.closeInfo();
 
       if (this.orderData.contactLists.length > 0) {
         this.sideNaveOpened = true;
@@ -281,6 +282,11 @@ export class OrderFormComponent implements OnInit {
         height: 34
       }
     };
+  }
+
+  navigateByItem(contactItem) {
+    this.lat = Number(contactItem.contactAddress.latitude);
+    this.lng = Number(contactItem.contactAddress.longitude);
   }
 
   goBack() {
