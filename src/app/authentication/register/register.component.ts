@@ -1,273 +1,108 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from "@angular/core";
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-  FormArray,
-} from "@angular/forms";
-import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-import { FuseConfigService } from "@fuse/services/config.service";
-import { fuseAnimations } from "@fuse/animations";
-import { AuthenService } from "../authen.service";
-import { Router, ActivatedRoute } from "@angular/router";
-import { InvolvedpartyService } from "app/main/involvedparty/services/involvedparty.service";
-import { NgxSpinnerService } from "ngx-spinner";
-import { Location } from "@angular/common";
-
-declare var liff: any;
+import { FuseConfigService } from '@fuse/services/config.service';
+import { fuseAnimations } from '@fuse/animations';
+import { AuthenService } from '../authen.service';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: "register",
-  templateUrl: "./register.component.html",
-  styleUrls: ["./register.component.scss"],
-  encapsulation: ViewEncapsulation.None,
-  animations: fuseAnimations,
+    selector     : 'register',
+    templateUrl  : './register.component.html',
+    styleUrls    : ['./register.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    animations   : fuseAnimations
 })
-export class RegisterComponent implements OnInit, OnDestroy {
-  registerForm: FormGroup;
-  directContact: FormArray;
-  registerData: any = {};
-  userProfile: any;
-  checked: boolean = true;
+export class RegisterComponent implements OnInit, OnDestroy
+{
+    registerForm: FormGroup;
 
-  // Private
-  private _unsubscribeAll: Subject<any>;
+    // Private
+    private _unsubscribeAll: Subject<any>;
 
-  constructor(
-    private _fuseConfigService: FuseConfigService,
-    private formBuilder: FormBuilder,
-    private involvedpartyService: InvolvedpartyService,
-    private route: ActivatedRoute,
-    private spinner: NgxSpinnerService,
-    private location: Location
-  ) {
-    // Configure the layout
-    this._fuseConfigService.config = {
-      layout: {
-        navbar: {
-          hidden: true,
-        },
-        toolbar: {
-          hidden: true,
-        },
-        footer: {
-          hidden: true,
-        },
-        sidepanel: {
-          hidden: true,
-        },
-      },
-    };
-
-    // Set the private defaults
-    this._unsubscribeAll = new Subject();
-  }
-
-  // -----------------------------------------------------------------------------------------------------
-  // @ Lifecycle hooks
-  // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * On init
-   */
-
-  title: Array<any> = [
-    { value: "นาย", viewValue: "นาย" },
-    { value: "นาง", viewValue: "นาง" },
-    { value: "นางสาว", viewValue: "นางสาว" },
-  ];
-
-  async ngOnInit() {
-    liff.init(
-      (data) => {
-        this.userProfile = liff.getProfile();
-      },
-      (err) => {
-        alert(JSON.stringify(err));
-      }
-    );
-    this.registerData = this.route.snapshot.data.items
-      ? this.route.snapshot.data.items.data
-      : {
-          personalInfo: {
-            title: "",
-            firstName: this.userProfile ? this.userProfile.displayName : "",
-            lastName: "",
-            citizenId: "",
-          },
-          contactAddress: {
-            addressLine1: "",
-            addressStreet: "",
-            addressSubDistrict: "",
-            addressDistrict: "",
-            addressProvince: "",
-            addressPostalCode: "",
-          },
+    constructor(
+        private _fuseConfigService: FuseConfigService,
+        private _formBuilder: FormBuilder,
+        private router: Router,
+        private auth: AuthenService
+    )
+    {
+        // Configure the layout
+        this._fuseConfigService.config = {
+            layout: {
+                navbar   : {
+                    hidden: true
+                },
+                toolbar  : {
+                    hidden: true
+                },
+                footer   : {
+                    hidden: true
+                },
+                sidepanel: {
+                    hidden: true
+                }
+            }
         };
 
-    if (this.registerData._id) {
-      console.log("case Edit");
-      this.registerForm = this.editForm();
-      this.caseEditArray();
-    } else {
-      console.log("case New");
-      this.registerForm = this.createForm();
+        // Set the private defaults
+        this._unsubscribeAll = new Subject();
     }
 
-    this.spinner.hide();
-    // alert(`Hi ${this.userProfile.displayName}!`);
-  }
+    // -----------------------------------------------------------------------------------------------------
+    // @ Lifecycle hooks
+    // -----------------------------------------------------------------------------------------------------
 
-  createForm(): FormGroup {
-    return this.formBuilder.group({
-      personalInfo: this.createPersonalInfoForm(),
-      directContact: this.formBuilder.array([
-        this.formBuilder.group({
-          method: "mobile",
-          value: [
-            "",
-            [
-              Validators.required,
-              Validators.pattern("^[0-9]*$"),
-              Validators.minLength(10),
-              Validators.maxLength(10),
-            ],
-          ],
-        }),
-        this.formBuilder.group({
-          method: "home",
-          value: [
-            "",
-            [
-              Validators.pattern("^[0-9]*$"),
-              Validators.minLength(10),
-              Validators.maxLength(10),
-            ],
-          ],
-        }),
-        this.formBuilder.group({
-          method: "other",
-          value: [
-            "",
-            [
-              Validators.pattern("^[0-9]*$"),
-              Validators.minLength(10),
-              Validators.maxLength(10),
-            ],
-          ],
-        }),
-      ]),
-      contactAddress: this.createContactAddressForm(),
-      accepted: [false, [Validators.required]],
-    });
-  }
-
-  createPersonalInfoForm(): FormGroup {
-    return this.formBuilder.group({
-      title: [this.registerData.personalInfo.title, [Validators.required]],
-      firstName: [
-        this.registerData.personalInfo.firstName,
-        [Validators.required],
-      ],
-      lastName: [
-        this.registerData.personalInfo.lastName,
-        [Validators.required],
-      ],
-      citizenId: [
-        this.registerData.personalInfo.citizenId,
-        [
-          Validators.required,
-          Validators.pattern("^[0-9]*$"),
-          Validators.minLength(13),
-          Validators.maxLength(13),
-        ],
-      ],
-    });
-  }
-
-  createContactAddressForm(): FormGroup {
-    return this.formBuilder.group({
-      addressLine1: [this.registerData.contactAddress.addressLine1],
-      addressStreet: [this.registerData.contactAddress.addressStreet],
-      addressSubDistrict: [this.registerData.contactAddress.addressSubDistrict],
-      addressDistrict: [this.registerData.contactAddress.addressDistrict],
-      addressProvince: [this.registerData.contactAddress.addressProvince],
-      addressPostalCode: [this.registerData.contactAddress.addressPostalCode],
-    });
-  }
-
-  editForm(): FormGroup {
-    return this.formBuilder.group({
-      personalInfo: this.createPersonalInfoForm(),
-      directContact: this.formBuilder.array([]),
-      contactAddress: this.createContactAddressForm(),
-    });
-  }
-  caseEditArray() {
-    this.directContact = this.registerForm.get("directContact") as FormArray;
-    this.registerData.directContact.forEach((el) => {
-      this.directContact.push(
-        this.formBuilder.group({
-          method: el.method,
-          value: el.value,
-        })
-      );
-    });
-  }
-
-  goBack() {
-    this.spinner.show();
-    this.location.back();
-  }
-
-  async onSave() {
-    this.spinner.show();
-
-    if (this.registerData._id) {
-      this.registerForm.value._id = this.registerData._id;
-      this.involvedpartyService
-        .updateInvolvedpartyData(this.registerForm.value)
-        .then((res) => {
-          try {
-            alert("sdf");
-            liff.closeWindow();
-          } catch (error) {
-            alert(error);
-          }
+    /**
+     * On init
+     */
+    ngOnInit(): void
+    {
+        this.registerForm = this._formBuilder.group({
+            name           : ['', Validators.required],
+            email          : ['', [Validators.required, Validators.email]],
+            password       : ['', Validators.required],
+            passwordConfirm: ['', [Validators.required, confirmPasswordValidator]]
         });
-    } else {
-      this.involvedpartyService
-        .createInvolvedpartyData(this.registerForm.value)
-        .then((res) => {
-          try {
-            alert("sdf");
-            liff.closeWindow();
-          } catch (error) {
-            alert(error);
-          }
-        });
+
+        // Update the validity of the 'passwordConfirm' field
+        // when the 'password' field changes
+        this.registerForm.get('password').valueChanges
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(() => {
+                this.registerForm.get('passwordConfirm').updateValueAndValidity();
+            });
     }
-  }
-  get formData() {
-    return <FormArray>this.registerForm.get("directContact");
-  }
-  /**
-   * On destroy
-   */
-  ngOnDestroy(): void {
-    // Unsubscribe from all subscriptions
-    this._unsubscribeAll.next();
-    this._unsubscribeAll.complete();
-  }
 
-  /**
-   * On register button click
-   */
+    /**
+     * On destroy
+     */
+    ngOnDestroy(): void
+    {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
+    }
+
+    /**
+     * On register button click
+     */
+    register(): void{
+        const data = this.registerForm.getRawValue();
+        data.username = data.email;
+        data.firstname = data.name;
+        data.lastname = '-';
+        data.ref1 = '-';
+        this.auth.register(data)
+            .then((result) => {
+                this.router.navigate(['']);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
 }
 
 /**
@@ -276,3 +111,30 @@ export class RegisterComponent implements OnInit, OnDestroy {
  * @param {AbstractControl} control
  * @returns {ValidationErrors | null}
  */
+export const confirmPasswordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+
+    if ( !control.parent || !control )
+    {
+        return null;
+    }
+
+    const password = control.parent.get('password');
+    const passwordConfirm = control.parent.get('passwordConfirm');
+
+    if ( !password || !passwordConfirm )
+    {
+        return null;
+    }
+
+    if ( passwordConfirm.value === '' )
+    {
+        return null;
+    }
+
+    if ( password.value === passwordConfirm.value )
+    {
+        return null;
+    }
+
+    return {'passwordsNotMatching': true};
+};

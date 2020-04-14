@@ -140,8 +140,8 @@ export class InvolvedpartyFormComponent implements OnInit {
   createPersonalInfoForm(): FormGroup {
     return this.formBuilder.group({
       title: [this.involvedpartyData.personalInfo.title],
-      firstName: [this.involvedpartyData.personalInfo.firstName],
-      lastName: [this.involvedpartyData.personalInfo.lastName],
+      firstName: [this.involvedpartyData.personalInfo.firstNameThai],
+      lastName: [this.involvedpartyData.personalInfo.lastNameThai],
       citizenId: [this.involvedpartyData.personalInfo.citizenId, [
         Validators.required,
         Validators.pattern("^[0-9]*$"),
@@ -212,5 +212,8 @@ export class InvolvedpartyFormComponent implements OnInit {
     }
   }
 
+  formControl(){
+    return (this.involvedpartyForm.get('directContact') as FormArray).controls;
+  }
 
 }
