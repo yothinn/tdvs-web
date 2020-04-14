@@ -108,7 +108,7 @@
                       <input matInput [matAutocomplete]="auto" [formControl]="postCodeCtrl">
                       <mat-autocomplete #auto="matAutocomplete">
                         <mat-option *ngFor="let postCode of filteredPostCodes | async" [value]="postCode.postcode">
-                          <span>{{postCode.postcode}}</span>
+                          <span>{{postCode.postcode}}</span> | <span>{{postCode.subdistrict}}</span> | <span>{{postCode.district}}</span> | <span>{{postCode.province}}</span>
                         </mat-option>
                       </mat-autocomplete>
                     </mat-form-field>
