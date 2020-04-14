@@ -3,22 +3,30 @@ import { FuseNavigation } from '@fuse/types';
 export const navigation: FuseNavigation[] = [
     {
         id: 'Menu',
-        title: 'Menu',
-        translate: 'เมนู',
+        title: 'Menu Order',
+        translate: 'ใบสั่งงาน',
         type: 'group',
         children: [
             {
                 id: 'order',
                 title: 'order',
-                translate: 'จัดการใบสั่งงาน',
+                translate: 'รายการใบสั่งงาน',
                 type: 'item',
                 icon: 'description',
                 url: '/order'
-            },
+            }
+        ]
+    },
+    {
+        id: 'Menu',
+        title: 'Menu IPI',
+        translate: 'ข้อมูลสมาชิก',
+        type: 'group',
+        children: [
             {
                 id: 'involvedparty',
                 title: 'involvedparty',
-                translate: 'จัดการข้อมูลสมาชิก',
+                translate: 'รายการข้อมูลสมาชิก',
                 type: 'item',
                 icon: 'account_box',
                 url: '/involvedparty'
