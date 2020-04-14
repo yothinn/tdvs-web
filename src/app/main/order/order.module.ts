@@ -17,14 +17,14 @@ const routes = [
   {
     path: "orderForm/:id",
     component: OrderFormComponent,
-    resolve: { items: OrderService }
-    // canActivate: [AuthenGuardService]
+    resolve: { items: OrderService },
+    canActivate: [AuthenGuardService]
   },
   {
     path: '**',
     component: OrderListComponent,
-    resolve: { items: OrderService }
-    // canActivate: [AuthenGuardService]
+    resolve: { items: OrderService },
+    canActivate: [AuthenGuardService]
   }
 ];
 
