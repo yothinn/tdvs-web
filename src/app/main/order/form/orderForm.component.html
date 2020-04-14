@@ -87,14 +87,14 @@
           </div>
         </div>
 
-        <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false"
-          [zoomControl]="false">
+        <agm-map class="map-size" (mapClick)="closeInfo($event)" [latitude]="lat" [longitude]="lng" [zoom]="zoom"
+          [disableDefaultUI]="false" [zoomControl]="false">
 
-          <agm-marker *ngFor="let markerItem of markersData; let i = index" (markerClick)="clickedMarker(markerItem, i)"
-            [latitude]="markerItem.contactAddress.latitude" [longitude]="markerItem.contactAddress.longitude"
-            [iconUrl]="markerItem.icon">
+          <agm-marker *ngFor="let markerItem of markersData; let i = index"
+            (markerClick)="clickedInfoWindow(infoWindow)" [latitude]="markerItem.contactAddress.latitude"
+            [longitude]="markerItem.contactAddress.longitude" [iconUrl]="markerItem.icon">
 
-            <agm-info-window>
+            <agm-info-window #infoWindow>
               <div class="h3">
                 {{markerItem.personalInfo.titleThai}} {{markerItem.personalInfo.firstNameThai}}
                 {{markerItem.personalInfo.lastNameThai}}
@@ -107,7 +107,11 @@
                 {{markerItem.contactAddress.addressProvince}} {{markerItem.contactAddress.addressPostalCode}}
               </div>
               <div class="mt-8 text-right">
-                <button mat-flat-button color="primary">เลือก</button>
+                <button mat-flat-button color="primary" *ngIf="markerItem.contactStatus === ''"
+                  (click)="clickedMarker(markerItem, i)">เลือก</button>
+                <span *ngIf="markerItem.contactStatus !== ''">เว้นไว้ใส่รหัสเอกสาร</span>
+                <button mat-flat-button color="primary" *ngIf="markerItem.contactStatus !== ''"
+                  disabled>เลือกแล้ว</button>
               </div>
             </agm-info-window>
 

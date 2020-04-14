@@ -32,6 +32,9 @@ export class OrderFormComponent implements OnInit {
   lat: number = 13.6186285;
   lng: number = 100.5078163;
 
+  infoWindowOpened = null;
+  previous_info_window = null;
+
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
@@ -155,6 +158,22 @@ export class OrderFormComponent implements OnInit {
     if (contactStatus === "") {
       return ""
     };
+  }
+
+  clickedInfoWindow(infoWindow) {
+    if (this.previous_info_window == null)
+      this.previous_info_window = infoWindow;
+    else {
+      this.infoWindowOpened = infoWindow;
+      this.previous_info_window.close();
+    };
+    this.previous_info_window = infoWindow;
+  }
+
+  closeInfo() {
+    if (this.previous_info_window != null) {
+      this.previous_info_window.close()
+    }
   }
 
   clickedMarker(item: any, index: number) {
