@@ -24,8 +24,7 @@
             </div>
           </div>
           <div fxFlex="30" class="text-center">
-            <button mat-button color="warn" (click)="onSave()"
-              [disabled]="!orderData.docdate">บันทึก</button>
+            <button mat-button color="warn" (click)="onSave()" [disabled]="!orderData.docdate">บันทึก</button>
           </div>
         </div>
 
@@ -103,33 +102,39 @@
         <agm-map class="map-size" (mapClick)="closeInfo()" [latitude]="lat" [longitude]="lng" [zoom]="zoom"
           [disableDefaultUI]="false" [zoomControl]="false">
 
-          <agm-marker *ngFor="let markerItem of markersData; let i = index"
-            (markerClick)="clickedInfoWindow(infoWindow)" [latitude]="markerItem.contactAddress.latitude"
-            [longitude]="markerItem.contactAddress.longitude" [iconUrl]="markerItem.icon">
+          <div *ngFor="let markerItem of markersData; let i = index">
+            <div *ngIf="markerItem && markerItem.contactAddress">
+              <div *ngIf="markerItem.contactAddress.longitude || markerItem.contactAddress.latitude">
 
-            <agm-info-window #infoWindow>
-              <div class="h3">
-                {{markerItem.personalInfo.titleThai}} {{markerItem.personalInfo.firstNameThai}}
-                {{markerItem.personalInfo.lastNameThai}}
-              </div>
-              <div class="h4 mt-8">
-                {{markerItem.contactAddress.addressLine1}} {{markerItem.contactAddress.addressStreet}}
-                {{markerItem.contactAddress.addressSubDistrict}} {{markerItem.contactAddress.addressDistrict}}
-              </div>
-              <div class="h4">
-                {{markerItem.contactAddress.addressProvince}} {{markerItem.contactAddress.addressPostalCode}}
-              </div>
-              <div class="mt-8 text-right">
-                <button mat-flat-button color="primary" *ngIf="markerItem.contactStatus === ''"
-                  (click)="clickedMarker(markerItem, i)">เลือก</button>
-                <div *ngIf="markerItem.contactStatus !== ''">
-                  ดำเนินการแล้วที่เอกสาร<span *ngIf="markerItem.docno === orderData.docno">นี้</span>
-                  <span *ngIf="markerItem.docno !== orderData.docno"> {{markerItem.docno}}</span>
-                </div>
-              </div>
-            </agm-info-window>
+                <agm-marker (markerClick)="clickedInfoWindow(infoWindow)"
+                  [latitude]="markerItem.contactAddress.latitude" [longitude]="markerItem.contactAddress.longitude"
+                  [iconUrl]="markerItem.icon">
+                  <agm-info-window #infoWindow>
+                    <div class="h3">
+                      {{markerItem.personalInfo.titleThai}} {{markerItem.personalInfo.firstNameThai}}
+                      {{markerItem.personalInfo.lastNameThai}}
+                    </div>
+                    <div class="h4 mt-8">
+                      {{markerItem.contactAddress.addressLine1}} {{markerItem.contactAddress.addressStreet}}
+                      {{markerItem.contactAddress.addressSubDistrict}} {{markerItem.contactAddress.addressDistrict}}
+                    </div>
+                    <div class="h4">
+                      {{markerItem.contactAddress.addressProvince}} {{markerItem.contactAddress.addressPostalCode}}
+                    </div>
+                    <div class="mt-8 text-right">
+                      <button mat-flat-button color="primary" *ngIf="markerItem.contactStatus === ''"
+                        (click)="clickedMarker(markerItem, i)">เลือก</button>
+                      <div *ngIf="markerItem.contactStatus !== ''">
+                        ดำเนินการแล้วที่เอกสาร<span *ngIf="markerItem.docno === orderData.docno">นี้</span>
+                        <span *ngIf="markerItem.docno !== orderData.docno"> {{markerItem.docno}}</span>
+                      </div>
+                    </div>
+                  </agm-info-window>
+                </agm-marker>
 
-          </agm-marker>
+              </div>
+            </div>
+          </div>
 
         </agm-map>
       </mat-sidenav-content>
