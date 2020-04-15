@@ -61,14 +61,19 @@ export class InvolvedpartyListComponent implements OnInit {
   updateFilter(event) {
     //change search keyword to lower case
     const val = event.target.value.toLowerCase();
-    console.log(val);
+    // console.log(val);
     // filter our data
     const temp = this.temp.filter(function (d) {
-      return d.personalInfo.firstNameThai.toLowerCase().indexOf(val) !== -1 
+      try {
+        return d.personalInfo.firstNameThai.toLowerCase().indexOf(val) !== -1 
       || d.personalInfo.lastNameThai.toLowerCase().indexOf(val) !== -1 
       || d.contactAddress.addressPostalCode.indexOf(val) !== -1
       || d.directContact[0].value.indexOf(val) !== -1
       || !val;
+      } catch (error) {
+        
+      }
+      
     });
 
     // update the rows
