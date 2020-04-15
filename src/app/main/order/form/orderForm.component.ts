@@ -12,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDialog } from '@angular/material';
 import { CarAndDateComponent } from '../car-and-date/car-and-date.component';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-order-form',
@@ -27,6 +28,8 @@ export class OrderFormComponent implements OnInit {
   markersData: Array<any> = [];
 
   sideNaveOpened: Boolean;
+
+  titleDate: any;
 
   zoom: number = 10;
   lat: number = 13.6186285;
@@ -61,6 +64,7 @@ export class OrderFormComponent implements OnInit {
       };
     console.log(this.orderData);
     if (this.orderData.contactLists.length > 0) {
+      this.formatMoment(this.orderData.docdate);
       this.sideNaveOpened = true;
       this.zoom = 13;
       this.lat = Number(this.orderData.contactLists[0].contactAddress.latitude);
@@ -93,6 +97,7 @@ export class OrderFormComponent implements OnInit {
       if (result) {
         this.orderData.carNo = result.carNo
         this.orderData.docdate = result.docdate
+        this.formatMoment(result.docdate);
 
         let docdate = {
           docdate: result.docdate
@@ -102,6 +107,10 @@ export class OrderFormComponent implements OnInit {
         this.location.back();
       }
     });
+  }
+
+  formatMoment(date) {
+    this.titleDate = moment(date).format("DD/MM/YYYY");
   }
 
   getMarkerData(docdate) {
@@ -183,18 +192,6 @@ export class OrderFormComponent implements OnInit {
       });
       // console.log(mIndex)
 
-      let memberShip;
-      for (let i = 0; i < item.membership.length; i++) {
-        const member = item.membership[i];
-        // console.log(member.activity)
-        if (member.activity === "shareholder") {
-          memberShip = "shareholder";
-          break;
-        } else {
-          memberShip = "delivery";
-        };
-      };
-
       if (mIndex === -1) {
         let itemList = {
           "_id": item._id,
@@ -202,7 +199,7 @@ export class OrderFormComponent implements OnInit {
           "personalInfo": item.personalInfo,
           "directContact": item.directContact,
           "contactAddress": item.contactAddress,
-          "membership": memberShip
+          "membership": item.membership
         }
 
         this.orderData.contactLists.push(itemList);

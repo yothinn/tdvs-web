@@ -5,19 +5,19 @@
 <div mat-dialog-content>
 
   <mat-form-field class="full-wsize">
+    <mat-label>เลือกวันเดินทาง</mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="data.docdate">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field class="full-wsize">
     <mat-label>เลือกรถ</mat-label>
     <mat-select [(value)]="data.carNo">
       <mat-option *ngFor="let car of cars" [value]="car.carNo">
         {{car.carNo}}
       </mat-option>
     </mat-select>
-  </mat-form-field>
-
-  <mat-form-field class="full-wsize">
-    <mat-label>เลือกวันเดินทาง</mat-label>
-    <input matInput [matDatepicker]="picker" [(ngModel)]="data.docdate">
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 
 </div>

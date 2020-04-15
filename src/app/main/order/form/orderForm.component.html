@@ -5,18 +5,26 @@
       <mat-sidenav #sidenave class="sidenav-side" mode="side" [(opened)]="sideNaveOpened" fixedInViewport="true"
         fixedTopGap="65" fixedBottomGap="0">
 
-        <div fxLayout="row" fxLayoutAlign="start center">
-
+        <div fxLayout="row wrap" fxLayoutAlign="start center">
           <div class="logo mb-24 mb-md-0" fxFlex="70" fxLayoutAlign="start center">
-            <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
-              view_list
-            </mat-icon>
-            <span class="logo-text h3" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
-              รายชื่อสมาชิก
-            </span>
+            <div fxLayout="column">
+              <div>
+                <span class="logo-text h3">วันที่: </span>
+                <span class="logo-text h5">{{titleDate}}</span>
+              </div>
+              <div>
+                <span class="logo-text h3">ผู้ส่ง: </span>
+                <span class="logo-text h5" *ngIf="orderData.carNo">{{orderData.carNo}}</span>
+                <span class="logo-text h5" *ngIf="!orderData.carNo">ไม่เลือก</span>
+              </div>
+              <div *ngIf="orderData.docno">
+                <span class="logo-text h3">เลขที่ใบสั่งงาน: </span>
+                <span class="logo-text h5">{{orderData.docno}}</span>
+              </div>
+            </div>
           </div>
-          <div fxFlex="30">
-            <button class="full-wsize" mat-raised-button color="warn" (click)="onSave()"
+          <div fxFlex="30" class="text-center">
+            <button mat-button color="warn" (click)="onSave()"
               [disabled]="!orderData.docdate">บันทึก</button>
           </div>
         </div>
@@ -38,8 +46,11 @@
                 {{contact.method}}: {{contact.value}}
               </div>
               <div>
-                ประเภท: <span class="shareholder-color" *ngIf="item.membership === 'shareholder'">ผู้ถือหุ้น</span>
-                <span class="delivery-color" *ngIf="item.membership === 'delivery'">รถธรรมธุรกิจ</span>
+                ประเภท: <span *ngFor="let itemShip of item.membership; let i = index">
+                  <span *ngIf="i > 0">, </span>
+                  <span class="shareholder-color" *ngIf="itemShip.activity === 'shareholder'">ผู้ถือหุ้น</span>
+                  <span class="delivery-color" *ngIf="itemShip.activity === 'delivery'">รถธรรมธุรกิจ</span>
+                </span>
               </div>
               <div>
                 Status: {{item.contactStatus}}
