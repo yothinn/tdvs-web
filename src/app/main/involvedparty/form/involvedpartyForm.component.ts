@@ -211,7 +211,7 @@ export class InvolvedpartyFormComponent implements OnInit {
 
     // update the rows
     this.postcodes = temp;
-    console.log(this.postcodes);
+    // console.log(this.postcodes);
   }
 
   getPosts(val) {
@@ -223,7 +223,7 @@ export class InvolvedpartyFormComponent implements OnInit {
     let district = arrValue[2].trim();
     let province = arrValue[3].trim();
 
-    let contactAddress: FormGroup = this.involvedpartyForm.controls["contactAddress"];
+    let contactAddress: FormGroup = <FormGroup> this.involvedpartyForm.controls["contactAddress"];
     contactAddress.controls["addressProvince"].setValue(
       province
     );
