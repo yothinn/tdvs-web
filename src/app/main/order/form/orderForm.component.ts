@@ -183,18 +183,6 @@ export class OrderFormComponent implements OnInit {
       });
       // console.log(mIndex)
 
-      let memberShip;
-      for (let i = 0; i < item.membership.length; i++) {
-        const member = item.membership[i];
-        // console.log(member.activity)
-        if (member.activity === "shareholder") {
-          memberShip = "shareholder";
-          break;
-        } else {
-          memberShip = "delivery";
-        };
-      };
-
       if (mIndex === -1) {
         let itemList = {
           "_id": item._id,
@@ -202,7 +190,7 @@ export class OrderFormComponent implements OnInit {
           "personalInfo": item.personalInfo,
           "directContact": item.directContact,
           "contactAddress": item.contactAddress,
-          "membership": memberShip
+          "membership": item.membership
         }
 
         this.orderData.contactLists.push(itemList);
