@@ -226,9 +226,50 @@ export class OrderFormComponent implements OnInit {
     }
   }
 
+  sendConFirm(contactListData) {
+    // console.log(contactListData)
+    for (let i = 0; i < contactListData.directContact.length; i++) {
+      const direct = contactListData.directContact[i];
+      if (direct.method === "lineUserId") {
+        let body = {
+          "to": direct.value,
+          "messages": [
+            {
+              "type": "template",
+              "altText": "this is a confirm template",
+              "template": {
+                "type": "confirm",
+                "actions": [
+                  {
+                    "type": "message",
+                    "label": "รับนัดหมาย",
+                    "text": "รับนัดหมาย วันที่: " + this.titleDate
+                  },
+                  {
+                    "type": "message",
+                    "label": "ปฏิเสธ",
+                    "text": "ปฏิเสธ วันที่: " + this.titleDate
+                  }
+                ],
+                "text": "รถธรรมธุรกิจจะเข้าไปที่หน้าบ้านของคุณเพื่อบริการในวันที่: " + this.titleDate + " คุณสะดวกรับบริการจากเราใช่หรือไม่?"
+              }
+            }
+          ]
+        };
+        // console.log(body)
+        this.orderService.sendConFirmData(body).then((res)=>{
+          // console.log(res)
+        });
+
+      };
+    };
+
+  }
+
   onChangeStatus(status, i) {
     if (status === "sendLine") {
       this.orderData.contactLists[i].contactStatus = "waitapprove";
+      this.sendConFirm(this.orderData.contactLists[i]);
       this.findOnMap(this.orderData.contactLists[i], "W");
     };
     if (status === "confirm") {
