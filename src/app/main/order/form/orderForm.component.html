@@ -38,8 +38,11 @@
                 {{contact.method}}: {{contact.value}}
               </div>
               <div>
-                ประเภท: <span class="shareholder-color" *ngIf="item.membership === 'shareholder'">ผู้ถือหุ้น</span>
-                <span class="delivery-color" *ngIf="item.membership === 'delivery'">รถธรรมธุรกิจ</span>
+                ประเภท: <span *ngFor="let itemShip of item.membership; let i = index">
+                  <span *ngIf="i > 0">, </span>
+                  <span class="shareholder-color" *ngIf="itemShip.activity === 'shareholder'">ผู้ถือหุ้น</span>
+                  <span class="delivery-color" *ngIf="itemShip.activity === 'delivery'">รถธรรมธุรกิจ</span>
+                </span>
               </div>
               <div>
                 Status: {{item.contactStatus}}
