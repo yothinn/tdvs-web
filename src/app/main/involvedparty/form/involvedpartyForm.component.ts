@@ -11,17 +11,6 @@ import { locale as thai } from '../i18n/th';
 import { InvolvedpartyService } from '../services/involvedparty.service';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
-
-export interface PostCode {
-  locationcode: string,
-  district: string,
-  province: string,
-  postcode: string,
-  subdistrict: string
-}
-
 
 @Component({
   selector: 'app-involvedparty-form',
@@ -34,11 +23,8 @@ export class InvolvedpartyFormComponent implements OnInit {
   involvedpartyForm: FormGroup;
   directContact: FormArray;
   involvedpartyData: any = {};
-
-  postcodes: PostCode[] = [];
-
-  postCodeCtrl = new FormControl();
-  filteredPostCodes: Observable<PostCode[]>;
+  temp = [];
+  postcodes: any = [];
 
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
@@ -61,6 +47,7 @@ export class InvolvedpartyFormComponent implements OnInit {
 
     this.involvedpartyService.getPostcodesList().subscribe((res: any) => {
       this.postcodes = res.data;
+      this.temp = res.data;
       console.log(this.postcodes);
     })
 
@@ -69,8 +56,8 @@ export class InvolvedpartyFormComponent implements OnInit {
       : {
         personalInfo: {
           title: "",
-          firstName: "",
-          lastName: "",
+          firstNameThai: "",
+          lastNameThai: "",
           citizenId: ""
         },
         contactAddress: {
@@ -92,18 +79,6 @@ export class InvolvedpartyFormComponent implements OnInit {
       this.involvedpartyForm = this.createForm();
     }
     this.spinner.hide();
-
-    this.filteredPostCodes = this.postCodeCtrl.valueChanges
-      .pipe(
-        startWith(''),
-        map(postCode => postCode ? this._filterStates(postCode) : this.postcodes.slice())
-      );
-  }
-
-  private _filterStates(value: string): PostCode[] {
-    const filterValue = value.toLowerCase();
-
-    return this.postcodes.filter(postCode => postCode.postcode.toLowerCase().indexOf(filterValue) === 0);
   }
 
 
@@ -111,25 +86,35 @@ export class InvolvedpartyFormComponent implements OnInit {
   get formData() { return <FormArray>this.involvedpartyForm.get('directContact'); }
 
   createForm(): FormGroup {
+    let MOBILE_PATTERN = /^[0-9]{10,10}$/;
     return this.formBuilder.group({
       personalInfo: this.createPersonalInfoForm(),
       directContact: this.formBuilder.array([
         this.formBuilder.group(
           {
             method: "mobile",
-            value: ""
+            value: [
+              "",
+              [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+            ]
           }
         ),
         this.formBuilder.group(
           {
             method: "home",
-            value: ""
+            value: [
+              "",
+              [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+            ]
           }
         ),
         this.formBuilder.group(
           {
             method: "other",
-            value: ""
+            value: [
+              "",
+              [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+            ]
           }
         )
       ]),
@@ -138,27 +123,26 @@ export class InvolvedpartyFormComponent implements OnInit {
   }
 
   createPersonalInfoForm(): FormGroup {
+    let PERSONAL_CARDID_PATTERN = /^[0-9]{13,13}$/;
     return this.formBuilder.group({
-      title: [this.involvedpartyData.personalInfo.title],
-      firstName: [this.involvedpartyData.personalInfo.firstNameThai],
-      lastName: [this.involvedpartyData.personalInfo.lastNameThai],
-      citizenId: [this.involvedpartyData.personalInfo.citizenId, [
-        Validators.required,
-        Validators.pattern("^[0-9]*$"),
-        Validators.minLength(13),
-        Validators.maxLength(13)
-      ]]
+      title: [this.involvedpartyData.personalInfo.title, Validators.required],
+      firstNameThai: [this.involvedpartyData.personalInfo.firstNameThai, Validators.required],
+      lastNameThai: [this.involvedpartyData.personalInfo.lastNameThai, Validators.required],
+      citizenId: [this.involvedpartyData.personalInfo.citizenId,
+      [Validators.required, Validators.pattern(PERSONAL_CARDID_PATTERN)]]
     });
   }
 
   createContactAddressForm(): FormGroup {
+    let POSTCODE_PATTERN = /^[0-9]{5,5}$/;
     return this.formBuilder.group({
-      addressLine1: [this.involvedpartyData.contactAddress.addressLine1],
-      addressStreet: [this.involvedpartyData.contactAddress.addressStreet],
-      addressSubDistrict: [this.involvedpartyData.contactAddress.addressSubDistrict],
-      addressDistrict: [this.involvedpartyData.contactAddress.addressDistrict],
-      addressProvince: [this.involvedpartyData.contactAddress.addressProvince],
-      addressPostalCode: [this.involvedpartyData.contactAddress.addressPostalCode],
+      addressLine1: [this.involvedpartyData.contactAddress.addressLine1, Validators.required],
+      addressStreet: [this.involvedpartyData.contactAddress.addressStreet, Validators.required],
+      addressSubDistrict: [this.involvedpartyData.contactAddress.addressSubDistrict, Validators.required],
+      addressDistrict: [this.involvedpartyData.contactAddress.addressDistrict, Validators.required],
+      addressProvince: [this.involvedpartyData.contactAddress.addressProvince, Validators.required],
+      addressPostalCode: [this.involvedpartyData.contactAddress.addressPostalCode,
+      [Validators.required, , Validators.pattern(POSTCODE_PATTERN)]],
     });
   }
 
@@ -212,8 +196,44 @@ export class InvolvedpartyFormComponent implements OnInit {
     }
   }
 
-  formControl(){
+  formControl() {
     return (this.involvedpartyForm.get('directContact') as FormArray).controls;
+  }
+
+  updateFilter(event) {
+    //change search keyword to lower case
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.postcode.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.postcodes = temp;
+    // console.log(this.postcodes);
+  }
+
+  getPosts(val) {
+
+    //12150 | บึงคำพร้อย | อำเภอลำลูกกา | ปทุมธานี
+    let viewValue = val.viewValue;
+    let arrValue = val.viewValue.split("|");
+    let subdistrict = arrValue[1].trim();
+    let district = arrValue[2].trim();
+    let province = arrValue[3].trim();
+
+    let contactAddress: FormGroup = <FormGroup> this.involvedpartyForm.controls["contactAddress"];
+    contactAddress.controls["addressProvince"].setValue(
+      province
+    );
+    contactAddress.controls["addressDistrict"].setValue(
+      district
+    );
+    contactAddress.controls["addressSubDistrict"].setValue(
+      subdistrict
+    );
+
   }
 
 }
