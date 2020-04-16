@@ -53,16 +53,25 @@
                 </span>
               </div>
               <div>
-                Status: {{item.contactStatus}}
+                Status: <span *ngIf="item.contactStatus === 'waitapprove'">รอตอบกลับ</span>
+                <span *ngIf="item.contactStatus === 'confirm'">ยืนยัน</span>
+                <span *ngIf="item.contactStatus === 'reject'">ปฏิเสธ</span>
               </div>
             </div>
             <div class="mt-8">
-              <button mat-flat-button class="btn-list-status" [ngClass]="{'color-s-btn': orderData._id}"
-                (click)="onChangeStatus('sendLine', i)" [disabled]="!orderData._id">Send Line</button>
-              <button mat-flat-button class="btn-list-status" [ngClass]="{'color-c-btn': orderData._id}"
-                (click)="onChangeStatus('confirm', i)" [disabled]="!orderData._id">Confirm</button>
-              <button mat-flat-button class="btn-list-status" [ngClass]="{'color-r-btn': orderData._id}"
-                (click)="onChangeStatus('reject', i)" [disabled]="!orderData._id">Reject</button>
+              <button mat-flat-button class="btn-list-status"
+                [ngClass]="{'color-s-btn': orderData._id && item.contactStatus === 'select'}"
+                (click)="onChangeStatus('sendLine', i)"
+                [disabled]="!orderData._id || item.contactStatus === 'waitapprove' || item.contactStatus === 'confirm' || item.contactStatus === 'reject'">Send
+                Line</button>
+              <button mat-flat-button class="btn-list-status"
+                [ngClass]="{'color-c-btn': orderData._id && item.contactStatus === 'waitapprove' || item.contactStatus === 'confirm' || item.contactStatus === 'reject'}"
+                (click)="onChangeStatus('confirm', i)"
+                [disabled]="!orderData._id || item.contactStatus === 'select'">Confirm</button>
+              <button mat-flat-button class="btn-list-status"
+                [ngClass]="{'color-r-btn': orderData._id && item.contactStatus === 'waitapprove' || item.contactStatus === 'confirm' || item.contactStatus === 'reject'}"
+                (click)="onChangeStatus('reject', i)"
+                [disabled]="!orderData._id || item.contactStatus === 'select'">Reject</button>
               <button mat-flat-button color="warn" (click)="onDeleteList(i)"
                 [disabled]="item.contactStatus === 'confirm' || item.contactStatus === 'reject'">
                 <mat-icon>delete</mat-icon>
