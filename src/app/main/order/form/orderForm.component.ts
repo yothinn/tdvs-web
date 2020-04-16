@@ -30,6 +30,7 @@ export class OrderFormComponent implements OnInit {
   sideNaveOpened: Boolean;
 
   titleDate: any;
+  nameDate: any;
 
   zoom: number = 10;
   lat: number = 13.6186285;
@@ -111,6 +112,7 @@ export class OrderFormComponent implements OnInit {
 
   formatMoment(date) {
     this.titleDate = moment(date).format("DD/MM/YYYY");
+    this.nameDate = moment(date).format('dddd');
   }
 
   getMarkerData(docdate) {
@@ -243,15 +245,15 @@ export class OrderFormComponent implements OnInit {
                   {
                     "type": "message",
                     "label": "รับนัดหมาย",
-                    "text": "รับนัดหมาย วันที่: " + this.titleDate
+                    "text": "รับนัดหมาย วัน" + this.nameDate + "ที่: " + this.titleDate + " เลขเอกสาร: " + this.orderData.docno
                   },
                   {
                     "type": "message",
                     "label": "ปฏิเสธ",
-                    "text": "ปฏิเสธ วันที่: " + this.titleDate
+                    "text": "ปฏิเสธ วัน" + this.nameDate + "ที่: " + this.titleDate + " เลขเอกสาร: " + this.orderData.docno
                   }
                 ],
-                "text": "รถธรรมธุรกิจจะเข้าไปที่หน้าบ้านของคุณเพื่อบริการในวันที่: " + this.titleDate + " คุณสะดวกรับบริการจากเราใช่หรือไม่?"
+                "text": "ตามที่คุณได้ลงทะเบียนกับ รถธรรมธุรกิจ ไว้ เราจะเข้าไปที่บ้านคุณในวัน" + this.nameDate + "ที่: " + this.titleDate + " ซึ่งจะไม่สามารถระบุเวลาได้ ถ้าคุณอยู่บ้านตลอดทั้งวัน ก็สามารถกดยืนยันนัดหมายได้ แต่เราจะคิดต่อไปอีกครั้งตอนที่ออกจากบ้านก่อนหน้า ก่อนจะเดินทางไปที่บ้านคุณอีกครั้งหนึ่ง ขอบคุณครับ ธรรมธุรกิจ"
               }
             }
           ]
