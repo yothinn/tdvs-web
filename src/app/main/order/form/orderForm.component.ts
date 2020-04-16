@@ -257,7 +257,7 @@ export class OrderFormComponent implements OnInit {
           ]
         };
         // console.log(body)
-        this.orderService.sendConFirmData(body).then((res)=>{
+        this.orderService.sendConFirmData(body).then((res) => {
           // console.log(res)
         });
 
@@ -341,8 +341,8 @@ export class OrderFormComponent implements OnInit {
       this.orderService
         .updateOrderData(this.orderData._id, this.orderData)
         .then(res => {
-          // console.log(res);
-          this.location.back();
+          console.log(res);
+          // this.location.back();
         })
         .catch(err => {
           this.spinner.hide();
@@ -350,8 +350,20 @@ export class OrderFormComponent implements OnInit {
     } else {
       this.orderService
         .createOrderData(this.orderData)
-        .then(() => {
-          this.location.back();
+        .then((res) => {
+          // console.log(res)
+          let data = {
+            "_id": res._id,
+            "docno": res.docno,
+            "docdate": res.docdate,
+            "carNo": res.carNo,
+            "cusAmount": res.cusAmount,
+            "orderStatus": res.orderStatus,
+            "contactLists": res.contactLists
+          }
+          this.orderData = data;
+          // console.log(this.orderData);
+          // this.location.back();
         })
         .catch(err => {
           this.spinner.hide();

@@ -24,7 +24,8 @@
             </div>
           </div>
           <div fxFlex="30" class="text-center">
-            <button mat-button color="warn" (click)="onSave()" [disabled]="!orderData.docdate">บันทึก</button>
+            <button mat-button color="warn" (click)="onSave()" *ngIf="!orderData._id">สร้าง</button>
+            <button mat-button color="warn" (click)="onSave()" *ngIf="orderData._id">แก้ไข</button>
           </div>
         </div>
 
@@ -56,12 +57,12 @@
               </div>
             </div>
             <div class="mt-8">
-              <button mat-flat-button class="btn-list-status color-s-btn" (click)="onChangeStatus('sendLine', i)">Send
-                Line</button>
-              <button mat-flat-button class="btn-list-status color-c-btn"
-                (click)="onChangeStatus('confirm', i)">Confirm</button>
-              <button mat-flat-button class="btn-list-status color-r-btn"
-                (click)="onChangeStatus('reject', i)">Reject</button>
+              <button mat-flat-button class="btn-list-status" [ngClass]="{'color-s-btn': orderData._id}"
+                (click)="onChangeStatus('sendLine', i)" [disabled]="!orderData._id">Send Line</button>
+              <button mat-flat-button class="btn-list-status" [ngClass]="{'color-c-btn': orderData._id}"
+                (click)="onChangeStatus('confirm', i)" [disabled]="!orderData._id">Confirm</button>
+              <button mat-flat-button class="btn-list-status" [ngClass]="{'color-r-btn': orderData._id}"
+                (click)="onChangeStatus('reject', i)" [disabled]="!orderData._id">Reject</button>
               <button mat-flat-button color="warn" (click)="onDeleteList(i)"
                 [disabled]="item.contactStatus === 'confirm' || item.contactStatus === 'reject'">
                 <mat-icon>delete</mat-icon>
