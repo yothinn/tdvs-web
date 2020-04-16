@@ -30,6 +30,7 @@ export class OrderFormComponent implements OnInit {
   sideNaveOpened: Boolean;
 
   titleDate: any;
+  nameDate: any;
 
   zoom: number = 10;
   lat: number = 13.6186285;
@@ -111,6 +112,7 @@ export class OrderFormComponent implements OnInit {
 
   formatMoment(date) {
     this.titleDate = moment(date).format("DD/MM/YYYY");
+    this.nameDate = moment(date).format('dddd');
   }
 
   getMarkerData(docdate) {
@@ -226,9 +228,50 @@ export class OrderFormComponent implements OnInit {
     }
   }
 
+  sendConFirm(contactListData) {
+    // console.log(contactListData)
+    for (let i = 0; i < contactListData.directContact.length; i++) {
+      const direct = contactListData.directContact[i];
+      if (direct.method === "lineUserId") {
+        let body = {
+          "to": direct.value,
+          "messages": [
+            {
+              "type": "template",
+              "altText": "this is a confirm template",
+              "template": {
+                "type": "confirm",
+                "actions": [
+                  {
+                    "type": "message",
+                    "label": "รับนัดหมาย",
+                    "text": "รับนัดหมาย วัน" + this.nameDate + "ที่: " + this.titleDate + " เลขเอกสาร: " + this.orderData.docno
+                  },
+                  {
+                    "type": "message",
+                    "label": "ปฏิเสธ",
+                    "text": "ปฏิเสธ วัน" + this.nameDate + "ที่: " + this.titleDate + " เลขเอกสาร: " + this.orderData.docno
+                  }
+                ],
+                "text": "ตามที่คุณได้ลงทะเบียนกับ รถธรรมธุรกิจ ไว้ เราจะเข้าไปที่บ้านคุณในวัน" + this.nameDate + "ที่: " + this.titleDate + " ซึ่งจะไม่สามารถระบุเวลาได้ ถ้าคุณอยู่บ้านตลอดทั้งวัน ก็สามารถกดยืนยันนัดหมายได้ แต่เราจะคิดต่อไปอีกครั้งตอนที่ออกจากบ้านก่อนหน้า ก่อนจะเดินทางไปที่บ้านคุณอีกครั้งหนึ่ง ขอบคุณครับ ธรรมธุรกิจ"
+              }
+            }
+          ]
+        };
+        // console.log(body)
+        this.orderService.sendConFirmData(body).then((res) => {
+          // console.log(res)
+        });
+
+      };
+    };
+
+  }
+
   onChangeStatus(status, i) {
     if (status === "sendLine") {
       this.orderData.contactLists[i].contactStatus = "waitapprove";
+      this.sendConFirm(this.orderData.contactLists[i]);
       this.findOnMap(this.orderData.contactLists[i], "W");
     };
     if (status === "confirm") {
@@ -300,8 +343,8 @@ export class OrderFormComponent implements OnInit {
       this.orderService
         .updateOrderData(this.orderData._id, this.orderData)
         .then(res => {
-          // console.log(res);
-          this.location.back();
+          console.log(res);
+          // this.location.back();
         })
         .catch(err => {
           this.spinner.hide();
@@ -309,8 +352,20 @@ export class OrderFormComponent implements OnInit {
     } else {
       this.orderService
         .createOrderData(this.orderData)
-        .then(() => {
-          this.location.back();
+        .then((res) => {
+          // console.log(res)
+          let data = {
+            "_id": res._id,
+            "docno": res.docno,
+            "docdate": res.docdate,
+            "carNo": res.carNo,
+            "cusAmount": res.cusAmount,
+            "orderStatus": res.orderStatus,
+            "contactLists": res.contactLists
+          }
+          this.orderData = data;
+          // console.log(this.orderData);
+          // this.location.back();
         })
         .catch(err => {
           this.spinner.hide();
