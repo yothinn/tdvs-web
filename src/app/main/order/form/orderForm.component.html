@@ -59,11 +59,16 @@
               </div>
             </div>
             <div class="mt-8">
-              <button mat-flat-button class="btn-list-status"
-                [ngClass]="{'color-s-btn': orderData._id && item.contactStatus === 'select'}"
-                (click)="onChangeStatus('sendLine', i)"
-                [disabled]="!orderData._id || item.contactStatus === 'waitapprove' || item.contactStatus === 'confirm' || item.contactStatus === 'reject'">Send
-                Line</button>
+              <span hidden>
+                <button mat-flat-button class="btn-list-status" disabled>Send Line</button>
+              </span>
+              <span>
+                <button mat-flat-button class="btn-list-status"
+                  [ngClass]="{'color-s-btn': orderData._id && item.contactStatus === 'select'}"
+                  (click)="onChangeStatus('sendLine', i)"
+                  [disabled]="!orderData._id || item.contactStatus === 'waitapprove' || item.contactStatus === 'confirm' || item.contactStatus === 'reject'">Send
+                  Line</button>
+              </span>
               <button mat-flat-button class="btn-list-status"
                 [ngClass]="{'color-c-btn': orderData._id && item.contactStatus === 'waitapprove' || item.contactStatus === 'confirm' || item.contactStatus === 'reject'}"
                 (click)="onChangeStatus('confirm', i)"

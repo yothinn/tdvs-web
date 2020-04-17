@@ -75,6 +75,8 @@ export class OrderFormComponent implements OnInit {
 
     this.getVehicleData();
 
+    // this.orderService.setupSocketConnection();
+
   }
 
   getVehicleData() {

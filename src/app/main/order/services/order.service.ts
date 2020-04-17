@@ -8,12 +8,14 @@ const api_url = environment.apiUrl + "/api/orders/";
 const api_url_vehicle = environment.apiUrl + "/api/vehicles/";
 const api_url_markers = environment.apiUrl + "/api/ordersupdatemap/";
 const api_url_line = environment.apiUrl + "/api/chatbot/sendmessage";
+import * as io from 'socket.io-client';
 
 @Injectable({
   providedIn: "root"
 })
 export class OrderService {
   routeParams: any;
+  socket;
 
   constructor(private http: HttpClient) { }
 
@@ -35,6 +37,14 @@ export class OrderService {
       return this.getOrderDataList();
     }
   }
+
+  // setupSocketConnection() {
+  //   this.socket = io(environment.SOCKET_ENDPOINT);
+  //   this.socket.emit('my message', 'Hello there from Angular.');
+  //   this.socket.on('my broadcast', (data: string) => {
+  //     console.log(data);
+  //   });
+  // }
 
   getOrderDataList() {
     return this.http
