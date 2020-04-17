@@ -185,6 +185,10 @@
             <div class='agm-map-content'>
               <ng-content></ng-content>
             </div> -->
+            <agm-map class="map-size"  [latitude]="lat" [longitude]="lng" [zoom]="zoom"
+            [disableDefaultUI]="false" [zoomControl]="false">
+
+            </agm-map>
           </mat-tab>
 
         </mat-tab-group>

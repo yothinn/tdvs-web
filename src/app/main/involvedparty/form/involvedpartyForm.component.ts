@@ -27,6 +27,10 @@ export class InvolvedpartyFormComponent implements OnInit {
   temp = [];
   postcodes: any = [];
 
+    zoom: number = 10;
+  lat: number = 13.6186285;
+  lng: number = 100.5078163;
+
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
