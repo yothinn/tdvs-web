@@ -22,9 +22,14 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class InvolvedpartyFormComponent implements OnInit {
   involvedpartyForm: FormGroup;
   directContact: FormArray;
+  membership: FormArray;
   involvedpartyData: any = {};
   temp = [];
   postcodes: any = [];
+
+  zoom: number = 10;
+  lat: number = 13.6186285;
+  lng: number = 100.5078163;
 
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
@@ -42,13 +47,20 @@ export class InvolvedpartyFormComponent implements OnInit {
     { value: 'นาง', viewValue: 'นาง' },
     { value: 'นางสาว', viewValue: 'นางสาว' }
   ];
+  activity: Array<any> = [
+    { value: 'สมาชิก', viewValue: 'member' },
+    { value: 'รถธรรมธุรกิจ', viewValue: 'delivery' },
+    { value: 'คนขับรถธรรมธุรกิจ', viewValue: 'driver' },
+    { value: 'ผู้ถือหุ้น', viewValue: 'shareholder' },
+    { value: 'ผู้ค้า', viewValue: 'supplier' },
+  ];
 
   ngOnInit(): void {
 
     this.involvedpartyService.getPostcodesList().subscribe((res: any) => {
       this.postcodes = res.data;
       this.temp = res.data;
-      console.log(this.postcodes);
+      // console.log(this.postcodes);
     })
 
     this.involvedpartyData = this.route.snapshot.data.items
@@ -67,13 +79,20 @@ export class InvolvedpartyFormComponent implements OnInit {
           addressDistrict: "",
           addressProvince: "",
           addressPostalCode: "",
-        }
+        },
+        // membership: [
+        //   {
+        //     activity: "",
+        //     memberReference: ""
+        //   }
+        // ]
       };
 
-    if (this.involvedpartyData.directContact) {
+    if (this.involvedpartyData.directContact || this.involvedpartyData.membership) {
       console.log('case Edit');
       this.involvedpartyForm = this.editForm();
-      this.caseEditArray()
+      this.caseEditArray();
+      this.caseEditmembershipArray();
     } else {
       console.log('case New');
       this.involvedpartyForm = this.createForm();
@@ -81,9 +100,8 @@ export class InvolvedpartyFormComponent implements OnInit {
     this.spinner.hide();
   }
 
-
-
   get formData() { return <FormArray>this.involvedpartyForm.get('directContact'); }
+  get memberForm() { return <FormArray>this.involvedpartyForm.get('membership'); }
 
   createForm(): FormGroup {
     let MOBILE_PATTERN = /^[0-9]{10,10}$/;
@@ -119,6 +137,7 @@ export class InvolvedpartyFormComponent implements OnInit {
         )
       ]),
       contactAddress: this.createContactAddressForm(),
+      membership: this.formBuilder.array([this.createItem()]),
     });
   }
 
@@ -151,6 +170,7 @@ export class InvolvedpartyFormComponent implements OnInit {
       personalInfo: this.createPersonalInfoForm(),
       directContact: this.formBuilder.array([]),
       contactAddress: this.createContactAddressForm(),
+      membership: this.formBuilder.array([]),
     });
   }
   caseEditArray() {
@@ -163,6 +183,38 @@ export class InvolvedpartyFormComponent implements OnInit {
         }
       ));
     });
+  }
+
+  createItem(): FormGroup {
+    return this.formBuilder.group({
+      activity: "",
+      memberReference: ""
+    });
+  }
+
+  addItem(): void {
+    this.membership = this.involvedpartyForm.get('membership') as FormArray;
+    this.membership.push(this.formBuilder.group({
+      activity: "",
+      memberReference: ""
+    }));
+  }
+
+  caseEditmembershipArray() {
+    this.membership = this.involvedpartyForm.get('membership') as FormArray;
+    this.involvedpartyData.membership.forEach(el => {
+      this.membership.push(this.formBuilder.group(
+        {
+          activity: el.activity,
+          memberReference: el.memberReference
+        }
+      ));
+    });
+  }
+
+  deleteItem(i) {
+    this.membership = this.involvedpartyForm.get('membership') as FormArray;
+    this.membership.removeAt(i)
   }
 
   goBack() {
@@ -199,6 +251,9 @@ export class InvolvedpartyFormComponent implements OnInit {
   formControl() {
     return (this.involvedpartyForm.get('directContact') as FormArray).controls;
   }
+  memberFormControl() {
+    return (this.involvedpartyForm.get('membership') as FormArray).controls;
+  }
 
   updateFilter(event) {
     //change search keyword to lower case
@@ -223,7 +278,7 @@ export class InvolvedpartyFormComponent implements OnInit {
     let district = arrValue[2].trim();
     let province = arrValue[3].trim();
 
-    let contactAddress: FormGroup = <FormGroup> this.involvedpartyForm.controls["contactAddress"];
+    let contactAddress: FormGroup = <FormGroup>this.involvedpartyForm.controls["contactAddress"];
     contactAddress.controls["addressProvince"].setValue(
       province
     );

@@ -12,6 +12,7 @@ import { InvolvedpartyService } from './services/involvedparty.service';
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { AgmCoreModule } from '@agm/core';
 
 const routes = [
   {
@@ -65,7 +66,11 @@ const routes = [
 
     TranslateModule,
     FuseSharedModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyD2aNk7BXJ13EyVfPZXWRVqEcnfzfRVVIA'
+    })
   ],
   exports: [
     InvolvedpartyListComponent,

@@ -1,3 +1,16 @@
 .content .mat-tab-label {
   height: 64px;
 }
+.icon-del {
+  display: flex;
+  align-items: center;
+  color: orangered;
+}
+
+.icon-cursor {
+  cursor: pointer;
+}
+
+.map-size {
+  height: 100vh;
+}
