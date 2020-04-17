@@ -47,8 +47,8 @@
                     <mat-form-field appearance="outline" fxFlex>
                       <mat-label>คำนำหน้าชื่อ</mat-label>
                       <mat-select formControlName="title" name="title">
-                        <mat-option *ngFor="let itemtitle of title" [value]="itemtitle.value">
-                          {{itemtitle.viewValue}}
+                        <mat-option *ngFor="let itemt of title" [value]="itemt.viewValue">
+                          {{itemt.value}}
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
@@ -160,7 +160,11 @@
                   <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
                     appearance="outline" fxFlex="45">
                     <mat-label>Activity</mat-label>
-                    <input matInput formControlName="activity">
+                    <mat-select formControlName="activity" name="activity">
+                      <mat-option *ngFor="let item of activity" [value]="item.viewValue">
+                        {{item.value}}
+                      </mat-option>
+                    </mat-select>
                   </mat-form-field>
                   <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
                     appearance="outline" fxFlex="45">
@@ -171,8 +175,16 @@
                     <mat-icon class="icon-cursor" aria-hidden="false" (click)="deleteItem(i)">delete</mat-icon>
                   </div>
                 </div>
+                <!-- {{involvedpartyForm.value | json}} -->
               </div>
             </form>
+          </mat-tab>
+
+          <mat-tab label="map">
+            <!-- <div class='agm-map-container-inner sebm-google-map-container-inner'></div>
+            <div class='agm-map-content'>
+              <ng-content></ng-content>
+            </div> -->
           </mat-tab>
 
         </mat-tab-group>

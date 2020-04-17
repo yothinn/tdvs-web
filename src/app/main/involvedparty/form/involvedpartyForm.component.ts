@@ -43,6 +43,13 @@ export class InvolvedpartyFormComponent implements OnInit {
     { value: 'นาง', viewValue: 'นาง' },
     { value: 'นางสาว', viewValue: 'นางสาว' }
   ];
+  activity: Array<any> = [
+    { value: 'สมาชิก', viewValue: 'member' },
+    { value: 'รถธรรมธุรกิจ', viewValue: 'delivery' },
+    { value: 'คนขับรถธรรมธุรกิจ', viewValue: 'driver' },
+    { value: 'ผู้ถือหุ้น', viewValue: 'shareholder' },
+    { value: 'ผู้ค้า', viewValue: 'supplier' },
+  ];
 
   ngOnInit(): void {
 
