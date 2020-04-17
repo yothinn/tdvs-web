@@ -8,7 +8,7 @@ import { locale as english } from '../i18n/en';
 import { locale as thai } from '../i18n/th';
 
 import { OrderService } from '../services/order.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDialog } from '@angular/material';
 import { CarAndDateComponent } from '../car-and-date/car-and-date.component';
@@ -44,6 +44,7 @@ export class OrderFormComponent implements OnInit {
     private location: Location,
     private orderService: OrderService,
     private route: ActivatedRoute,
+    private router: Router,
     private spinner: NgxSpinnerService,
     public dialog: MatDialog
   ) {
@@ -253,7 +254,7 @@ export class OrderFormComponent implements OnInit {
                     "text": "ปฏิเสธ วัน" + this.nameDate + "ที่: " + this.titleDate + " เลขเอกสาร: " + this.orderData.docno
                   }
                 ],
-                "text": "ตามที่คุณได้ลงทะเบียนกับ รถธรรมธุรกิจ ไว้ เราจะเข้าไปที่บ้านคุณในวัน" + this.nameDate + "ที่: " + this.titleDate + " ซึ่งจะไม่สามารถระบุเวลาได้ ถ้าคุณอยู่บ้านตลอดทั้งวัน ก็สามารถกดยืนยันนัดหมายได้ แต่เราจะคิดต่อไปอีกครั้งตอนที่ออกจากบ้านก่อนหน้า ก่อนจะเดินทางไปที่บ้านคุณอีกครั้งหนึ่ง ขอบคุณครับ ธรรมธุรกิจ"
+                "text": "ตามที่ท่านได้ลงทะเบียนบริการกับ รถธรรมธุรกิจ ไว้ เรามีความยินดีที่จะนำสินค้า ข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวัน" + this.nameDate + "ที่: " + this.titleDate + " กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยเราจะติดต่อท่านอีกครั้งก่อนออกเดินทางไปยังที่นัดหมาย ขอบคุณครับ ธรรมธุรกิจ"
               }
             }
           ]
@@ -272,14 +273,17 @@ export class OrderFormComponent implements OnInit {
     if (status === "sendLine") {
       this.orderData.contactLists[i].contactStatus = "waitapprove";
       this.sendConFirm(this.orderData.contactLists[i]);
+      this.onSave();
       this.findOnMap(this.orderData.contactLists[i], "W");
     };
     if (status === "confirm") {
       this.orderData.contactLists[i].contactStatus = "confirm";
+      this.onSave();
       this.findOnMap(this.orderData.contactLists[i], "C");
     };
     if (status === "reject") {
       this.orderData.contactLists[i].contactStatus = "reject";
+      this.onSave();
       this.findOnMap(this.orderData.contactLists[i], "R");
     };
   }
@@ -331,19 +335,20 @@ export class OrderFormComponent implements OnInit {
 
   goBack() {
     this.spinner.show();
-    this.location.back();
+    // this.location.back();
+    this.router.navigateByUrl("/order");
   }
 
   async onSave() {
     this.spinner.show();
 
-    console.log(this.orderData)
+    // console.log(this.orderData)
 
     if (this.orderData._id) {
       this.orderService
         .updateOrderData(this.orderData._id, this.orderData)
         .then(res => {
-          console.log(res);
+          // console.log(res);
           // this.location.back();
         })
         .catch(err => {
@@ -364,6 +369,9 @@ export class OrderFormComponent implements OnInit {
             "contactLists": res.contactLists
           }
           this.orderData = data;
+          if (res._id) {
+            this.router.navigateByUrl("/order/orderForm/" + this.orderData._id);
+          }
           // console.log(this.orderData);
           // this.location.back();
         })

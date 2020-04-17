@@ -40,6 +40,7 @@ export class OrderListComponent implements OnInit {
     this.temp = this.route.snapshot.data.items.data;
     console.log(this.rows)
     this.formatMoment();
+    this.sortRows();
   }
 
   formatMoment() {
@@ -48,6 +49,10 @@ export class OrderListComponent implements OnInit {
       row.docdate = moment(row.docdate).format("DD/MM/YYYY");
       // row.docdate = moment(row.docdate).format();
     };
+  }
+
+  sortRows() {
+    this.rows.reverse();
   }
 
   addData() {
@@ -86,9 +91,9 @@ export class OrderListComponent implements OnInit {
 
     // filter our data
     const temp = this.temp.filter(function (d) {
-      return d.docno.toLowerCase().indexOf(val) !== -1 
-      || d.carNo.toLowerCase().indexOf(val) !== -1
-      || !val;
+      return d.docno.toLowerCase().indexOf(val) !== -1
+        || d.carNo.toLowerCase().indexOf(val) !== -1
+        || !val;
     });
 
     // update the rows
