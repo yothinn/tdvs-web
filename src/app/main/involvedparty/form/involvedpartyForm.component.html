@@ -140,43 +140,20 @@
                   </div>
                 </div>
 
-              </div>
-            </form>
-          </mat-tab>
-
-          <mat-tab label="membership">
-            <form [formGroup]="involvedpartyForm">
-
-              <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
-
-                <div fxLayout="row wrap" fxFlex="100">
-                  <div fxLayoutAlign="start" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16 pt-20 pb-20">
-                    <button mat-flat-button color="primary" (click)="addItem()">เพิ่ม</button>
-                  </div>
-                </div>
-
                 <div fxLayout="row wrap" formArrayName="membership" fxFlex="100"
-                  *ngFor="let item of memberFormControl(); let i = index;">
-                  <!-- *ngFor="let item of involvedpartyForm.get('membership').controls; let i = index;" -->
-                  <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
-                    appearance="outline" fxFlex="45">
-                    <mat-label>Activity</mat-label>
-                    <mat-select formControlName="activity" name="activity">
-                      <mat-option *ngFor="let item of activity" [value]="item.viewValue">
-                        {{item.value}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
-                    appearance="outline" fxFlex="45">
-                    <mat-label>MemberReference</mat-label>
-                    <input matInput formControlName="memberReference">
-                  </mat-form-field>
-                  <div fxFlex="2" class="icon-del pl-20 pr-16">
-                    <mat-icon class="icon-cursor" aria-hidden="false" (click)="deleteItem(i)">delete</mat-icon>
-                  </div>
-                </div>
-                <!-- {{involvedpartyForm.value | json}} -->
+                *ngFor="let item of memberFormControl(); let i = index;">
+                <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
+                  appearance="outline" fxFlex="45">
+                  <mat-label>Activity</mat-label>
+                  <input matInput formControlName="activity">
+                </mat-form-field>
+                <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
+                  appearance="outline" fxFlex="45">
+                  <mat-label>MemberReference</mat-label>
+                  <input matInput formControlName="memberReference">
+                </mat-form-field>
+              </div>
+
               </div>
             </form>
           </mat-tab>

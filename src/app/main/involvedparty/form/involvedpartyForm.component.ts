@@ -47,20 +47,12 @@ export class InvolvedpartyFormComponent implements OnInit {
     { value: 'นาง', viewValue: 'นาง' },
     { value: 'นางสาว', viewValue: 'นางสาว' }
   ];
-  activity: Array<any> = [
-    { value: 'สมาชิก', viewValue: 'member' },
-    { value: 'รถธรรมธุรกิจ', viewValue: 'delivery' },
-    { value: 'คนขับรถธรรมธุรกิจ', viewValue: 'driver' },
-    { value: 'ผู้ถือหุ้น', viewValue: 'shareholder' },
-    { value: 'ผู้ค้า', viewValue: 'supplier' },
-  ];
 
   ngOnInit(): void {
 
     this.involvedpartyService.getPostcodesList().subscribe((res: any) => {
       this.postcodes = res.data;
       this.temp = res.data;
-      // console.log(this.postcodes);
     })
 
     this.involvedpartyData = this.route.snapshot.data.items
@@ -79,13 +71,7 @@ export class InvolvedpartyFormComponent implements OnInit {
           addressDistrict: "",
           addressProvince: "",
           addressPostalCode: "",
-        },
-        // membership: [
-        //   {
-        //     activity: "",
-        //     memberReference: ""
-        //   }
-        // ]
+        }
       };
 
     if (this.involvedpartyData.directContact || this.involvedpartyData.membership) {
@@ -122,7 +108,7 @@ export class InvolvedpartyFormComponent implements OnInit {
             method: "home",
             value: [
               "",
-              [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+              [Validators.pattern(MOBILE_PATTERN)],
             ]
           }
         ),
@@ -131,7 +117,7 @@ export class InvolvedpartyFormComponent implements OnInit {
             method: "other",
             value: [
               "",
-              [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+              [Validators.pattern(MOBILE_PATTERN)],
             ]
           }
         )
@@ -187,17 +173,9 @@ export class InvolvedpartyFormComponent implements OnInit {
 
   createItem(): FormGroup {
     return this.formBuilder.group({
-      activity: "",
-      memberReference: ""
+      activity: [{ value: "", disabled: true }],
+      memberReference: [{ value: "", disabled: true }]
     });
-  }
-
-  addItem(): void {
-    this.membership = this.involvedpartyForm.get('membership') as FormArray;
-    this.membership.push(this.formBuilder.group({
-      activity: "",
-      memberReference: ""
-    }));
   }
 
   caseEditmembershipArray() {
@@ -205,16 +183,11 @@ export class InvolvedpartyFormComponent implements OnInit {
     this.involvedpartyData.membership.forEach(el => {
       this.membership.push(this.formBuilder.group(
         {
-          activity: el.activity,
-          memberReference: el.memberReference
+          activity: [{ value: el.activity, disabled: true }],
+          memberReference: [{ value: el.memberReference, disabled: true }]
         }
       ));
     });
-  }
-
-  deleteItem(i) {
-    this.membership = this.involvedpartyForm.get('membership') as FormArray;
-    this.membership.removeAt(i)
   }
 
   goBack() {
