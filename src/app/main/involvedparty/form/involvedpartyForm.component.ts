@@ -27,7 +27,7 @@ export class InvolvedpartyFormComponent implements OnInit {
   temp = [];
   postcodes: any = [];
 
-    zoom: number = 10;
+  zoom: number = 10;
   lat: number = 13.6186285;
   lng: number = 100.5078163;
 
@@ -100,9 +100,8 @@ export class InvolvedpartyFormComponent implements OnInit {
     this.spinner.hide();
   }
 
-
-
   get formData() { return <FormArray>this.involvedpartyForm.get('directContact'); }
+  get memberForm() { return <FormArray>this.involvedpartyForm.get('membership'); }
 
   createForm(): FormGroup {
     let MOBILE_PATTERN = /^[0-9]{10,10}$/;
@@ -251,6 +250,9 @@ export class InvolvedpartyFormComponent implements OnInit {
 
   formControl() {
     return (this.involvedpartyForm.get('directContact') as FormArray).controls;
+  }
+  memberFormControl() {
+    return (this.involvedpartyForm.get('membership') as FormArray).controls;
   }
 
   updateFilter(event) {

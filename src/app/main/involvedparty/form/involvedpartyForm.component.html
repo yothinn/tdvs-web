@@ -156,7 +156,8 @@
                 </div>
 
                 <div fxLayout="row wrap" formArrayName="membership" fxFlex="100"
-                  *ngFor="let item of involvedpartyForm.get('membership').controls; let i = index;">
+                  *ngFor="let item of memberFormControl(); let i = index;">
+                  <!-- *ngFor="let item of involvedpartyForm.get('membership').controls; let i = index;" -->
                   <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
                     appearance="outline" fxFlex="45">
                     <mat-label>Activity</mat-label>
@@ -181,13 +182,8 @@
           </mat-tab>
 
           <mat-tab label="map">
-            <!-- <div class='agm-map-container-inner sebm-google-map-container-inner'></div>
-            <div class='agm-map-content'>
-              <ng-content></ng-content>
-            </div> -->
-            <agm-map class="map-size"  [latitude]="lat" [longitude]="lng" [zoom]="zoom"
-            [disableDefaultUI]="false" [zoomControl]="false">
-
+            <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false"
+              [zoomControl]="false">
             </agm-map>
           </mat-tab>
 
