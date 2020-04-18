@@ -27,7 +27,7 @@ export class OrderFormComponent implements OnInit {
   vehicleData: Array<any> = [];
   markersData: Array<any> = [];
 
-  sideNaveOpened: Boolean;
+  sideNaveOpened: Boolean = true;
 
   titleDate: any;
   nameDate: any;
@@ -65,6 +65,7 @@ export class OrderFormComponent implements OnInit {
         "contactLists": []
       };
     console.log(this.orderData);
+
     if (this.orderData.contactLists.length > 0) {
       this.formatMoment(this.orderData.docdate);
       this.sideNaveOpened = true;

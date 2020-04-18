@@ -126,8 +126,8 @@
                   [iconUrl]="markerItem.icon">
                   <agm-info-window #infoWindow>
                     <div class="h3">
-                      {{markerItem.personalInfo.titleThai}} {{markerItem.personalInfo.firstNameThai}}
-                      {{markerItem.personalInfo.lastNameThai}}
+                      {{markerItem.personalInfo ? markerItem.personalInfo.titleThai: "คุณ"}} {{markerItem.personalInfo ? markerItem.personalInfo.firstNameThai : "ไม่ระบุ"}}
+                      {{markerItem.personalInfo ? markerItem.personalInfo.lastNameThai: "ไม่ระบุ"}}
                     </div>
                     <div class="h4 mt-8">
                       {{markerItem.contactAddress.addressLine1}} {{markerItem.contactAddress.addressStreet}}
