@@ -30,7 +30,7 @@ export class InvolvedpartyService {
         return this.getInvolvedpartyData(this.routeParams.id);
       }
     } else {
-      return this.getInvolvedpartyDataList(0, 10);
+      return this.getInvolvedpartyDataList(0, 10,'');
     }
   }
 
@@ -40,10 +40,11 @@ export class InvolvedpartyService {
     });
   }
   
-  getInvolvedpartyDataList(pageNo, pageSize) {
+  getInvolvedpartyDataList(pageNo, pageSize, keyword) {
     const params = new HttpParams()
       .set("pageNo", `${pageNo + 1}`)
-      .set("size", `${pageSize}`);
+      .set("size", `${pageSize}`)
+      .set("keyword", `${keyword}`);
 
     return this.http.get(api_url, {
       headers: this.authorizationHeader(),
