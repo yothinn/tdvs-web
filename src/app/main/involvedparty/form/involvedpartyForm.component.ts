@@ -22,9 +22,14 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class InvolvedpartyFormComponent implements OnInit {
   involvedpartyForm: FormGroup;
   directContact: FormArray;
+  membership: FormArray;
   involvedpartyData: any = {};
   temp = [];
   postcodes: any = [];
+
+  zoom: number = 10;
+  lat: number = 13.6186285;
+  lng: number = 100.5078163;
 
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
@@ -48,7 +53,6 @@ export class InvolvedpartyFormComponent implements OnInit {
     this.involvedpartyService.getPostcodesList().subscribe((res: any) => {
       this.postcodes = res.data;
       this.temp = res.data;
-      console.log(this.postcodes);
     })
 
     this.involvedpartyData = this.route.snapshot.data.items
@@ -70,10 +74,11 @@ export class InvolvedpartyFormComponent implements OnInit {
         }
       };
 
-    if (this.involvedpartyData.directContact) {
+    if (this.involvedpartyData.directContact || this.involvedpartyData.membership) {
       console.log('case Edit');
       this.involvedpartyForm = this.editForm();
-      this.caseEditArray()
+      this.caseEditArray();
+      this.caseEditmembershipArray();
     } else {
       console.log('case New');
       this.involvedpartyForm = this.createForm();
@@ -81,9 +86,8 @@ export class InvolvedpartyFormComponent implements OnInit {
     this.spinner.hide();
   }
 
-
-
   get formData() { return <FormArray>this.involvedpartyForm.get('directContact'); }
+  get memberForm() { return <FormArray>this.involvedpartyForm.get('membership'); }
 
   createForm(): FormGroup {
     let MOBILE_PATTERN = /^[0-9]{10,10}$/;
@@ -104,7 +108,7 @@ export class InvolvedpartyFormComponent implements OnInit {
             method: "home",
             value: [
               "",
-              [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+              [Validators.pattern(MOBILE_PATTERN)],
             ]
           }
         ),
@@ -113,12 +117,13 @@ export class InvolvedpartyFormComponent implements OnInit {
             method: "other",
             value: [
               "",
-              [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+              [Validators.pattern(MOBILE_PATTERN)],
             ]
           }
         )
       ]),
       contactAddress: this.createContactAddressForm(),
+      membership: this.formBuilder.array([this.createItem()]),
     });
   }
 
@@ -151,6 +156,7 @@ export class InvolvedpartyFormComponent implements OnInit {
       personalInfo: this.createPersonalInfoForm(),
       directContact: this.formBuilder.array([]),
       contactAddress: this.createContactAddressForm(),
+      membership: this.formBuilder.array([]),
     });
   }
   caseEditArray() {
@@ -160,6 +166,25 @@ export class InvolvedpartyFormComponent implements OnInit {
         {
           method: el.method,
           value: el.value
+        }
+      ));
+    });
+  }
+
+  createItem(): FormGroup {
+    return this.formBuilder.group({
+      activity: [{ value: "", disabled: true }],
+      memberReference: [{ value: "", disabled: true }]
+    });
+  }
+
+  caseEditmembershipArray() {
+    this.membership = this.involvedpartyForm.get('membership') as FormArray;
+    this.involvedpartyData.membership.forEach(el => {
+      this.membership.push(this.formBuilder.group(
+        {
+          activity: [{ value: el.activity, disabled: true }],
+          memberReference: [{ value: el.memberReference, disabled: true }]
         }
       ));
     });
@@ -199,6 +224,9 @@ export class InvolvedpartyFormComponent implements OnInit {
   formControl() {
     return (this.involvedpartyForm.get('directContact') as FormArray).controls;
   }
+  memberFormControl() {
+    return (this.involvedpartyForm.get('membership') as FormArray).controls;
+  }
 
   updateFilter(event) {
     //change search keyword to lower case
@@ -223,7 +251,7 @@ export class InvolvedpartyFormComponent implements OnInit {
     let district = arrValue[2].trim();
     let province = arrValue[3].trim();
 
-    let contactAddress: FormGroup = <FormGroup> this.involvedpartyForm.controls["contactAddress"];
+    let contactAddress: FormGroup = <FormGroup>this.involvedpartyForm.controls["contactAddress"];
     contactAddress.controls["addressProvince"].setValue(
       province
     );

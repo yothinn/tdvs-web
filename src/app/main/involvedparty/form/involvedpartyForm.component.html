@@ -36,6 +36,7 @@
       <!-- CONTENT -->
       <div class="content">
         <mat-tab-group fxFlex>
+
           <mat-tab label="involvedparty">
             <form [formGroup]="involvedpartyForm">
 
@@ -46,8 +47,8 @@
                     <mat-form-field appearance="outline" fxFlex>
                       <mat-label>คำนำหน้าชื่อ</mat-label>
                       <mat-select formControlName="title" name="title">
-                        <mat-option *ngFor="let itemtitle of title" [value]="itemtitle.value">
-                          {{itemtitle.viewValue}}
+                        <mat-option *ngFor="let itemt of title" [value]="itemt.viewValue">
+                          {{itemt.value}}
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
@@ -87,7 +88,6 @@
                   </mat-form-field>
                 </div>
 
-
                 <div fxLayout="row wrap" formGroupName="contactAddress" fxFlex="100">
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
@@ -102,17 +102,6 @@
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
-
-                    <!-- <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>รหัสไปรษณี</mat-label>
-                      <input matInput [matAutocomplete]="auto" [formControl]="postCodeCtrl">
-                      <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let postCode of filteredPostCodes | async" [value]="postCode.postcode">
-                          <span>{{postCode.postcode}}</span> | <span>{{postCode.subdistrict}}</span> | <span>{{postCode.district}}</span> | <span>{{postCode.province}}</span>
-                        </mat-option>
-                      </mat-autocomplete>
-                    </mat-form-field> -->
-
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>รหัสไปรษณี</mat-label>
                       <input matInput maxlength="5" minlength="5" formControlName="addressPostalCode"
@@ -151,8 +140,28 @@
                   </div>
                 </div>
 
+                <div fxLayout="row wrap" formArrayName="membership" fxFlex="100"
+                *ngFor="let item of memberFormControl(); let i = index;">
+                <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
+                  appearance="outline" fxFlex="45">
+                  <mat-label>Activity</mat-label>
+                  <input matInput formControlName="activity">
+                </mat-form-field>
+                <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
+                  appearance="outline" fxFlex="45">
+                  <mat-label>MemberReference</mat-label>
+                  <input matInput formControlName="memberReference">
+                </mat-form-field>
+              </div>
+
               </div>
             </form>
+          </mat-tab>
+
+          <mat-tab label="map">
+            <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false"
+              [zoomControl]="false">
+            </agm-map>
           </mat-tab>
 
         </mat-tab-group>

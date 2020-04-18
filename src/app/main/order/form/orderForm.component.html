@@ -24,8 +24,8 @@
             </div>
           </div>
           <div fxFlex="30" class="text-center">
-            <button mat-button color="warn" (click)="onSave()"
-              [disabled]="!orderData.docdate">บันทึก</button>
+            <button mat-button color="warn" (click)="onSave()" *ngIf="!orderData._id">สร้าง</button>
+            <button mat-button color="warn" (click)="onSave()" *ngIf="orderData._id">แก้ไข</button>
           </div>
         </div>
 
@@ -53,16 +53,30 @@
                 </span>
               </div>
               <div>
-                Status: {{item.contactStatus}}
+                Status: <span *ngIf="item.contactStatus === 'waitapprove'">รอตอบกลับ</span>
+                <span *ngIf="item.contactStatus === 'confirm'">ยืนยัน</span>
+                <span *ngIf="item.contactStatus === 'reject'">ปฏิเสธ</span>
               </div>
             </div>
             <div class="mt-8">
-              <button mat-flat-button class="btn-list-status color-s-btn" (click)="onChangeStatus('sendLine', i)">Send
-                Line</button>
-              <button mat-flat-button class="btn-list-status color-c-btn"
-                (click)="onChangeStatus('confirm', i)">Confirm</button>
-              <button mat-flat-button class="btn-list-status color-r-btn"
-                (click)="onChangeStatus('reject', i)">Reject</button>
+              <span hidden>
+                <button mat-flat-button class="btn-list-status" disabled>Send Line</button>
+              </span>
+              <span>
+                <button mat-flat-button class="btn-list-status"
+                  [ngClass]="{'color-s-btn': orderData._id && item.contactStatus === 'select'}"
+                  (click)="onChangeStatus('sendLine', i)"
+                  [disabled]="!orderData._id || item.contactStatus === 'waitapprove' || item.contactStatus === 'confirm' || item.contactStatus === 'reject'">Send
+                  Line</button>
+              </span>
+              <button mat-flat-button class="btn-list-status"
+                [ngClass]="{'color-c-btn': orderData._id && item.contactStatus === 'waitapprove' || item.contactStatus === 'confirm' || item.contactStatus === 'reject'}"
+                (click)="onChangeStatus('confirm', i)"
+                [disabled]="!orderData._id || item.contactStatus === 'select'">Confirm</button>
+              <button mat-flat-button class="btn-list-status"
+                [ngClass]="{'color-r-btn': orderData._id && item.contactStatus === 'waitapprove' || item.contactStatus === 'confirm' || item.contactStatus === 'reject'}"
+                (click)="onChangeStatus('reject', i)"
+                [disabled]="!orderData._id || item.contactStatus === 'select'">Reject</button>
               <button mat-flat-button color="warn" (click)="onDeleteList(i)"
                 [disabled]="item.contactStatus === 'confirm' || item.contactStatus === 'reject'">
                 <mat-icon>delete</mat-icon>
@@ -103,33 +117,39 @@
         <agm-map class="map-size" (mapClick)="closeInfo()" [latitude]="lat" [longitude]="lng" [zoom]="zoom"
           [disableDefaultUI]="false" [zoomControl]="false">
 
-          <agm-marker *ngFor="let markerItem of markersData; let i = index"
-            (markerClick)="clickedInfoWindow(infoWindow)" [latitude]="markerItem.contactAddress.latitude"
-            [longitude]="markerItem.contactAddress.longitude" [iconUrl]="markerItem.icon">
+          <div *ngFor="let markerItem of markersData; let i = index">
+            <div *ngIf="markerItem && markerItem.contactAddress">
+              <div *ngIf="markerItem.contactAddress.longitude || markerItem.contactAddress.latitude">
 
-            <agm-info-window #infoWindow>
-              <div class="h3">
-                {{markerItem.personalInfo.titleThai}} {{markerItem.personalInfo.firstNameThai}}
-                {{markerItem.personalInfo.lastNameThai}}
-              </div>
-              <div class="h4 mt-8">
-                {{markerItem.contactAddress.addressLine1}} {{markerItem.contactAddress.addressStreet}}
-                {{markerItem.contactAddress.addressSubDistrict}} {{markerItem.contactAddress.addressDistrict}}
-              </div>
-              <div class="h4">
-                {{markerItem.contactAddress.addressProvince}} {{markerItem.contactAddress.addressPostalCode}}
-              </div>
-              <div class="mt-8 text-right">
-                <button mat-flat-button color="primary" *ngIf="markerItem.contactStatus === ''"
-                  (click)="clickedMarker(markerItem, i)">เลือก</button>
-                <div *ngIf="markerItem.contactStatus !== ''">
-                  ดำเนินการแล้วที่เอกสาร<span *ngIf="markerItem.docno === orderData.docno">นี้</span>
-                  <span *ngIf="markerItem.docno !== orderData.docno"> {{markerItem.docno}}</span>
-                </div>
-              </div>
-            </agm-info-window>
+                <agm-marker (markerClick)="clickedInfoWindow(infoWindow)"
+                  [latitude]="markerItem.contactAddress.latitude" [longitude]="markerItem.contactAddress.longitude"
+                  [iconUrl]="markerItem.icon">
+                  <agm-info-window #infoWindow>
+                    <div class="h3">
+                      {{markerItem.personalInfo.titleThai}} {{markerItem.personalInfo.firstNameThai}}
+                      {{markerItem.personalInfo.lastNameThai}}
+                    </div>
+                    <div class="h4 mt-8">
+                      {{markerItem.contactAddress.addressLine1}} {{markerItem.contactAddress.addressStreet}}
+                      {{markerItem.contactAddress.addressSubDistrict}} {{markerItem.contactAddress.addressDistrict}}
+                    </div>
+                    <div class="h4">
+                      {{markerItem.contactAddress.addressProvince}} {{markerItem.contactAddress.addressPostalCode}}
+                    </div>
+                    <div class="mt-8 text-right">
+                      <button mat-flat-button color="primary" *ngIf="markerItem.contactStatus === ''"
+                        (click)="clickedMarker(markerItem, i)">เลือก</button>
+                      <div *ngIf="markerItem.contactStatus !== ''">
+                        ดำเนินการแล้วที่เอกสาร<span *ngIf="markerItem.docno === orderData.docno">นี้</span>
+                        <span *ngIf="markerItem.docno !== orderData.docno"> {{markerItem.docno}}</span>
+                      </div>
+                    </div>
+                  </agm-info-window>
+                </agm-marker>
 
-          </agm-marker>
+              </div>
+            </div>
+          </div>
 
         </agm-map>
       </mat-sidenav-content>

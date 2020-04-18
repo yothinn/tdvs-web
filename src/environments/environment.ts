@@ -4,9 +4,11 @@
 
 export const environment = {
     production: false,
-    hmr       : false,
-    appName : 'tvds-dev',
+    hmr: false,
+    appName: 'tvds-dev',
     apiUrl : 'https://casan-sevice.lamunphan.com'
+    // apiUrl: 'http://localhost:3000',
+    // SOCKET_ENDPOINT: 'http://localhost:3000'
 };
 
 /*
