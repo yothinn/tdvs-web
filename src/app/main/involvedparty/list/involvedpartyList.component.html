@@ -39,7 +39,7 @@
               [footerHeight]="64" rowHeight="auto" scrollbarH="true" [limit]="10" [rows]="rows">
               <ngx-datatable-column name="ชื่อ-นามสกุล" [flexGrow]="3">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  {{ row.personalInfo.titleThai }} {{ row.personalInfo.firstNameThai }} {{ row.personalInfo.lastNameThai }}
+                  {{ row.personalInfo ? row.personalInfo.titleThai : '' }} {{ row.personalInfo ? row.personalInfo.firstNameThai : ''}} {{ row.personalInfo ? row.personalInfo.lastNameThai : ''}}
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="ที่อยู่" [flexGrow]="5">
@@ -55,7 +55,7 @@
               </ngx-datatable-column>
               <ngx-datatable-column name="เบอร์โทรศัพท์" [flexGrow]="2.5">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  {{ row.directContact[0].value }}
+                  {{ row.directContact[0] ? row.directContact[0].value : ''}}
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column [flexGrow]="1">
