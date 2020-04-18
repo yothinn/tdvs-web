@@ -84,6 +84,7 @@ export class InvolvedpartyListComponent implements OnInit {
     this.rows = res.data;
     this.temp = res.data;
     this.page.count = res.totalCount;
+    this.page.offset = 0;
   }
 
   
