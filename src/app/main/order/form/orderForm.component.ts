@@ -27,7 +27,7 @@ export class OrderFormComponent implements OnInit {
   vehicleData: Array<any> = [];
   markersData: Array<any> = [];
 
-  sideNaveOpened: Boolean = true;
+  sideNaveOpened: Boolean = false;
 
   titleDate: any;
   nameDate: any;
@@ -119,61 +119,63 @@ export class OrderFormComponent implements OnInit {
     this.nameDate = moment(date).format('dddd');
   }
 
-  getMarkerData(docdate) {
-    this.orderService.getMarkerDataList(docdate).then((res) => {
-      this.markersData = res;
-      // console.log(this.markersData);
-      this.defaultIconMarkers();
-    });
+  async getMarkerData(docdate) {
+    // this.orderService.getMarkerDataList(docdate).then((res) => {
+    //   this.markersData = res;
+    //   // console.log(this.markersData);
+    //   this.defaultIconMarkers();
+    // });
+    this.markersData = await this.orderService.getMarkerDataList(docdate);
+    // this.defaultIconMarkers();
   }
 
-  defaultIconMarkers() {
-    let bg = ""
-    let label = ""
+  // defaultIconMarkers() {
+  //   let bg = ""
+  //   let label = ""
 
-    for (let i = 0; i < this.markersData.length; i++) {
-      const marker = this.markersData[i];
-      label = this.checkSymbolMarkersDefault(marker.contactStatus);
+  //   for (let i = 0; i < this.markersData.length; i++) {
+  //     const marker = this.markersData[i];
+  //     label = this.checkSymbolMarkersDefault(marker.contactStatus);
 
-      for (let j = 0; j < marker.membership.length; j++) {
-        const member = marker.membership[j];
-        // console.log(member.activity);
-        if (member.activity === "shareholder") {
-          bg = "167eff"; //สีน้ำเงิน
-          break;
-        } else {
-          bg = "ff2a2a"; //สีแดง
-        };
-      };
-      marker.icon = {
-        url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
-        scaledSize: {
-          width: 34,
-          height: 34
-        }
-      };
-    };
-    console.log(this.markersData);
+  //     for (let j = 0; j < marker.membership.length; j++) {
+  //       const member = marker.membership[j];
+  //       // console.log(member.activity);
+  //       if (member.activity === "shareholder") {
+  //         bg = "167eff"; //สีน้ำเงิน
+  //         break;
+  //       } else {
+  //         bg = "ff2a2a"; //สีแดง
+  //       };
+  //     };
+  //     marker.icon = {
+  //       url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
+  //       scaledSize: {
+  //         width: 34,
+  //         height: 34
+  //       }
+  //     };
+  //   };
+  //   console.log(this.markersData);
 
-  }
+  // }
 
-  checkSymbolMarkersDefault(contactStatus) {
-    if (contactStatus === "waitapprove") {
-      return "W"
-    };
-    if (contactStatus === "confirm") {
-      return "C"
-    };
-    if (contactStatus === "reject") {
-      return "R"
-    };
-    if (contactStatus === "select") {
-      return "S"
-    };
-    if (contactStatus === "") {
-      return ""
-    };
-  }
+  // checkSymbolMarkersDefault(contactStatus) {
+  //   if (contactStatus === "waitapprove") {
+  //     return "W"
+  //   };
+  //   if (contactStatus === "confirm") {
+  //     return "C"
+  //   };
+  //   if (contactStatus === "reject") {
+  //     return "R"
+  //   };
+  //   if (contactStatus === "select") {
+  //     return "S"
+  //   };
+  //   if (contactStatus === "") {
+  //     return ""
+  //   };
+  // }
 
   clickedInfoWindow(infoWindow) {
     if (this.previous_info_window == null)
