@@ -12,12 +12,19 @@ import { OrderService } from './services/order.service';
 import { CarAndDateComponent } from './car-and-date/car-and-date.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AgmCoreModule } from '@agm/core';
-import {DragDropModule} from '@angular/cdk/drag-drop'
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import { OrderPdfComponent } from './order-pdf/order-pdf.component';
 
 const routes = [
   {
     path: "orderForm/:id",
     component: OrderFormComponent,
+    resolve: { items: OrderService },
+    canActivate: [AuthenGuardService]
+  },
+  {
+    path: "orderPdf/:id",
+    component: OrderPdfComponent,
     resolve: { items: OrderService },
     canActivate: [AuthenGuardService]
   },
@@ -33,7 +40,8 @@ const routes = [
   declarations: [
     OrderListComponent,
     OrderFormComponent,
-    CarAndDateComponent
+    CarAndDateComponent,
+    OrderPdfComponent
   ],
   imports: [
     RouterModule.forChild(routes),
