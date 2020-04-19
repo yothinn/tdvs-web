@@ -13,6 +13,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDialog } from '@angular/material';
 import { CarAndDateComponent } from '../car-and-date/car-and-date.component';
 import * as moment from 'moment';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-order-form',
@@ -387,5 +388,10 @@ export class OrderFormComponent implements OnInit {
 
   }
 
+  drop(event: CdkDragDrop<any[]>) {
+    console.log(`${ event.previousIndex} to ${event.currentIndex}`);
+    moveItemInArray(this.orderData.contactLists, event.previousIndex, event.currentIndex);
+    console.log(this.orderData.contactLists);
+  }
 
 }

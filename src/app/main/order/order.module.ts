@@ -12,6 +12,7 @@ import { OrderService } from './services/order.service';
 import { CarAndDateComponent } from './car-and-date/car-and-date.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AgmCoreModule } from '@agm/core';
+import {DragDropModule} from '@angular/cdk/drag-drop'
 
 const routes = [
   {
@@ -61,6 +62,7 @@ const routes = [
     MatSliderModule,
     MatToolbarModule,
     MatSidenavModule,
+    DragDropModule,
 
     TranslateModule,
     FuseSharedModule,
