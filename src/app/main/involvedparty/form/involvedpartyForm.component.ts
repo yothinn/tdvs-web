@@ -11,6 +11,7 @@ import { locale as thai } from '../i18n/th';
 import { InvolvedpartyService } from '../services/involvedparty.service';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ValidatePID } from './pid.validate';
 
 @Component({
   selector: 'app-involvedparty-form',
@@ -141,8 +142,7 @@ export class InvolvedpartyFormComponent implements OnInit {
       title: [this.involvedpartyData.personalInfo.title],
       firstNameThai: [this.involvedpartyData.personalInfo.firstNameThai, Validators.required],
       lastNameThai: [this.involvedpartyData.personalInfo.lastNameThai, Validators.required],
-      citizenId: [this.involvedpartyData.personalInfo.citizenId,
-      [Validators.pattern(PERSONAL_CARDID_PATTERN)]]
+      citizenId: [this.involvedpartyData.personalInfo.citizenId, [ValidatePID]]
     });
   }
 
@@ -155,7 +155,7 @@ export class InvolvedpartyFormComponent implements OnInit {
       addressDistrict: [this.involvedpartyData.contactAddress.addressDistrict, Validators.required],
       addressProvince: [this.involvedpartyData.contactAddress.addressProvince, Validators.required],
       addressPostalCode: [this.involvedpartyData.contactAddress.addressPostalCode,
-      [Validators.required, , Validators.pattern(POSTCODE_PATTERN)]],
+      [Validators.required, Validators.pattern(POSTCODE_PATTERN)]],
     });
   }
 
