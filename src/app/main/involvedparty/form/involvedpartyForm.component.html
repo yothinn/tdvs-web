@@ -60,12 +60,17 @@
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>ชื่อ</mat-label>
                       <input matInput formControlName="firstNameThai" name="firstNameThai">
+                      <mat-error
+                        *ngIf="involvedpartyForm.get('personalInfo').get('firstNameThai').hasError('required')">
+                        กรุณาระบุ ชื่อ</mat-error>
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="40" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>นามสกุล</mat-label>
                       <input matInput formControlName="lastNameThai" name="lastNameThai">
+                      <mat-error *ngIf="involvedpartyForm.get('personalInfo').get('lastNameThai').hasError('required')">
+                        กรุณาระบุ นามสกุล</mat-error>
                     </mat-form-field>
                   </div>
                 </div>
@@ -74,9 +79,12 @@
                   <div fxLayoutAlign="center" fxFlex="100" formGroupName="personalInfo" fxFlex.gt-xs="50"
                     class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>เลขที่บัตรประชาชน</mat-label>
+                      <mat-label>เลขที่ประจำตัวประชาชน( 13 หลัก )</mat-label>
                       <input matInput maxlength="13" minlength="13" formControlName="citizenId" name="citizenId"
-                        placeholder="(เพื่อตรวจสอบว่าเป็นผู้ถือหุ้น หรือ ไม่)">
+                        placeholder="ใช้เพื่อตรวจสอบว่าเป็นผู้ถือหุ้นหรือไม่?">
+                      <mat-error *ngIf="involvedpartyForm.get('personalInfo').get('citizenId').dirty">
+                        กรุณาระบุ เลขที่บัตรประจำตัวประชาชนของตัวท่าน
+                      </mat-error>
                     </mat-form-field>
                   </div>
 
@@ -84,24 +92,22 @@
                     *ngFor="let item of formControl(); let i = index;" fxLayoutAlign="center" fxFlex="100"
                     fxFlex.gt-xs="50" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" [formGroupName]="i" appearance="outline" fxFlex>
-                      <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ</mat-label>
+                      <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ(10 หลัก)</mat-label>
                       <mat-label *ngIf="item.value.method==='home'">เบอร์บ้าน</mat-label>
                       <mat-label *ngIf="item.value.method==='other'">เบอร์อื่น ๆ</mat-label>
-                      <input matInput maxlength="10" minlength="10" formControlName="value">
+                      <input matInput maxlength="10" minlength="10" formControlName="value" placeholder="xxx-xxx-xxxx">
+                      <!-- <mat-error *ngIf="involvedpartyForm.controls.get('directContact').controls.get('value').hasError('required')">
+                        กรุณาระบุ เบอร์โทรศัพท์มือถือของท่าน
+                      </mat-error> -->
+                      <!-- <mat-error *ngIf="involvedpartyForm.controls[formControl()].get('value').hasError('required')">
+                        กรุณาระบุ เบอร์โทรศัพท์มือถือของท่าน
+                      </mat-error> -->
+                      <!-- <mat-error *ngIf="involvedpartyForm.get('directContact').array[i].get('value').dirty">
+                        เบอร์โทรศัพท์มือถือของท่านไม่ถูกต้อง
+                      </mat-error> -->
                     </mat-form-field>
                   </div>
                 </div>
-
-                <!-- <div fxLayout="row wrap" formArrayName="directContact"
-                  *ngFor="let item of formControl(); let i = index;" fxLayoutAlign="center" fxFlex="100"
-                  fxFlex.gt-xs="50" class="pl-20 pr-16">
-                  <mat-form-field class="example-full-width" [formGroupName]="i" appearance="outline" fxFlex>
-                    <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ</mat-label>
-                    <mat-label *ngIf="item.value.method==='home'">เบอร์บ้าน</mat-label>
-                    <mat-label *ngIf="item.value.method==='other'">เบอร์อื่น ๆ</mat-label>
-                    <input matInput maxlength="10" minlength="10" formControlName="value">
-                  </mat-form-field>
-                </div> -->
 
                 <div class="pl-20 pr-16 h1 pb-20">
                   <mat-label>ที่อยู่</mat-label>
@@ -112,12 +118,20 @@
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>บ้านเลขที่</mat-label>
                       <input matInput formControlName="addressLine1" name="addressLine1">
+                      <mat-error
+                        *ngIf="involvedpartyForm.get('contactAddress').get('addressLine1').hasError('required')">
+                        กรุณาระบุ บ้านเลขที่/หมู่บ้าน
+                      </mat-error>
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>ถนน</mat-label>
                       <input matInput formControlName="addressStreet" name="addressStreet">
+                      <mat-error
+                        *ngIf="involvedpartyForm.get('contactAddress').get('addressStreet').hasError('required')">
+                        กรุณาระบุ ถนน
+                      </mat-error>
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
@@ -133,6 +147,10 @@
                           <small>{{postcode.province}}</small>
                         </mat-option>
                       </mat-autocomplete>
+                      <mat-error
+                        *ngIf="involvedpartyForm.get('contactAddress').get('addressPostalCode').hasError('required') || involvedpartyForm.get('contactAddress').dirty">
+                        กรุณาระบุ รหัสไปรษณีย์
+                      </mat-error>
                     </mat-form-field>
                   </div>
                 </div>
@@ -142,18 +160,30 @@
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>ตำบล/แขวง</mat-label>
                       <input matInput formControlName="addressSubDistrict" name="addressSubDistrict">
+                      <mat-error
+                        *ngIf="involvedpartyForm.get('contactAddress').get('addressSubDistrict').hasError('required')">
+                        กรุณาระบุ ตำบล/แขวง
+                      </mat-error>
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>อำเภอ/เขต</mat-label>
                       <input matInput formControlName="addressDistrict" name="addressDistrict">
+                      <mat-error
+                        *ngIf="involvedpartyForm.get('contactAddress').get('addressDistrict').hasError('required')">
+                        กรุณาระบุ อำเภอ/เขต
+                      </mat-error>
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>จังหวัด</mat-label>
                       <input matInput formControlName="addressProvince" name="addressProvince">
+                      <mat-error
+                        *ngIf="involvedpartyForm.get('contactAddress').get('addressProvince').hasError('required')">
+                        กรุณาระบุ จังหวัด
+                      </mat-error>
                     </mat-form-field>
                   </div>
                 </div>
