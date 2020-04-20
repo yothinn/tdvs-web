@@ -48,12 +48,13 @@ export class InvolvedpartyFormComponent implements OnInit {
     { value: 'นาง', viewValue: 'นาง' },
     { value: 'นางสาว', viewValue: 'นางสาว' }
   ];
+
   activity: Array<any> = [
     { value: 'สมาชิก', viewValue: 'member' },
     { value: 'รถธรรมธุรกิจ', viewValue: 'delivery' },
     { value: 'คนขับรถธรรมธุรกิจ', viewValue: 'driver' },
     { value: 'ผู้ถือหุ้น', viewValue: 'shareholder' },
-    { value: 'ผู้ค้า', viewValue: 'supplier' },
+    { value: 'ผู้ค้า', viewValue: 'supplier' }
   ];
 
   ngOnInit(): void {
@@ -61,7 +62,6 @@ export class InvolvedpartyFormComponent implements OnInit {
     this.involvedpartyService.getPostcodesList().subscribe((res: any) => {
       this.postcodes = res.data;
       this.temp = res.data;
-      // console.log(this.postcodes);
     })
 
     this.involvedpartyData = this.route.snapshot.data.items
@@ -80,13 +80,7 @@ export class InvolvedpartyFormComponent implements OnInit {
           addressDistrict: "",
           addressProvince: "",
           addressPostalCode: "",
-        },
-        // membership: [
-        //   {
-        //     activity: "",
-        //     memberReference: ""
-        //   }
-        // ]
+        }
       };
 
     if (this.involvedpartyData.directContact || this.involvedpartyData.membership) {
@@ -101,9 +95,8 @@ export class InvolvedpartyFormComponent implements OnInit {
     this.spinner.hide();
   }
 
-
-
   get formData() { return <FormArray>this.involvedpartyForm.get('directContact'); }
+  get memberForm() { return <FormArray>this.involvedpartyForm.get('membership'); }
 
   createForm(): FormGroup {
     let MOBILE_PATTERN = /^[0-9]{10,10}$/;
@@ -124,7 +117,7 @@ export class InvolvedpartyFormComponent implements OnInit {
             method: "home",
             value: [
               "",
-              [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+              [Validators.pattern(MOBILE_PATTERN)],
             ]
           }
         ),
@@ -133,7 +126,7 @@ export class InvolvedpartyFormComponent implements OnInit {
             method: "other",
             value: [
               "",
-              [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+              [Validators.pattern(MOBILE_PATTERN)],
             ]
           }
         )
@@ -146,11 +139,11 @@ export class InvolvedpartyFormComponent implements OnInit {
   createPersonalInfoForm(): FormGroup {
     let PERSONAL_CARDID_PATTERN = /^[0-9]{13,13}$/;
     return this.formBuilder.group({
-      title: [this.involvedpartyData.personalInfo.title, Validators.required],
+      title: [this.involvedpartyData.personalInfo.title],
       firstNameThai: [this.involvedpartyData.personalInfo.firstNameThai, Validators.required],
       lastNameThai: [this.involvedpartyData.personalInfo.lastNameThai, Validators.required],
       citizenId: [this.involvedpartyData.personalInfo.citizenId,
-      [Validators.required, Validators.pattern(PERSONAL_CARDID_PATTERN)]]
+      [Validators.pattern(PERSONAL_CARDID_PATTERN)]]
     });
   }
 
@@ -191,15 +184,9 @@ export class InvolvedpartyFormComponent implements OnInit {
     return this.formBuilder.group({
       activity: "",
       memberReference: ""
+      // activity: [{ value: "", disabled: true }],
+      // memberReference: [{ value: "", disabled: true }]
     });
-  }
-
-  addItem(): void {
-    this.membership = this.involvedpartyForm.get('membership') as FormArray;
-    this.membership.push(this.formBuilder.group({
-      activity: "",
-      memberReference: ""
-    }));
   }
 
   caseEditmembershipArray() {
@@ -209,6 +196,8 @@ export class InvolvedpartyFormComponent implements OnInit {
         {
           activity: el.activity,
           memberReference: el.memberReference
+          // activity: [{ value: el.activity, disabled: true }],
+          // memberReference: [{ value: el.memberReference, disabled: true }]
         }
       ));
     });
@@ -252,6 +241,9 @@ export class InvolvedpartyFormComponent implements OnInit {
 
   formControl() {
     return (this.involvedpartyForm.get('directContact') as FormArray).controls;
+  }
+  memberFormControl() {
+    return (this.involvedpartyForm.get('membership') as FormArray).controls;
   }
 
   updateFilter(event) {
