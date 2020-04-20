@@ -39,11 +39,14 @@
 
           <mat-tab label="involvedparty">
             <form [formGroup]="involvedpartyForm">
-
               <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
 
+                <div class="pl-20 pr-16 h1 pb-20 pt-20">
+                  <mat-label>ข้อมูลส่วนตัว</mat-label>
+                </div>
+
                 <div fxLayout="row wrap" formGroupName="personalInfo" fxFlex="100">
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="20" class="pl-20 pr-16">
                     <mat-form-field appearance="outline" fxFlex>
                       <mat-label>คำนำหน้าชื่อ</mat-label>
                       <mat-select formControlName="title" name="title">
@@ -53,13 +56,13 @@
                       </mat-select>
                     </mat-form-field>
                   </div>
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="37.5" class="pl-20 pr-16">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="40" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>ชื่อ</mat-label>
                       <input matInput formControlName="firstNameThai" name="firstNameThai">
                     </mat-form-field>
                   </div>
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="37.5" class="pl-20 pr-16">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="40" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>นามสกุล</mat-label>
                       <input matInput formControlName="lastNameThai" name="lastNameThai">
@@ -67,43 +70,59 @@
                   </div>
                 </div>
 
-                <div fxLayout="row wrap" formGroupName="personalInfo" fxFlex="100">
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" formGroupName="personalInfo" fxFlex.gt-xs="50"
+                    class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>เลขที่บัตรประชาชน</mat-label>
                       <input matInput maxlength="13" minlength="13" formControlName="citizenId" name="citizenId"
                         placeholder="(เพื่อตรวจสอบว่าเป็นผู้ถือหุ้น หรือ ไม่)">
                     </mat-form-field>
                   </div>
+
+                  <div fxLayout="row wrap" formArrayName="directContact"
+                    *ngFor="let item of formControl(); let i = index;" fxLayoutAlign="center" fxFlex="100"
+                    fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" [formGroupName]="i" appearance="outline" fxFlex>
+                      <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ</mat-label>
+                      <mat-label *ngIf="item.value.method==='home'">เบอร์บ้าน</mat-label>
+                      <mat-label *ngIf="item.value.method==='other'">เบอร์อื่น ๆ</mat-label>
+                      <input matInput maxlength="10" minlength="10" formControlName="value">
+                    </mat-form-field>
+                  </div>
                 </div>
 
-                <div fxLayout="row wrap" formArrayName="directContact"
+                <!-- <div fxLayout="row wrap" formArrayName="directContact"
                   *ngFor="let item of formControl(); let i = index;" fxLayoutAlign="center" fxFlex="100"
-                  fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                  fxFlex.gt-xs="50" class="pl-20 pr-16">
                   <mat-form-field class="example-full-width" [formGroupName]="i" appearance="outline" fxFlex>
                     <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ</mat-label>
                     <mat-label *ngIf="item.value.method==='home'">เบอร์บ้าน</mat-label>
                     <mat-label *ngIf="item.value.method==='other'">เบอร์อื่น ๆ</mat-label>
                     <input matInput maxlength="10" minlength="10" formControlName="value">
                   </mat-form-field>
+                </div> -->
+
+                <div class="pl-20 pr-16 h1 pb-20">
+                  <mat-label>ที่อยู่</mat-label>
                 </div>
 
                 <div fxLayout="row wrap" formGroupName="contactAddress" fxFlex="100">
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>ที่อยู่ปัจจุบันเลขที่</mat-label>
+                      <mat-label>บ้านเลขที่</mat-label>
                       <input matInput formControlName="addressLine1" name="addressLine1">
                     </mat-form-field>
                   </div>
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>ถนน</mat-label>
                       <input matInput formControlName="addressStreet" name="addressStreet">
                     </mat-form-field>
                   </div>
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>รหัสไปรษณี</mat-label>
+                      <mat-label>รหัสไปรษณีย์</mat-label>
                       <input matInput maxlength="5" minlength="5" formControlName="addressPostalCode"
                         name="addressPostalCode" (keyup)="updateFilter($event)" [matAutocomplete]="auto">
                       <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getPosts($event.option)'>
@@ -116,23 +135,22 @@
                       </mat-autocomplete>
                     </mat-form-field>
                   </div>
+                </div>
 
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
+                <div fxLayout="row wrap" formGroupName="contactAddress" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>ตำบล/แขวง</mat-label>
                       <input matInput formControlName="addressSubDistrict" name="addressSubDistrict">
                     </mat-form-field>
                   </div>
-                </div>
-
-                <div fxLayout="row wrap" formGroupName="contactAddress" fxFlex="100">
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>อำเภอ/เขต</mat-label>
                       <input matInput formControlName="addressDistrict" name="addressDistrict">
                     </mat-form-field>
                   </div>
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="25" class="pl-20 pr-16">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>จังหวัด</mat-label>
                       <input matInput formControlName="addressProvince" name="addressProvince">
@@ -140,20 +158,47 @@
                   </div>
                 </div>
 
-                <div fxLayout="row wrap" formArrayName="membership" fxFlex="100"
-                *ngFor="let item of memberFormControl(); let i = index;">
-                <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
-                  appearance="outline" fxFlex="45">
-                  <mat-label>Activity</mat-label>
-                  <input matInput formControlName="activity">
-                </mat-form-field>
-                <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
-                  appearance="outline" fxFlex="45">
-                  <mat-label>MemberReference</mat-label>
-                  <input matInput formControlName="memberReference">
-                </mat-form-field>
-              </div>
+                <!-- <div fxLayout="row wrap" formArrayName="membership" fxFlex="100"
+                  *ngFor="let item of memberFormControl(); let i = index;">
+                  <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
+                    appearance="outline" fxFlex="45">
+                    <mat-label>Activity</mat-label>
+                    <input matInput formControlName="activity">
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
+                    appearance="outline" fxFlex="45">
+                    <mat-label>MemberReference</mat-label>
+                    <input matInput formControlName="memberReference">
+                  </mat-form-field>
+                </div> -->
 
+              </div>
+            </form>
+          </mat-tab>
+
+          <mat-tab label="memberShip">
+            <form [formGroup]="involvedpartyForm">
+              <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
+
+                <div fxLayout="row wrap" formArrayName="membership" fxFlex="100"
+                  *ngFor="let item of memberFormControl(); let i = index;">
+                  <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
+                    appearance="outline" fxFlex="45">
+                    <mat-label>Activity</mat-label>
+                    <mat-select formControlName="activity" name="activity">
+                      <mat-option *ngFor="let itemt of activity" [value]="itemt.viewValue">
+                        {{itemt.value}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field class="example-full-width" class="pl-20 pr-16" [formGroupName]="i"
+                    appearance="outline" fxFlex="45">
+                    <mat-label>MemberReference</mat-label>
+                    <input matInput formControlName="memberReference">
+                  </mat-form-field>
+                </div>
+                {{involvedpartyForm.value | json}}
               </div>
             </form>
           </mat-tab>

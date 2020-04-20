@@ -48,6 +48,14 @@ export class InvolvedpartyFormComponent implements OnInit {
     { value: 'นางสาว', viewValue: 'นางสาว' }
   ];
 
+  activity: Array<any> = [
+    { value: 'สมาชิก', viewValue: 'member' },
+    { value: 'รถธรรมธุรกิจ', viewValue: 'delivery' },
+    { value: 'คนขับรถธรรมธุรกิจ', viewValue: 'driver' },
+    { value: 'ผู้ถือหุ้น', viewValue: 'shareholder' },
+    { value: 'ผู้ค้า', viewValue: 'supplier' }
+  ];
+
   ngOnInit(): void {
 
     this.involvedpartyService.getPostcodesList().subscribe((res: any) => {
@@ -130,11 +138,11 @@ export class InvolvedpartyFormComponent implements OnInit {
   createPersonalInfoForm(): FormGroup {
     let PERSONAL_CARDID_PATTERN = /^[0-9]{13,13}$/;
     return this.formBuilder.group({
-      title: [this.involvedpartyData.personalInfo.title, Validators.required],
+      title: [this.involvedpartyData.personalInfo.title],
       firstNameThai: [this.involvedpartyData.personalInfo.firstNameThai, Validators.required],
       lastNameThai: [this.involvedpartyData.personalInfo.lastNameThai, Validators.required],
       citizenId: [this.involvedpartyData.personalInfo.citizenId,
-      [Validators.required, Validators.pattern(PERSONAL_CARDID_PATTERN)]]
+      [Validators.pattern(PERSONAL_CARDID_PATTERN)]]
     });
   }
 
@@ -173,8 +181,10 @@ export class InvolvedpartyFormComponent implements OnInit {
 
   createItem(): FormGroup {
     return this.formBuilder.group({
-      activity: [{ value: "", disabled: true }],
-      memberReference: [{ value: "", disabled: true }]
+      activity: "",
+      memberReference: ""
+      // activity: [{ value: "", disabled: true }],
+      // memberReference: [{ value: "", disabled: true }]
     });
   }
 
@@ -183,11 +193,18 @@ export class InvolvedpartyFormComponent implements OnInit {
     this.involvedpartyData.membership.forEach(el => {
       this.membership.push(this.formBuilder.group(
         {
-          activity: [{ value: el.activity, disabled: true }],
-          memberReference: [{ value: el.memberReference, disabled: true }]
+          activity: el.activity,
+          memberReference: el.memberReference
+          // activity: [{ value: el.activity, disabled: true }],
+          // memberReference: [{ value: el.memberReference, disabled: true }]
         }
       ));
     });
+  }
+
+  deleteItem(i) {
+    this.membership = this.involvedpartyForm.get('membership') as FormArray;
+    this.membership.removeAt(i)
   }
 
   goBack() {
