@@ -13,7 +13,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDialog } from '@angular/material';
 import { CarAndDateComponent } from '../car-and-date/car-and-date.component';
 import * as moment from 'moment';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-order-form',
@@ -201,10 +201,27 @@ export class OrderFormComponent implements OnInit {
       });
       // console.log(mIndex)
 
+      // check memberships for lineId
+      let lineId = false;
+      for (let i = 0; i < item.directContact.length; i++) {
+        const contact = item.directContact[i];
+        if (contact.method === "lineUserId") {
+          lineId = true;
+          break;
+        }
+      };
+
+      let contactStatus;
+      if (lineId) {
+        contactStatus = "select"
+      } else {
+        contactStatus = "nolineid"
+      }
+
       if (mIndex === -1) {
         let itemList = {
           "_id": item._id,
-          "contactStatus": "select",
+          "contactStatus": contactStatus,
           "personalInfo": item.personalInfo,
           "directContact": item.directContact,
           "contactAddress": item.contactAddress,
@@ -389,7 +406,7 @@ export class OrderFormComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<any[]>) {
-    console.log(`${ event.previousIndex} to ${event.currentIndex}`);
+    console.log(`${event.previousIndex} to ${event.currentIndex}`);
     moveItemInArray(this.orderData.contactLists, event.previousIndex, event.currentIndex);
     console.log(this.orderData.contactLists);
   }
