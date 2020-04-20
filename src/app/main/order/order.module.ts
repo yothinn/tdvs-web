@@ -12,8 +12,9 @@ import { OrderService } from './services/order.service';
 import { CarAndDateComponent } from './car-and-date/car-and-date.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AgmCoreModule } from '@agm/core';
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OrderPdfComponent } from './order-pdf/order-pdf.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 const routes = [
   {
@@ -65,6 +66,7 @@ const routes = [
     MatExpansionModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    MatSnackBarModule,
 
     MatTreeModule,
     MatSliderModule,
