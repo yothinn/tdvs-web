@@ -1,21 +1,10 @@
 <div class="page-layout carded fullwidth inner-scroll">
   <div class="content">
     <mat-sidenav-container class="full-d-hsize">
-      <mat-sidenav
-        #sidenave
-        class="sidenav-side"
-        mode="side"
-        [(opened)]="sideNaveOpened"
-        fixedInViewport="true"
-        fixedTopGap="65"
-        fixedBottomGap="0"
-      >
+      <mat-sidenav #sidenave class="sidenav-side" mode="side" [(opened)]="sideNaveOpened" fixedInViewport="true"
+        fixedTopGap="65" fixedBottomGap="0">
         <div fxLayout="row wrap" fxLayoutAlign="start center">
-          <div
-            class="logo mb-24 mb-md-0"
-            fxFlex="70"
-            fxLayoutAlign="start center"
-          >
+          <div class="logo mb-24 mb-md-0" fxFlex="70" fxLayoutAlign="start center">
             <div fxLayout="column">
               <div>
                 <span class="logo-text h3">วันที่: </span>
@@ -26,9 +15,7 @@
                 <span class="logo-text h5" *ngIf="orderData.carNo">{{
                   orderData.carNo
                 }}</span>
-                <span class="logo-text h5" *ngIf="!orderData.carNo"
-                  >ไม่เลือก</span
-                >
+                <span class="logo-text h5" *ngIf="!orderData.carNo">ไม่เลือก</span>
               </div>
               <div *ngIf="orderData.docno">
                 <span class="logo-text h3">เลขที่ใบสั่งงาน: </span>
@@ -37,37 +24,21 @@
             </div>
           </div>
           <div fxFlex="30" class="text-center">
-            <button
-              mat-button
-              color="warn"
-              (click)="onSave()"
-              *ngIf="!orderData._id"
-            >
+            <button mat-button color="warn" (click)="onSave()" *ngIf="!orderData._id">
               สร้าง
             </button>
-            <button
-              mat-button
-              color="warn"
-              (click)="onSave()"
-              *ngIf="orderData._id"
-            >
+            <button mat-button color="warn" (click)="onSave()" *ngIf="orderData._id">
               แก้ไข
             </button>
           </div>
         </div>
 
         <div cdkDropList (cdkDropListDropped)="drop($event)">
-          <div
-            class="list-bg"
-            cdkDrag
-            *ngFor="let item of orderData.contactLists; let i = index"
-          >
+          <div class="list-bg" cdkDrag *ngFor="let item of orderData.contactLists; let i = index">
             <div class="list-item">
-              <div (click)="navigateByItem(item)">
+              <div class="cursor" (click)="navigateByItem(item)">
                 <div>
-                  <span fxLayoutAlign="end center"
-                    >({{ i + 1 }}/{{ orderData.contactLists.length }})</span
-                  >
+                  <span fxLayoutAlign="end center">({{ i + 1 }}/{{ orderData.contactLists.length }})</span>
                   <span fxLayoutAlign="start center">
                     ชื่อ: {{ item.personalInfo.titleThai
                     }}{{ item.personalInfo.firstNameThai }}
@@ -91,91 +62,68 @@
                   ประเภท:
                   <span *ngFor="let itemShip of item.membership; let i = index">
                     <span *ngIf="i > 0">, </span>
-                    <span
-                      class="shareholder-color"
-                      *ngIf="itemShip.activity === 'shareholder'"
-                      >ผู้ถือหุ้น</span
-                    >
-                    <span
-                      class="delivery-color"
-                      *ngIf="itemShip.activity === 'delivery'"
-                      >รถธรรมธุรกิจ</span
-                    >
+                    <span class="shareholder-color" *ngIf="itemShip.activity === 'shareholder'">ผู้ถือหุ้น</span>
+                    <span class="delivery-color" *ngIf="itemShip.activity === 'delivery'">รถธรรมธุรกิจ</span>
                   </span>
                 </div>
                 <div>
                   Status:
-                  <span *ngIf="item.contactStatus === 'waitapprove'"
-                    >รอตอบกลับ</span
-                  >
-                  <span *ngIf="item.contactStatus === 'confirm'">ยืนยัน</span>
-                  <span *ngIf="item.contactStatus === 'reject'">ปฏิเสธ</span>
+                  <span style="color: green;" *ngIf="item.contactStatus === 'select'">เลือกแล้ว, มี lineId</span>
+                  <span style="color: red;" *ngIf="item.contactStatus === 'nolineid'">เลือกแล้ว, ไม่มี LineId</span>
+                  <span style="color: green;" *ngIf="item.contactStatus === 'waitapprove'">รอตอบกลับ</span>
+                  <span style="color: blue;" *ngIf="item.contactStatus === 'confirm'">ยืนยัน</span>
+                  <span style="color: gray;" *ngIf="item.contactStatus === 'reject'">ปฏิเสธ</span>
                 </div>
               </div>
-              <div class="mt-8">
-                <span hidden>
-                  <button mat-flat-button class="btn-list-status" disabled>
-                    Send Line
-                  </button>
-                </span>
-                <span>
-                  <button
-                    mat-flat-button
-                    class="btn-list-status"
-                    [ngClass]="{
-                      'color-s-btn':
-                        orderData._id && item.contactStatus === 'select'
-                    }"
-                    (click)="onChangeStatus('sendLine', i)"
-                    [disabled]="
-                      !orderData._id ||
-                      item.contactStatus === 'waitapprove' ||
-                      item.contactStatus === 'confirm' ||
-                      item.contactStatus === 'reject'
-                    "
-                  >
-                    Send Line
-                  </button>
-                </span>
-                <button
-                  mat-flat-button
-                  class="btn-list-status"
-                  [ngClass]="{
-                    'color-c-btn':
-                      (orderData._id && item.contactStatus === 'waitapprove') ||
-                      item.contactStatus === 'confirm' ||
-                      item.contactStatus === 'reject'
-                  }"
-                  (click)="onChangeStatus('confirm', i)"
-                  [disabled]="!orderData._id || item.contactStatus === 'select'"
-                >
-                  Confirm
-                </button>
-                <button
-                  mat-flat-button
-                  class="btn-list-status"
-                  [ngClass]="{
-                    'color-r-btn':
-                      (orderData._id && item.contactStatus === 'waitapprove') ||
-                      item.contactStatus === 'confirm' ||
-                      item.contactStatus === 'reject'
-                  }"
-                  (click)="onChangeStatus('reject', i)"
-                  [disabled]="!orderData._id || item.contactStatus === 'select'"
-                >
-                  Reject
-                </button>
-                <button
-                  mat-flat-button
-                  color="warn"
-                  (click)="onDeleteList(i)"
-                  [disabled]="
+              <div class="mt-8" fxLayout="row wrap" fxLayoutAlign="start center">
+                <div fxFlex="25">
+                  <button mat-flat-button class="btn-list-status" [ngClass]="{
+                    'color-s-btn':
+                      orderData._id && item.contactStatus === 'select'
+                  }" (click)="onChangeStatus('sendLine', i)" [disabled]="
+                    !orderData._id ||
+                    item.contactStatus === 'nolineid' ||
+                    item.contactStatus === 'waitapprove' ||
                     item.contactStatus === 'confirm' ||
                     item.contactStatus === 'reject'
-                  "
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
+                  ">
+                    Send Line
+                  </button>
+                </div>
+
+                <div fxFlex="25">
+                  <button mat-flat-button class="btn-list-status" [ngClass]="{
+                    'color-c-btn':
+                      (orderData._id && item.contactStatus === 'waitapprove') ||
+                      (orderData._id && item.contactStatus === 'nolineid') || item.contactStatus === 'confirm' ||
+                      item.contactStatus === 'reject'
+                  }" (click)="onChangeStatus('confirm', i)"
+                    [disabled]="!orderData._id || item.contactStatus === 'select'">
+                    Confirm
+                  </button>
+                </div>
+
+                <div fxFlex="25">
+                  <button mat-flat-button class="btn-list-status" [ngClass]="{
+                    'color-r-btn':
+                      (orderData._id && item.contactStatus === 'waitapprove') ||
+                      (orderData._id && item.contactStatus === 'nolineid') || item.contactStatus === 'confirm' ||
+                      item.contactStatus === 'reject'
+                  }" (click)="onChangeStatus('reject', i)"
+                    [disabled]="!orderData._id || item.contactStatus === 'select'">
+                    Reject
+                  </button>
+                </div>
+
+                <div fxFlex="25">
+                  <button mat-flat-button color="warn" (click)="onDeleteList(i)" [disabled]="
+                  item.contactStatus === 'confirm' ||
+                  item.contactStatus === 'reject'
+                ">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+
               </div>
             </div>
           </div>
@@ -188,20 +136,12 @@
             <mat-icon>arrow_back</mat-icon>
           </button>
           <div *ngIf="!sideNaveOpened">
-            <button
-              mat-icon-button
-              class="btn-sort-contain"
-              (click)="sidenave.toggle()"
-            >
+            <button mat-icon-button class="btn-sort-contain" (click)="sidenave.toggle()">
               <mat-icon class="btn-size">arrow_right</mat-icon>
             </button>
           </div>
           <div *ngIf="sideNaveOpened">
-            <button
-              mat-icon-button
-              class="btn-sort-contain"
-              (click)="sidenave.toggle()"
-            >
+            <button mat-icon-button class="btn-sort-contain" (click)="sidenave.toggle()">
               <mat-icon class="btn-size">arrow_left</mat-icon>
             </button>
           </div>
@@ -216,29 +156,17 @@
           </div>
         </div>
 
-        <agm-map
-          class="map-size"
-          (mapClick)="closeInfo()"
-          [latitude]="lat"
-          [longitude]="lng"
-          [zoom]="zoom"
-          [disableDefaultUI]="false"
-          [zoomControl]="false"
-        >
+        <agm-map class="map-size" (mapClick)="closeInfo()" [latitude]="lat" [longitude]="lng" [zoom]="zoom"
+          [disableDefaultUI]="false" [zoomControl]="false">
           <div *ngFor="let markerItem of markersData; let i = index">
             <div *ngIf="markerItem && markerItem.contactAddress">
-              <div
-                *ngIf="
+              <div *ngIf="
                   markerItem.contactAddress.longitude ||
                   markerItem.contactAddress.latitude
-                "
-              >
-                <agm-marker
-                  (markerClick)="clickedInfoWindow(infoWindow)"
-                  [latitude]="markerItem.contactAddress.latitude"
-                  [longitude]="markerItem.contactAddress.longitude"
-                  [iconUrl]="markerItem.icon"
-                >
+                ">
+                <agm-marker (markerClick)="clickedInfoWindow(infoWindow)"
+                  [latitude]="markerItem.contactAddress.latitude" [longitude]="markerItem.contactAddress.longitude"
+                  [iconUrl]="markerItem.icon">
                   <agm-info-window #infoWindow>
                     <div class="h3">
                       {{
@@ -268,22 +196,14 @@
                       {{ markerItem.contactAddress.addressPostalCode }}
                     </div>
                     <div class="mt-8 text-right">
-                      <button
-                        mat-flat-button
-                        color="primary"
-                        *ngIf="markerItem.contactStatus === ''"
-                        (click)="clickedMarker(markerItem, i)"
-                      >
+                      <button mat-flat-button color="primary" *ngIf="markerItem.contactStatus === ''"
+                        (click)="clickedMarker(markerItem, i)">
                         เลือก
                       </button>
                       <div *ngIf="markerItem.contactStatus !== ''">
-                        ดำเนินการแล้วที่เอกสาร<span
-                          *ngIf="markerItem.docno === orderData.docno"
-                          >นี้</span
-                        >
+                        ดำเนินการแล้วที่เอกสาร<span *ngIf="markerItem.docno === orderData.docno">นี้</span>
                         <span *ngIf="markerItem.docno !== orderData.docno">
-                          {{ markerItem.docno }}</span
-                        >
+                          {{ markerItem.docno }}</span>
                       </div>
                     </div>
                   </agm-info-window>
