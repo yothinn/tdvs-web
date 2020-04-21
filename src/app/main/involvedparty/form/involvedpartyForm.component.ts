@@ -32,6 +32,8 @@ export class InvolvedpartyFormComponent implements OnInit {
   lng: number = 100.5078163;
 
 
+
+
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
@@ -58,7 +60,7 @@ export class InvolvedpartyFormComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    
+
     this.involvedpartyService.getPostcodesList().subscribe((res: any) => {
       this.postcodes = res.data;
       this.temp = res.data;
@@ -135,6 +137,7 @@ export class InvolvedpartyFormComponent implements OnInit {
       membership: this.formBuilder.array([this.createItem()]),
     });
   }
+
 
   createPersonalInfoForm(): FormGroup {
     let PERSONAL_CARDID_PATTERN = /^[0-9]{13,13}$/;
