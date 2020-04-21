@@ -95,16 +95,13 @@
                       <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ(10 หลัก)</mat-label>
                       <mat-label *ngIf="item.value.method==='home'">เบอร์บ้าน</mat-label>
                       <mat-label *ngIf="item.value.method==='other'">เบอร์อื่น ๆ</mat-label>
-                      <input matInput maxlength="10" minlength="10" formControlName="value" placeholder="xxx-xxx-xxxx">
-                      <!-- <mat-error *ngIf="involvedpartyForm.controls.get('directContact').controls.get('value').hasError('required')">
+                      <input matInput maxlength="10" formControlName="value" placeholder="xxx-xxx-xxxx">
+                      <mat-error *ngIf="item.controls.value.hasError('required')">
                         กรุณาระบุ เบอร์โทรศัพท์มือถือของท่าน
-                      </mat-error> -->
-                      <!-- <mat-error *ngIf="involvedpartyForm.controls[formControl()].get('value').hasError('required')">
-                        กรุณาระบุ เบอร์โทรศัพท์มือถือของท่าน
-                      </mat-error> -->
-                      <!-- <mat-error *ngIf="involvedpartyForm.get('directContact').array[i].get('value').dirty">
+                      </mat-error>
+                      <mat-error *ngIf="item.controls.value.dirty">
                         เบอร์โทรศัพท์มือถือของท่านไม่ถูกต้อง
-                      </mat-error> -->
+                      </mat-error>
                     </mat-form-field>
                   </div>
                 </div>
