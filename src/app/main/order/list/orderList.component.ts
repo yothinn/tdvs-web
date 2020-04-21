@@ -71,6 +71,7 @@ export class OrderListComponent implements OnInit {
       this.orderService.getOrderDataList().subscribe((res: any) => {
         this.rows = res.data;
         this.formatMoment();
+        this.sortRows();
         if (status === "golive") {
           console.log(resdoc);
           this.downloadAsPDF(resdoc);
@@ -84,6 +85,7 @@ export class OrderListComponent implements OnInit {
       this.orderService.getOrderDataList().subscribe((res: any) => {
         this.rows = res.data;
         this.formatMoment();
+        this.sortRows();
       });
     });
   }

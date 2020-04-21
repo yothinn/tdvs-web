@@ -73,6 +73,7 @@ export class OrderFormComponent implements OnInit {
       this.zoom = 13;
       this.lat = Number(this.orderData.contactLists[0].contactAddress.latitude);
       this.lng = Number(this.orderData.contactLists[0].contactAddress.longitude);
+      this.checkLineId();
     }
 
     this.getVehicleData();
@@ -90,6 +91,19 @@ export class OrderFormComponent implements OnInit {
       console.log(err);
       this.spinner.hide();
     })
+  }
+
+  checkLineId() {
+    for (let i = 0; i < this.orderData.contactLists.length; i++) {
+      const contactListitem = this.orderData.contactLists[i];
+      // console.log(contactListitem);
+
+      const haveLine = contactListitem.directContact.some((el) => {
+        return el.method === "lineUserId"
+      });
+      // console.log(haveLine);
+      contactListitem.haveLine = haveLine;
+    }
   }
 
   openCarAndDate(): void {
@@ -110,7 +124,7 @@ export class OrderFormComponent implements OnInit {
         };
         this.getMarkerData(docdate);
       } else {
-        this.location.back();
+        this.router.navigateByUrl("/order");
       }
     });
   }
@@ -201,31 +215,18 @@ export class OrderFormComponent implements OnInit {
       });
       // console.log(mIndex)
 
-      // check memberships for lineId
-      let lineId = false;
-      for (let i = 0; i < item.directContact.length; i++) {
-        const contact = item.directContact[i];
-        if (contact.method === "lineUserId") {
-          lineId = true;
-          break;
-        }
-      };
-
-      let contactStatus;
-      if (lineId) {
-        contactStatus = "select"
-      } else {
-        contactStatus = "nolineid"
-      }
+      this.clickedMarkerCheckLine(item);
+      console.log(item)
 
       if (mIndex === -1) {
         let itemList = {
           "_id": item._id,
-          "contactStatus": contactStatus,
+          "contactStatus": "select",
           "personalInfo": item.personalInfo,
           "directContact": item.directContact,
           "contactAddress": item.contactAddress,
-          "membership": item.membership
+          "membership": item.membership,
+          "haveLine": item.haveLine
         }
 
         this.orderData.contactLists.push(itemList);
@@ -242,6 +243,13 @@ export class OrderFormComponent implements OnInit {
         this.sideNaveOpened = true;
       };
     };
+  }
+
+  clickedMarkerCheckLine(item) {
+    const haveLine = item.directContact.some((el) => {
+      return el.method === "lineUserId"
+    });
+    item.haveLine = haveLine;
   }
 
   onDeleteList(index) {
@@ -362,7 +370,7 @@ export class OrderFormComponent implements OnInit {
     this.router.navigateByUrl("/order");
   }
 
-  async onSave() {
+  onSave() {
     this.spinner.show();
 
     // console.log(this.orderData)
@@ -392,6 +400,7 @@ export class OrderFormComponent implements OnInit {
             "contactLists": res.contactLists
           }
           this.orderData = data;
+          this.checkLineId();
           if (res._id) {
             this.router.navigateByUrl("/order/orderForm/" + this.orderData._id);
           }
