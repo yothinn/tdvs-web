@@ -31,6 +31,12 @@ import { SampleModule } from 'app/main/sample/sample.module';
 import { GlobalErrorHandler } from "./global-error-handler";
 import { ServerErrorInterceptor } from "./server-error.interceptor";
 
+
+import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
+import { environment } from 'environments/environment';
+
+const config: SocketIoConfig = { url: environment.apiUrl , options: {} };
+
 const appRoutes: Routes = [
   {
       path        : 'auth',
@@ -75,6 +81,8 @@ export const MY_FORMATS = {
     BrowserAnimationsModule,
     HttpClientModule,
     RouterModule.forRoot(appRoutes),
+
+    SocketIoModule.forRoot(config),
 
     TranslateModule.forRoot(),
 
