@@ -1,29 +1,29 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.service';
-import { fuseAnimations } from '@fuse/animations';
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
+import { fuseAnimations } from "@fuse/animations";
 
-import { Location } from '@angular/common';
+import { Location } from "@angular/common";
 
-import { locale as english } from '../i18n/en';
-import { locale as thai } from '../i18n/th';
+import { locale as english } from "../i18n/en";
+import { locale as thai } from "../i18n/th";
 
-import { OrderService } from '../services/order.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { MatDialog } from '@angular/material';
-import { CarAndDateComponent } from '../car-and-date/car-and-date.component';
-import * as moment from 'moment';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { OrderService } from "../services/order.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { NgxSpinnerService } from "ngx-spinner";
+import { MatDialog } from "@angular/material";
+import { CarAndDateComponent } from "../car-and-date/car-and-date.component";
+import * as moment from "moment";
+import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
+import { Socket } from "ng-socket-io";
 
 @Component({
-  selector: 'app-order-form',
-  templateUrl: './orderForm.component.html',
-  styleUrls: ['./orderForm.component.scss'],
+  selector: "app-order-form",
+  templateUrl: "./orderForm.component.html",
+  styleUrls: ["./orderForm.component.scss"],
   encapsulation: ViewEncapsulation.None,
-  animations: fuseAnimations
+  animations: fuseAnimations,
 })
 export class OrderFormComponent implements OnInit {
-
   orderData: any = {};
   vehicleData: Array<any> = [];
   markersData: Array<any> = [];
@@ -47,24 +47,23 @@ export class OrderFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private spinner: NgxSpinnerService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private socket: Socket
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
-
   ngOnInit(): void {
-
     this.orderData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
-        "docno": "",
-        "docdate": "",
-        "carNo": "",
-        "cusAmount": null,
-        "orderStatus": "draft",
-        "contactLists": []
-      };
+          docno: "",
+          docdate: "",
+          carNo: "",
+          cusAmount: null,
+          orderStatus: "draft",
+          contactLists: [],
+        };
     console.log(this.orderData);
 
     if (this.orderData.contactLists.length > 0) {
@@ -72,25 +71,35 @@ export class OrderFormComponent implements OnInit {
       this.sideNaveOpened = true;
       this.zoom = 13;
       this.lat = Number(this.orderData.contactLists[0].contactAddress.latitude);
-      this.lng = Number(this.orderData.contactLists[0].contactAddress.longitude);
+      this.lng = Number(
+        this.orderData.contactLists[0].contactAddress.longitude
+      );
       this.checkLineId();
     }
 
     this.getVehicleData();
 
     // this.orderService.setupSocketConnection();
-
+    this.socket.on("user-confirm-reject", (message: any) => {
+      console.log(message);
+      if(message.docno === this.orderData.docno) {
+        this.orderData = message;
+      }
+    });
   }
 
   getVehicleData() {
-    this.orderService.getVehicleData().then((res) => {
-      this.vehicleData = res;
-      this.openCarAndDate();
-      this.spinner.hide();
-    }).catch((err) => {
-      console.log(err);
-      this.spinner.hide();
-    })
+    this.orderService
+      .getVehicleData()
+      .then((res) => {
+        this.vehicleData = res;
+        this.openCarAndDate();
+        this.spinner.hide();
+      })
+      .catch((err) => {
+        console.log(err);
+        this.spinner.hide();
+      });
   }
 
   checkLineId() {
@@ -99,7 +108,7 @@ export class OrderFormComponent implements OnInit {
       // console.log(contactListitem);
 
       const haveLine = contactListitem.directContact.some((el) => {
-        return el.method === "lineUserId"
+        return el.method === "lineUserId";
       });
       // console.log(haveLine);
       contactListitem.haveLine = haveLine;
@@ -108,19 +117,23 @@ export class OrderFormComponent implements OnInit {
 
   openCarAndDate(): void {
     const dialogRef = this.dialog.open(CarAndDateComponent, {
-      width: '350px',
+      width: "350px",
       disableClose: true,
-      data: { carNo: this.orderData.carNo, docdate: this.orderData.docdate, cars: this.vehicleData }
+      data: {
+        carNo: this.orderData.carNo,
+        docdate: this.orderData.docdate,
+        cars: this.vehicleData,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.orderData.carNo = result.carNo
-        this.orderData.docdate = result.docdate
+        this.orderData.carNo = result.carNo;
+        this.orderData.docdate = result.docdate;
         this.formatMoment(result.docdate);
 
         let docdate = {
-          docdate: result.docdate
+          docdate: result.docdate,
         };
         this.getMarkerData(docdate);
       } else {
@@ -131,7 +144,7 @@ export class OrderFormComponent implements OnInit {
 
   formatMoment(date) {
     this.titleDate = moment(date).format("DD/MM/YYYY");
-    this.nameDate = moment(date).format('dddd');
+    this.nameDate = moment(date).format("dddd");
   }
 
   async getMarkerData(docdate) {
@@ -198,36 +211,36 @@ export class OrderFormComponent implements OnInit {
     else {
       this.infoWindowOpened = infoWindow;
       this.previous_info_window.close();
-    };
+    }
     this.previous_info_window = infoWindow;
   }
 
   closeInfo() {
     if (this.previous_info_window != null) {
-      this.previous_info_window.close()
+      this.previous_info_window.close();
     }
   }
 
   clickedMarker(item: any, index: number) {
     if (item.contactStatus === "") {
       let mIndex = this.orderData.contactLists.findIndex((el) => {
-        return el._id === item._id
+        return el._id === item._id;
       });
       // console.log(mIndex)
 
       this.clickedMarkerCheckLine(item);
-      console.log(item)
+      console.log(item);
 
       if (mIndex === -1) {
         let itemList = {
-          "_id": item._id,
-          "contactStatus": "select",
-          "personalInfo": item.personalInfo,
-          "directContact": item.directContact,
-          "contactAddress": item.contactAddress,
-          "membership": item.membership,
-          "haveLine": item.haveLine
-        }
+          _id: item._id,
+          contactStatus: "select",
+          personalInfo: item.personalInfo,
+          directContact: item.directContact,
+          contactAddress: item.contactAddress,
+          membership: item.membership,
+          haveLine: item.haveLine,
+        };
 
         this.orderData.contactLists.push(itemList);
         this.changeIconMarker(item, "S");
@@ -241,13 +254,13 @@ export class OrderFormComponent implements OnInit {
 
       if (this.orderData.contactLists.length > 0) {
         this.sideNaveOpened = true;
-      };
-    };
+      }
+    }
   }
 
   clickedMarkerCheckLine(item) {
     const haveLine = item.directContact.some((el) => {
-      return el.method === "lineUserId"
+      return el.method === "lineUserId";
     });
     item.haveLine = haveLine;
   }
@@ -266,38 +279,53 @@ export class OrderFormComponent implements OnInit {
       const direct = contactListData.directContact[i];
       if (direct.method === "lineUserId") {
         let body = {
-          "to": direct.value,
-          "messages": [
+          to: direct.value,
+          messages: [
             {
-              "type": "template",
-              "altText": "this is a confirm template",
-              "template": {
-                "type": "confirm",
-                "actions": [
+              type: "template",
+              altText: "this is a confirm template",
+              template: {
+                type: "confirm",
+                actions: [
                   {
-                    "type": "message",
-                    "label": "รับนัดหมาย",
-                    "text": "รับนัดหมาย วัน" + this.nameDate + "ที่: " + this.titleDate + " เลขเอกสาร: " + this.orderData.docno
+                    type: "message",
+                    label: "รับนัดหมาย",
+                    text:
+                      "รับนัดหมาย วัน" +
+                      this.nameDate +
+                      "ที่: " +
+                      this.titleDate +
+                      " เลขเอกสาร: " +
+                      this.orderData.docno,
                   },
                   {
-                    "type": "message",
-                    "label": "ปฏิเสธ",
-                    "text": "ปฏิเสธ วัน" + this.nameDate + "ที่: " + this.titleDate + " เลขเอกสาร: " + this.orderData.docno
-                  }
+                    type: "message",
+                    label: "ปฏิเสธ",
+                    text:
+                      "ปฏิเสธ วัน" +
+                      this.nameDate +
+                      "ที่: " +
+                      this.titleDate +
+                      " เลขเอกสาร: " +
+                      this.orderData.docno,
+                  },
                 ],
-                "text": "ตามที่ท่านได้ลงทะเบียนบริการกับ รถธรรมธุรกิจ ไว้ เรามีความยินดีที่จะนำสินค้า ข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวัน" + this.nameDate + "ที่: " + this.titleDate + " กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยเราจะติดต่อท่านอีกครั้งก่อนออกเดินทางไปยังที่นัดหมาย ขอบคุณครับ ธรรมธุรกิจ"
-              }
-            }
-          ]
+                text:
+                  "ตามที่ท่านได้ลงทะเบียนบริการกับ รถธรรมธุรกิจ ไว้ เรามีความยินดีที่จะนำสินค้า ข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวัน" +
+                  this.nameDate +
+                  "ที่: " +
+                  this.titleDate +
+                  " กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยเราจะติดต่อท่านอีกครั้งก่อนออกเดินทางไปยังที่นัดหมาย ขอบคุณครับ ธรรมธุรกิจ",
+              },
+            },
+          ],
         };
         // console.log(body)
         this.orderService.sendConFirmData(body).then((res) => {
           // console.log(res)
         });
-
-      };
-    };
-
+      }
+    }
   }
 
   onChangeStatus(status, i) {
@@ -306,17 +334,17 @@ export class OrderFormComponent implements OnInit {
       this.sendConFirm(this.orderData.contactLists[i]);
       this.onSave();
       this.findOnMap(this.orderData.contactLists[i], "W");
-    };
+    }
     if (status === "confirm") {
       this.orderData.contactLists[i].contactStatus = "confirm";
       this.onSave();
       this.findOnMap(this.orderData.contactLists[i], "C");
-    };
+    }
     if (status === "reject") {
       this.orderData.contactLists[i].contactStatus = "reject";
       this.onSave();
       this.findOnMap(this.orderData.contactLists[i], "R");
-    };
+    }
   }
 
   findOnMap(orderDataItem, txt) {
@@ -324,7 +352,7 @@ export class OrderFormComponent implements OnInit {
     // console.log(this.markersData)
 
     let mIndex = this.markersData.findIndex((el) => {
-      return el._id === orderDataItem._id
+      return el._id === orderDataItem._id;
     });
     // console.log(this.markersData[mIndex])
     this.changeIconMarker(this.markersData[mIndex], txt);
@@ -332,14 +360,14 @@ export class OrderFormComponent implements OnInit {
 
   changeIconMarker(markerItem, txt) {
     // console.log(markerItem)
-    let bg = ""
-    let label = txt
+    let bg = "";
+    let label = txt;
 
     //case DELETE
     if (txt === "") {
       markerItem.docno = "";
       markerItem.contactStatus = "";
-    };
+    }
 
     for (let i = 0; i < markerItem.membership.length; i++) {
       const member = markerItem.membership[i];
@@ -348,14 +376,14 @@ export class OrderFormComponent implements OnInit {
         break;
       } else {
         bg = "ff2a2a"; //สีแดง
-      };
-    };
+      }
+    }
     markerItem.icon = {
       url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
       scaledSize: {
         width: 34,
-        height: 34
-      }
+        height: 34,
+      },
     };
   }
 
@@ -378,11 +406,11 @@ export class OrderFormComponent implements OnInit {
     if (this.orderData._id) {
       this.orderService
         .updateOrderData(this.orderData._id, this.orderData)
-        .then(res => {
+        .then((res) => {
           // console.log(res);
           // this.location.back();
         })
-        .catch(err => {
+        .catch((err) => {
           this.spinner.hide();
         });
     } else {
@@ -391,14 +419,14 @@ export class OrderFormComponent implements OnInit {
         .then((res) => {
           // console.log(res)
           let data = {
-            "_id": res._id,
-            "docno": res.docno,
-            "docdate": res.docdate,
-            "carNo": res.carNo,
-            "cusAmount": res.cusAmount,
-            "orderStatus": res.orderStatus,
-            "contactLists": res.contactLists
-          }
+            _id: res._id,
+            docno: res.docno,
+            docdate: res.docdate,
+            carNo: res.carNo,
+            cusAmount: res.cusAmount,
+            orderStatus: res.orderStatus,
+            contactLists: res.contactLists,
+          };
           this.orderData = data;
           this.checkLineId();
           if (res._id) {
@@ -407,17 +435,19 @@ export class OrderFormComponent implements OnInit {
           // console.log(this.orderData);
           // this.location.back();
         })
-        .catch(err => {
+        .catch((err) => {
           this.spinner.hide();
         });
     }
-
   }
 
   drop(event: CdkDragDrop<any[]>) {
     console.log(`${event.previousIndex} to ${event.currentIndex}`);
-    moveItemInArray(this.orderData.contactLists, event.previousIndex, event.currentIndex);
+    moveItemInArray(
+      this.orderData.contactLists,
+      event.previousIndex,
+      event.currentIndex
+    );
     console.log(this.orderData.contactLists);
   }
-
 }

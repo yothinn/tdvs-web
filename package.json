@@ -50,6 +50,7 @@
     "jspdf": "^1.5.3",
     "lodash": "4.17.11",
     "moment": "^2.23.0",
+    "ng-socket-io": "^0.2.4",
     "ng2-charts": "1.6.0",
     "ngrx-store-freeze": "0.2.4",
     "ngx-color-picker": "7.3.0",
