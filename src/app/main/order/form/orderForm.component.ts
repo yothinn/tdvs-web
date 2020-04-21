@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.service';
 import { fuseAnimations } from '@fuse/animations';
@@ -47,7 +48,8 @@ export class OrderFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private spinner: NgxSpinnerService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private _snackBar: MatSnackBar
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
@@ -292,8 +294,14 @@ export class OrderFormComponent implements OnInit {
         };
         // console.log(body)
         this.orderService.sendConFirmData(body).then((res) => {
-          // console.log(res)
-        });
+          this._snackBar.open("ส่งข้อความสำเร็จ รอยืนยัน", "", {
+            duration: 5000,
+          });
+        }).catch((error) => {
+          this._snackBar.open("ส่งข้อความไม่สำเร็จ โปรดส่งใหม่", "", {
+            duration: 5000,
+          });
+        })
 
       };
     };
@@ -304,19 +312,31 @@ export class OrderFormComponent implements OnInit {
     if (status === "sendLine") {
       this.orderData.contactLists[i].contactStatus = "waitapprove";
       this.sendConFirm(this.orderData.contactLists[i]);
-      this.onSave();
+      this.onSaveStatus("w");
       this.findOnMap(this.orderData.contactLists[i], "W");
     };
     if (status === "confirm") {
       this.orderData.contactLists[i].contactStatus = "confirm";
-      this.onSave();
+      this.onSaveStatus("c");
       this.findOnMap(this.orderData.contactLists[i], "C");
     };
     if (status === "reject") {
       this.orderData.contactLists[i].contactStatus = "reject";
-      this.onSave();
+      this.onSaveStatus("r");
       this.findOnMap(this.orderData.contactLists[i], "R");
     };
+  }
+
+  onSaveStatus(txt) {
+    this.orderService.updateOrderData(this.orderData._id, this.orderData).then(res => {
+      this.orderData = res;
+
+      if (txt === "c" || txt === "r") {
+        this._snackBar.open("อัพเดทสถานะเรียบร้อย", "", {
+          duration: 7000,
+        });
+      }
+    })
   }
 
   findOnMap(orderDataItem, txt) {
@@ -379,17 +399,26 @@ export class OrderFormComponent implements OnInit {
       this.orderService
         .updateOrderData(this.orderData._id, this.orderData)
         .then(res => {
-          // console.log(res);
-          // this.location.back();
+          this.orderData = res;
+
+          this.spinner.hide();
+
+          this._snackBar.open("บันทึกแล้ว", "", {
+            duration: 7000,
+          });
         })
         .catch(err => {
           this.spinner.hide();
+          this._snackBar.open("บันทึกไม่สำเร็จ", "", {
+            duration: 7000,
+          });
         });
     } else {
       this.orderService
         .createOrderData(this.orderData)
         .then((res) => {
-          // console.log(res)
+          this.spinner.hide();
+
           let data = {
             "_id": res._id,
             "docno": res.docno,
@@ -401,7 +430,10 @@ export class OrderFormComponent implements OnInit {
           }
           this.orderData = data;
           this.checkLineId();
-          if (res._id) {
+          this._snackBar.open("สร้างเอกสารสำเร็จ", "", {
+            duration: 7000,
+          });
+          if (this.orderData._id) {
             this.router.navigateByUrl("/order/orderForm/" + this.orderData._id);
           }
           // console.log(this.orderData);
@@ -409,6 +441,9 @@ export class OrderFormComponent implements OnInit {
         })
         .catch(err => {
           this.spinner.hide();
+          this._snackBar.open("สร้างเอกสารไม่สำเร็จ โปรดลองใหม่", "", {
+            duration: 7000,
+          });
         });
     }
 
