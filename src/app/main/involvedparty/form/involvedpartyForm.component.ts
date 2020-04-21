@@ -86,6 +86,8 @@ export class InvolvedpartyFormComponent implements OnInit {
         }
       };
 
+      console.log(this.involvedpartyData);
+
     if (this.involvedpartyData.directContact || this.involvedpartyData.membership) {
       console.log('case Edit');
       this.involvedpartyForm = this.editForm();
@@ -97,6 +99,8 @@ export class InvolvedpartyFormComponent implements OnInit {
     }
     this.spinner.hide();
   }
+
+  
 
   get formData() { return <FormArray>this.involvedpartyForm.get('directContact'); }
   get memberForm() { return <FormArray>this.involvedpartyForm.get('membership'); }

@@ -239,8 +239,7 @@
           <mat-tab label="map">
             <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false"
               [zoomControl]="false">
-              <div *ngIf="involvedpartyData.contactAddress.longitude ||
-              involvedpartyData.contactAddress.latitude">
+              <div >
               <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
               </div>
             </agm-map>
