@@ -14,6 +14,7 @@ import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.
 import { navigation } from 'app/navigation/navigation';
 import { locale as navigationEnglish } from 'app/navigation/i18n/en';
 import { locale as navigationThai } from 'app/navigation/i18n/th';
+import { Socket } from 'ng-socket-io';
 
 @Component({
     selector   : 'app',
@@ -48,9 +49,27 @@ export class AppComponent implements OnInit, OnDestroy
         private _fuseSplashScreenService: FuseSplashScreenService,
         private _fuseTranslationLoaderService: FuseTranslationLoaderService,
         private _translateService: TranslateService,
-        private _platform: Platform
+        private _platform: Platform,
+        private socket: Socket,
     )
     {
+        this.socket.connect();
+
+        //รอรับข้อความ
+        this.socket.on('check-connection', (message) => {
+            console.log(message);
+        });
+
+        this.socket.on('user-confirm-reject', (message) => {
+            console.log(message);
+        });
+
+        //ส่งข้อความ
+        socket.emit('my message', 'hello socket');
+
+
+
+
         // Get default navigation
         this.navigation = navigation;
 
@@ -154,6 +173,7 @@ export class AppComponent implements OnInit, OnDestroy
 
                 this.document.body.classList.add(this.fuseConfig.colorTheme);
             });
+
     }
 
     /**
