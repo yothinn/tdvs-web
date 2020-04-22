@@ -51,9 +51,39 @@
           <div class="content">
             <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64" [footerHeight]="64"
               rowHeight="auto" scrollbarH="true" [limit]="10" [rows]="rows">
-              <ngx-datatable-column name="ชื่อ" [flexGrow]="2.5">
+              <ngx-datatable-column name="ชื่อ - นามสกุล" [flexGrow]="2.5">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  {{ row.name }}
+                  {{ row.displayName }}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="ที่อยู่" [flexGrow]="5">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                  {{
+                     row.addressLine1 
+                  }}
+                  {{
+                    row.addressSubdistric
+                      
+                  }}
+                  {{
+                    row.addressDistric
+                  }}
+                  {{
+                    row.addressProvince 
+                  }}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="รหัสไปรษณี" [flexGrow]="2.5">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                  {{
+                    row.addressPostcode
+                     
+                  }}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="เบอร์โทรศัพท์" [flexGrow]="2.5">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                  {{ row.mobileNo1 }}
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column [flexGrow]="1">
