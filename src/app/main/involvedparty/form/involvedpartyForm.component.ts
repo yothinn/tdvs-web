@@ -32,9 +32,6 @@ export class InvolvedpartyFormComponent implements OnInit {
   lat: number = 13.6186285;
   lng: number = 100.5078163;
 
-
-
-
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
@@ -88,11 +85,12 @@ export class InvolvedpartyFormComponent implements OnInit {
 
       console.log(this.involvedpartyData);
 
-    if (this.involvedpartyData.directContact || this.involvedpartyData.membership) {
+    if (this.involvedpartyData.directContact || this.involvedpartyData.membership ) {
       console.log('case Edit');
       this.involvedpartyForm = this.editForm();
       this.caseEditArray();
       this.caseEditmembershipArray();
+
     } else {
       console.log('case New');
       this.involvedpartyForm = this.createForm();
