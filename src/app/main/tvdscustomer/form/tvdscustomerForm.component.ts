@@ -11,6 +11,7 @@ import { locale as thai } from '../i18n/th';
 import { TvdscustomerService } from '../services/tvdscustomer.service';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ValidatePID } from './pid.validate';
 
 @Component({
   selector: 'app-tvdscustomer-form',
@@ -31,7 +32,7 @@ export class TvdscustomerFormComponent implements OnInit {
     { value: 'นาง', viewValue: 'นาง' },
     { value: 'นางสาว', viewValue: 'นางสาว' }
   ];
-  
+
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
@@ -81,37 +82,41 @@ export class TvdscustomerFormComponent implements OnInit {
   }
 
   createForm(): FormGroup {
+    let POSTCODE_PATTERN = /^[0-9]{5,5}$/;
+    let MOBILE_PATTERN = /^[0-9]{10,10}$/;
     return this.formBuilder.group({
-      title: [this.tvdscustomerData.title, Validators.required],
+      title: [this.tvdscustomerData.title],
       firstName: [this.tvdscustomerData.firstName, Validators.required],
       lastName: [this.tvdscustomerData.lastName, Validators.required],
-      persanalId: [this.tvdscustomerData.persanalId, Validators.required],
-      mobileNo1: [this.tvdscustomerData.mobileNo1, Validators.required],
-      mobileNo2: [this.tvdscustomerData.mobileNo2, Validators.required],
-      mobileNo3: [this.tvdscustomerData.mobileNo3, Validators.required],
+      persanalId: [this.tvdscustomerData.persanalId, [ValidatePID]],
+      mobileNo1: [this.tvdscustomerData.mobileNo1, [Validators.required, Validators.pattern(MOBILE_PATTERN)]],
+      mobileNo2: [this.tvdscustomerData.mobileNo2],
+      mobileNo3: [this.tvdscustomerData.mobileNo3],
       addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
       addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
       addressSubdistric: [this.tvdscustomerData.addressSubdistric, Validators.required],
       addressDistric: [this.tvdscustomerData.addressDistric, Validators.required],
       addressProvince: [this.tvdscustomerData.addressProvince, Validators.required],
-      addressPostcode: [this.tvdscustomerData.addressPostcode, Validators.required],
+      addressPostcode: [this.tvdscustomerData.addressPostcode, [Validators.required, Validators.pattern(POSTCODE_PATTERN)]],
     });
   }
   editForm(): FormGroup {
+    let POSTCODE_PATTERN = /^[0-9]{5,5}$/;
+    let MOBILE_PATTERN = /^[0-9]{10,10}$/;
     return this.formBuilder.group({
-      title: [this.tvdscustomerData.title, Validators.required],
+      title: [this.tvdscustomerData.title],
       firstName: [this.tvdscustomerData.firstName, Validators.required],
       lastName: [this.tvdscustomerData.lastName, Validators.required],
-      persanalId: [this.tvdscustomerData.persanalId, Validators.required],
-      mobileNo1: [this.tvdscustomerData.mobileNo1, Validators.required],
-      mobileNo2: [this.tvdscustomerData.mobileNo2, Validators.required],
-      mobileNo3: [this.tvdscustomerData.mobileNo3, Validators.required],
+      persanalId: [this.tvdscustomerData.persanalId, [ValidatePID]],
+      mobileNo1: [this.tvdscustomerData.mobileNo1, [Validators.required, Validators.pattern(MOBILE_PATTERN)]],
+      mobileNo2: [this.tvdscustomerData.mobileNo2],
+      mobileNo3: [this.tvdscustomerData.mobileNo3],
       addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
       addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
       addressSubdistric: [this.tvdscustomerData.addressSubdistric, Validators.required],
       addressDistric: [this.tvdscustomerData.addressDistric, Validators.required],
       addressProvince: [this.tvdscustomerData.addressProvince, Validators.required],
-      addressPostcode: [this.tvdscustomerData.addressPostcode, Validators.required],
+      addressPostcode: [this.tvdscustomerData.addressPostcode, [Validators.required, Validators.pattern(POSTCODE_PATTERN)]],
     });
   }
 
