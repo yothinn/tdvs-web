@@ -22,6 +22,16 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class TvdscustomerFormComponent implements OnInit {
   tvdscustomerForm: FormGroup;
   tvdscustomerData: any = {};
+
+  postcodesList: any = [];
+  temp = [];
+
+  title: Array<any> = [
+    { value: 'นาย', viewValue: 'นาย' },
+    { value: 'นาง', viewValue: 'นาง' },
+    { value: 'นางสาว', viewValue: 'นางสาว' }
+  ];
+  
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
@@ -35,6 +45,11 @@ export class TvdscustomerFormComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+    this.tvdscustomerService.getPostcodesList().subscribe((res: any) => {
+      this.postcodesList = res.data;
+      this.temp = res.data;
+    })
 
     this.tvdscustomerData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
@@ -129,6 +144,33 @@ export class TvdscustomerFormComponent implements OnInit {
           this.spinner.hide();
         });
     }
+  }
+
+  updateFilter(event) {
+    //change search keyword to lower case
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.postcode.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.postcodesList = temp;
+    console.log(this.postcodesList);
+  }
+
+  getPosts(val) {
+    //12150 | บึงคำพร้อย | อำเภอลำลูกกา | ปทุมธานี
+    let viewValue = val.viewValue;
+    let arrValue = val.viewValue.split("|");
+    let subdistrict = arrValue[1].trim();
+    let district = arrValue[2].trim();
+    let province = arrValue[3].trim();
+
+    this.tvdscustomerForm.controls["addressProvince"].setValue(province);
+    this.tvdscustomerForm.controls["addressDistric"].setValue(district);
+    this.tvdscustomerForm.controls["addressSubdistric"].setValue(subdistrict);
   }
 
 

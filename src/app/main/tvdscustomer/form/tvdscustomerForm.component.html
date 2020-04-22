@@ -40,11 +40,16 @@
             <form [formGroup]="tvdscustomerForm">
 
               <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
-                <div fxLayout="row wrap" fxFlex="100">
+                <div fxLayout="row wrap" fxFlex="100" class="pt-20">
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="20" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>คำนำหน้าชื่อ</mat-label>
-                      <input matInput formControlName="title" name="title">
+                      <!-- <input matInput formControlName="title" name="title"> -->
+                      <mat-select formControlName="title" name="title">
+                        <mat-option *ngFor="let itemt of title" [value]="itemt.viewValue">
+                          {{itemt.value}}
+                        </mat-option>
+                      </mat-select>
                     </mat-form-field>
                   </div>
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="40" class="pl-20 pr-16">
@@ -60,6 +65,88 @@
                     </mat-form-field>
                   </div>
                 </div>
+
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>เลขที่ประจำตัวประชาชน( 13 หลัก )</mat-label>
+                      <input matInput formControlName="persanalId" name="persanalId">
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>เบอร์มือถือ</mat-label>
+                      <input matInput formControlName="mobileNo1" name="mobileNo1">
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>เบอร์บ้าน</mat-label>
+                      <input matInput formControlName="mobileNo2" name="mobileNo2">
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>เบอร์อื่น ๆ</mat-label>
+                      <input matInput formControlName="mobileNo3" name="mobileNo3">
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>บ้านเลขที่</mat-label>
+                      <input matInput formControlName="addressLine1" name="addressLine1">
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>ถนน</mat-label>
+                      <input matInput formControlName="addressStreet" name="addressStreet">
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>รหัสไปรษณีย์</mat-label>
+                      <input matInput formControlName="addressPostcode" name="addressPostcode"
+                        (keyup)="updateFilter($event)" [matAutocomplete]="auto">
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getPosts($event.option)'>
+                        <mat-option *ngFor="let postcode of postcodesList.slice(0,10)" [value]="postcode.postcode">
+                          <span>{{ postcode.postcode }}</span> |
+                          <small>{{ postcode.subdistrict }}</small> |
+                          <small>{{ postcode.district }}</small> |
+                          <small>{{ postcode.province }}</small>
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>ตำบล/แขวง</mat-label>
+                      <input matInput formControlName="addressSubdistric" name="addressSubdistric">
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>อำเภอ/เขต</mat-label>
+                      <input matInput formControlName="addressDistric" name="addressDistric">
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>จังหวัด</mat-label>
+                      <input matInput formControlName="addressProvince" name="addressProvince">
+                    </mat-form-field>
+                  </div>
+                </div>
+
               </div>
 
             </form>
