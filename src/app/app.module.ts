@@ -51,6 +51,10 @@ const appRoutes: Routes = [
     loadChildren: './main/involvedparty/involvedparty.module#InvolvedpartyModule'
   },
   {
+    path: 'joborder',
+    loadChildren: './main/joborder/joborder.module#JoborderModule'
+  },
+  {
     path: 'tvdscustomer',
     loadChildren: './main/tvdscustomer/tvdscustomer.module#TvdscustomerModule'
   },
