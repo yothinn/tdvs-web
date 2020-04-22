@@ -59,13 +59,13 @@ export class OrderFormComponent implements OnInit {
     this.orderData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
-          docno: "",
-          docdate: "",
-          carNo: "",
-          cusAmount: null,
-          orderStatus: "draft",
-          contactLists: [],
-        };
+        docno: "",
+        docdate: "",
+        carNo: "",
+        cusAmount: null,
+        orderStatus: "draft",
+        contactLists: [],
+      };
     console.log(this.orderData);
 
     if (this.orderData.contactLists.length > 0) {
@@ -84,7 +84,7 @@ export class OrderFormComponent implements OnInit {
     // this.orderService.setupSocketConnection();
     this.socket.on("user-confirm-reject", (message: any) => {
       console.log(message);
-      if(message.docno === this.orderData.docno) {
+      if (message.docno === this.orderData.docno) {
         this.orderData = message;
       }
     });
@@ -130,6 +130,7 @@ export class OrderFormComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        this.spinner.show();
         this.orderData.carNo = result.carNo;
         this.orderData.docdate = result.docdate;
         this.formatMoment(result.docdate);
@@ -156,6 +157,7 @@ export class OrderFormComponent implements OnInit {
     //   this.defaultIconMarkers();
     // });
     this.markersData = await this.orderService.getMarkerDataList(docdate);
+    this.spinner.hide();
     // this.defaultIconMarkers();
   }
 
@@ -360,6 +362,7 @@ export class OrderFormComponent implements OnInit {
   onSaveStatus(txt) {
     this.orderService.updateOrderData(this.orderData._id, this.orderData).then(res => {
       this.orderData = res;
+      this.checkLineId();
 
       if (txt === "c" || txt === "r") {
         this._snackBar.open("อัพเดทสถานะเรียบร้อย", "", {
@@ -430,6 +433,7 @@ export class OrderFormComponent implements OnInit {
         .updateOrderData(this.orderData._id, this.orderData)
         .then(res => {
           this.orderData = res;
+          this.checkLineId();
 
           this.spinner.hide();
 

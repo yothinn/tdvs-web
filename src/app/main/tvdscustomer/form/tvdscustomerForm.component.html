@@ -1,0 +1,209 @@
+<div class="page-layout carded  fullwidth inner-scroll">
+  <!-- TOP BACKGROUND -->
+  <div class="top-bg accent"></div>
+  <!-- / TOP BACKGROUND -->
+
+  <!-- CENTER -->
+  <div class="center">
+    <!-- HEADER -->
+    <div class="header accent" fxLayout="row" fxLayoutAlign="space-between center">
+      <!-- APP TITLE -->
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <button class="mat-icon-button mr-0 mr-sm-16" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
+            edit
+          </mat-icon>
+          <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
+            tvdscustomerForm
+          </span>
+        </div>
+        <div fxFlex="100" fxFlex.gt-sm="40" class="pl-20  pr-16" fxLayoutAlign="end">
+          <button [disabled]="tvdscustomerForm.invalid" mat-fab color="warn" (click)="onSave()">
+            <mat-icon class="icon-position">save</mat-icon>
+          </button>
+        </div>
+      </div>
+      <!-- / APP TITLE -->
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT CARD -->
+    <div class="content-card">
+      <!-- CONTENT -->
+      <div class="content">
+        <mat-tab-group fxFlex>
+          <mat-tab label="tvdscustomer">
+            <form [formGroup]="tvdscustomerForm">
+
+              <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
+                <div fxLayout="row wrap" fxFlex="100" class="pt-20">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="20" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>คำนำหน้าชื่อ</mat-label>
+                      <mat-select formControlName="title" name="title">
+                        <mat-option *ngFor="let itemt of title" [value]="itemt.viewValue">
+                          {{itemt.value}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="40" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>ชื่อ</mat-label>
+                      <input matInput formControlName="firstName" name="firstName">
+                      <mat-error *ngIf="tvdscustomerForm.get('firstName').hasError('required')">
+                        กรุณาระบุ ชื่อ
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="40" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>นามสกุล</mat-label>
+                      <input matInput formControlName="lastName" name="lastName">
+                      <mat-error *ngIf="tvdscustomerForm.get('lastName').hasError('required')">
+                        กรุณาระบุ นามสกุล
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>เลขที่ประจำตัวประชาชน( 13 หลัก )</mat-label>
+                      <input matInput maxlength="13" minlength="13" formControlName="persanalId" name="persanalId"
+                        placeholder="ใช้เพื่อตรวจสอบว่าเป็นผู้ถือหุ้นหรือไม่?">
+                      <mat-error *ngIf="tvdscustomerForm.get('persanalId').dirty">
+                        กรุณาระบุ เลขที่บัตรประจำตัวประชาชนของตัวท่าน
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>เบอร์มือถือ</mat-label>
+                      <input matInput maxlength="10" minlength="10" formControlName="mobileNo1" name="mobileNo1"
+                        placeholder="xxx-xxx-xxxx">
+                      <mat-error *ngIf="tvdscustomerForm.get('mobileNo1').hasError('required')">
+                        กรุณาระบุ เบอร์โทรศัพท์มือถือของท่าน
+                      </mat-error>
+                      <mat-error *ngIf="tvdscustomerForm.get('mobileNo1').dirty">
+                        กรุณาระบุ เบอร์โทรศัพท์มือถือของท่านไม่ถูกต้อง
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>เบอร์บ้าน</mat-label>
+                      <input matInput formControlName="mobileNo2" name="mobileNo2">
+                      <mat-error *ngIf="tvdscustomerForm.get('mobileNo2').hasError('required')">
+                        กรุณาระบุ เบอร์โทรศัพท์มือถือของท่าน
+                      </mat-error>
+                      <mat-error *ngIf="tvdscustomerForm.get('mobileNo2').dirty">
+                        กรุณาระบุ เบอร์โทรศัพท์มือถือของท่านไม่ถูกต้อง
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>เบอร์อื่น ๆ</mat-label>
+                      <input matInput formControlName="mobileNo3" name="mobileNo3">
+                      <mat-error *ngIf="tvdscustomerForm.get('mobileNo3').hasError('required')">
+                        กรุณาระบุ เบอร์โทรศัพท์มือถือของท่าน
+                      </mat-error>
+                      <mat-error *ngIf="tvdscustomerForm.get('mobileNo3').dirty">
+                        กรุณาระบุ เบอร์โทรศัพท์มือถือของท่านไม่ถูกต้อง
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>บ้านเลขที่</mat-label>
+                      <input matInput formControlName="addressLine1" name="addressLine1">
+                      <mat-error *ngIf="tvdscustomerForm.get('addressLine1').hasError('required')">
+                        กรุณาระบุ บ้านเลขที่/หมู่บ้าน
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>ถนน</mat-label>
+                      <input matInput formControlName="addressStreet" name="addressStreet">
+                      <mat-error *ngIf="tvdscustomerForm.get('addressStreet').hasError('required')">
+                        กรุณาระบุ ถนน
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>รหัสไปรษณีย์</mat-label>
+                      <input matInput maxlength="5" minlength="5" formControlName="addressPostcode" name="addressPostcode"
+                        (keyup)="updateFilter($event)" [matAutocomplete]="auto">
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getPosts($event.option)'>
+                        <mat-option *ngFor="let postcode of postcodesList.slice(0,10)" [value]="postcode.postcode">
+                          <span>{{ postcode.postcode }}</span> |
+                          <small>{{ postcode.subdistrict }}</small> |
+                          <small>{{ postcode.district }}</small> |
+                          <small>{{ postcode.province }}</small>
+                        </mat-option>
+                      </mat-autocomplete>
+                      <mat-error *ngIf="tvdscustomerForm.get('addressPostcode').hasError('required')">
+                        กรุณาระบุ รหัสไปรษณีย์
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>ตำบล/แขวง</mat-label>
+                      <input matInput formControlName="addressSubdistric" name="addressSubdistric">
+                      <mat-error *ngIf="tvdscustomerForm.get('addressSubdistric').hasError('required')">
+                        กรุณาระบุ ตำบล/แขวง
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>อำเภอ/เขต</mat-label>
+                      <input matInput formControlName="addressDistric" name="addressDistric">
+                      <mat-error *ngIf="tvdscustomerForm.get('addressDistric').hasError('required')">
+                        กรุณาระบุ อำเภอ/เขต
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>จังหวัด</mat-label>
+                      <input matInput formControlName="addressProvince" name="addressProvince">
+                      <mat-error *ngIf="tvdscustomerForm.get('addressProvince').hasError('required')">
+                        กรุณาระบุ จังหวัด
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+              </div>
+
+            </form>
+          </mat-tab>
+
+        </mat-tab-group>
+        <!--  -->
+      </div>
+      <!-- /CONTENT -->
+    </div>
+    <!-- /CONTENT CARD -->
+  </div>
+  <!-- /CENTER -->
+</div>
