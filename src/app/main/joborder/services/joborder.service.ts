@@ -5,6 +5,9 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { environment } from "environments/environment";
 
 const api_url = environment.apiUrl + "/api/joborders/";
+const api_url_vehicle = environment.apiUrl + "/api/vehicles/";
+const api_url_markers = environment.apiUrl + "/api/jobordersupdatemap/";
+const api_url_line = environment.apiUrl + "/api/chatbot/sendmessage";
 
 @Injectable({
   providedIn: "root"
@@ -46,6 +49,36 @@ export class JoborderService {
     });
   }
 
+  getVehicleData(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http
+        .get(api_url_vehicle, { headers: this.authorizationHeader() })
+        .subscribe((res: any) => {
+          resolve(res.data);
+        }, reject);
+    });
+  }
+
+  getMarkerDataList(body): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post(api_url_markers, body, { headers: this.authorizationHeader() })
+        .subscribe((res: any) => {
+          resolve(res.data);
+        }, reject);
+    });
+  }
+
+  sendConFirmData(body): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post(api_url_line, body, { headers: this.authorizationHeader() })
+        .subscribe((res: any) => {
+          resolve(res.data);
+        }, reject);
+    });
+  }
+
   createJoborderData(body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http
@@ -56,10 +89,10 @@ export class JoborderService {
     });
   }
 
-  updateJoborderData(body): Promise<any> {
+  updateJoborderData(id, body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http
-        .put(api_url + body._id, body, { headers: this.authorizationHeader() })
+        .put(api_url + id, body, { headers: this.authorizationHeader() })
         .subscribe((res: any) => {
           resolve(res.data);
         }, reject);
