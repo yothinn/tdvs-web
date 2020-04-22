@@ -1,0 +1,76 @@
+<div class="page-layout carded  fullwidth inner-scroll">
+  <!-- TOP BACKGROUND -->
+  <div class="top-bg accent"></div>
+  <!-- / TOP BACKGROUND -->
+
+  <!-- CENTER -->
+  <div class="center">
+    <!-- HEADER -->
+    <div class="header accent" fxLayout="row" fxLayoutAlign="space-between center">
+      <!-- APP TITLE -->
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <button class="mat-icon-button mr-0 mr-sm-16" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
+            edit
+          </mat-icon>
+          <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
+            tvdscustomerForm
+          </span>
+        </div>
+        <div fxFlex="100" fxFlex.gt-sm="40" class="pl-20  pr-16" fxLayoutAlign="end">
+          <button [disabled]="tvdscustomerForm.invalid" mat-fab color="warn" (click)="onSave()">
+            <mat-icon class="icon-position">save</mat-icon>
+          </button>
+        </div>
+      </div>
+      <!-- / APP TITLE -->
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT CARD -->
+    <div class="content-card">
+      <!-- CONTENT -->
+      <div class="content">
+        <mat-tab-group fxFlex>
+          <mat-tab label="tvdscustomer">
+            <form [formGroup]="tvdscustomerForm">
+
+              <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="20" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>คำนำหน้าชื่อ</mat-label>
+                      <input matInput formControlName="title" name="title">
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="40" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>ชื่อ</mat-label>
+                      <input matInput formControlName="firstName" name="firstName">
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="40" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>นามสกุล</mat-label>
+                      <input matInput formControlName="lastName" name="lastName">
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </mat-tab>
+
+        </mat-tab-group>
+        <!--  -->
+      </div>
+      <!-- /CONTENT -->
+    </div>
+    <!-- /CONTENT CARD -->
+  </div>
+  <!-- /CENTER -->
+</div>

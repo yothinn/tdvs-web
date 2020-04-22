@@ -95,7 +95,7 @@
                       <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ(10 หลัก)</mat-label>
                       <mat-label *ngIf="item.value.method==='home'">เบอร์บ้าน</mat-label>
                       <mat-label *ngIf="item.value.method==='other'">เบอร์อื่น ๆ</mat-label>
-                      <input matInput maxlength="10" formControlName="value" placeholder="xxx-xxx-xxxx">
+                      <input matInput formControlName="value" placeholder="xxx-xxx-xxxx">
                       <mat-error *ngIf="item.controls.value.hasError('required')">
                         กรุณาระบุ เบอร์โทรศัพท์มือถือของท่าน
                       </mat-error>
