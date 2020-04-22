@@ -236,6 +236,9 @@
           <mat-tab label="map">
             <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false"
               [zoomControl]="false">
+              <div>
+              <agm-marker [latitude]="" [longitude]=""></agm-marker>
+              </div>
             </agm-map>
           </mat-tab>
 

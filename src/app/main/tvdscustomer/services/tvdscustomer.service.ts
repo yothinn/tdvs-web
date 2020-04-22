@@ -5,6 +5,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { environment } from "environments/environment";
 
 const api_url = environment.apiUrl + "/api/tvdscustomers/";
+const api_url_postcodes = environment.apiUrl + "/api/postcodes";
 
 @Injectable({
   providedIn: "root"
@@ -37,6 +38,12 @@ export class TvdscustomerService {
     return this.http
     .get(api_url, {
       headers: this.authorizationHeader()
+    });
+  }
+
+  getPostcodesList() {
+    return this.http.get(api_url_postcodes, {
+      headers: this.authorizationHeader(),
     });
   }
 

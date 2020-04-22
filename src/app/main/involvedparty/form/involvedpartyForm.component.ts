@@ -83,17 +83,22 @@ export class InvolvedpartyFormComponent implements OnInit {
         }
       };
 
-    if (this.involvedpartyData.directContact || this.involvedpartyData.membership) {
+      console.log(this.involvedpartyData);
+
+    if (this.involvedpartyData.directContact || this.involvedpartyData.membership ) {
       console.log('case Edit');
       this.involvedpartyForm = this.editForm();
       this.caseEditArray();
       this.caseEditmembershipArray();
+
     } else {
       console.log('case New');
       this.involvedpartyForm = this.createForm();
     }
     this.spinner.hide();
   }
+
+  
 
   get formData() { return <FormArray>this.involvedpartyForm.get('directContact'); }
   get memberForm() { return <FormArray>this.involvedpartyForm.get('membership'); }
@@ -135,6 +140,7 @@ export class InvolvedpartyFormComponent implements OnInit {
       membership: this.formBuilder.array([this.createItem()]),
     });
   }
+
 
   createPersonalInfoForm(): FormGroup {
     let PERSONAL_CARDID_PATTERN = /^[0-9]{13,13}$/;

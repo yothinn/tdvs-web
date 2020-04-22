@@ -17,6 +17,22 @@ export const navigation: FuseNavigation[] = [
             }
         ]
     },
+    // {
+    //     id: 'Menu',
+    //     title: 'Menu IPI',
+    //     translate: 'ข้อมูลสมาชิก',
+    //     type: 'group',
+    //     children: [
+    //         {
+    //             id: 'involvedparty',
+    //             title: 'involvedparty',
+    //             translate: 'รายการข้อมูลสมาชิก',
+    //             type: 'item',
+    //             icon: 'account_box',
+    //             url: '/involvedparty'
+    //         }
+    //     ]
+    // },
     {
         id: 'Menu',
         title: 'Menu IPI',
@@ -24,12 +40,12 @@ export const navigation: FuseNavigation[] = [
         type: 'group',
         children: [
             {
-                id: 'involvedparty',
-                title: 'involvedparty',
+                id: 'tvdscustomer',
+                title: 'tvdscustomer',
                 translate: 'รายการข้อมูลสมาชิก',
                 type: 'item',
                 icon: 'account_box',
-                url: '/involvedparty'
+                url: '/tvdscustomer'
             }
         ]
     }
