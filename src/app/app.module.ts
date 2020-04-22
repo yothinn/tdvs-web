@@ -35,13 +35,13 @@ import { ServerErrorInterceptor } from "./server-error.interceptor";
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
 import { environment } from 'environments/environment';
 
-const config: SocketIoConfig = { url: environment.apiUrl , options: {} };
+const config: SocketIoConfig = { url: environment.apiUrl, options: {} };
 
 const appRoutes: Routes = [
-  {
-      path        : 'auth',
-      loadChildren: './authentication/authentication.module#AuthenticationModule'
-  },
+  // {
+  //   path: 'auth',
+  //   loadChildren: './authentication/authentication.module#AuthenticationModule'
+  // },
   {
     path: 'order',
     loadChildren: './main/order/order.module#OrderModule'
@@ -53,6 +53,10 @@ const appRoutes: Routes = [
   {
     path: 'joborder',
     loadChildren: './main/joborder/joborder.module#JoborderModule'
+  },
+  {
+    path: 'tvdscustomer',
+    loadChildren: './main/tvdscustomer/tvdscustomer.module#TvdscustomerModule'
   },
   {
     path: 'register',
