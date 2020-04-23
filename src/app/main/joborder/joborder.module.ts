@@ -9,6 +9,12 @@ import { MatIconModule, MatMenuModule, MatSelectModule, MatDatepickerModule, Mat
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { JoborderService } from './services/joborder.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { AgmCoreModule } from '@agm/core';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { SelectCarAndDateComponent } from './select-car-and-date/select-car-and-date.component';
+
 
 const routes = [
   {
@@ -18,17 +24,17 @@ const routes = [
     // canActivate: [AuthenGuardService]
   },
   {
-      path     : '**',
-      component: JoborderListComponent,
-      resolve: { items: JoborderService }
-      // canActivate: [AuthenGuardService]
+    path: '**',
+    component: JoborderListComponent,
+    resolve: { items: JoborderService }
+    // canActivate: [AuthenGuardService]
   }
 ];
 
 @NgModule({
   declarations: [
-    JoborderListComponent, 
-    JoborderFormComponent
+    JoborderListComponent,
+    JoborderFormComponent, SelectCarAndDateComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -52,6 +58,13 @@ const routes = [
     MatExpansionModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    MatSnackBarModule,
+    MatSidenavModule,
+    DragDropModule,
+
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyD2aNk7BXJ13EyVfPZXWRVqEcnfzfRVVIA'
+    }),
 
     MatTreeModule,
     MatSliderModule,
@@ -64,6 +77,9 @@ const routes = [
   exports: [
     JoborderListComponent,
     JoborderFormComponent
+  ],
+  entryComponents: [
+    SelectCarAndDateComponent
   ]
 })
 export class JoborderModule { }
