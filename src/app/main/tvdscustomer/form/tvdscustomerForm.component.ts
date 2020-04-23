@@ -12,6 +12,7 @@ import { TvdscustomerService } from '../services/tvdscustomer.service';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ValidatePID } from './pid.validate';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-tvdscustomer-form',
@@ -39,7 +40,8 @@ export class TvdscustomerFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private tvdscustomerService: TvdscustomerService,
     private route: ActivatedRoute,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private snackBar: MatSnackBar,
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
@@ -134,19 +136,31 @@ export class TvdscustomerFormComponent implements OnInit {
         .updateTvdscustomerData(this.tvdscustomerForm.value)
         .then(res => {
           // console.log(res);
+          this.snackBar.open("บันทึกข้อมูลสำเร็จ", "", {
+            duration: 7000,
+          });
           this.location.back();
         })
         .catch(err => {
           this.spinner.hide();
+          this.snackBar.open(err.error.message, "", {
+            duration: 7000,
+          });
         });
     } else {
       this.tvdscustomerService
         .createTvdscustomerData(this.tvdscustomerForm.value)
         .then(() => {
+          this.snackBar.open("บันทึกข้อมูลสำเร็จ", "", {
+            duration: 7000,
+          });
           this.location.back();
         })
         .catch(err => {
           this.spinner.hide();
+          this.snackBar.open(err.error.message, "", {
+            duration: 7000,
+          });
         });
     }
   }
