@@ -59,6 +59,10 @@ const appRoutes: Routes = [
     loadChildren: './main/tvdscustomer/tvdscustomer.module#TvdscustomerModule'
   },
   {
+    path: 'vehicle',
+    loadChildren: './main/vehicle/vehicle.module#VehicleModule'
+  },
+  {
     path: 'register',
     loadChildren: './authentication/register/register.module#RegisterModule'
   },

@@ -39,8 +39,8 @@ export class JoborderFormComponent implements OnInit {
     this.joborderData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
-          name: ""
-        };
+        name: ""
+      };
 
     this.joborderForm = this.createForm();
     this.spinner.hide();
@@ -52,18 +52,18 @@ export class JoborderFormComponent implements OnInit {
     });
   }
 
-  goBack(){
+  goBack() {
     this.spinner.show();
     this.location.back();
   }
 
   async onSave() {
     this.spinner.show();
-    
+
     if (this.joborderData._id) {
       this.joborderForm.value._id = this.joborderData._id;
       this.joborderService
-        .updateJoborderData(this.joborderForm.value)
+        .updateJoborderData(this.joborderForm.value._id, this.joborderForm.value)
         .then(res => {
           // console.log(res);
           this.location.back();
