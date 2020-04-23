@@ -1,0 +1,20 @@
+<div class="border-bt" fxLayout="row wrap">
+  <div fxFlex="100" class="center-text">
+    <h2>{{data.title}}</h2>
+  </div>
+</div>
+
+<div class="border-bt" fxLayout="row wrap">
+  <div fxFlex="100" class="center-text">
+    <h3>{{data.message}}</h3>
+  </div>
+</div>
+
+<div fxLayout="row wrap" class="btn-position">
+  <div fxFlex="50" class="left-text">
+    <button class="btn-left" mat-raised-button color="warn" (click)="onCancel()">ไม่ใช่</button>
+  </div>
+  <div fxFlex="50" class="right-text">
+    <button class="btn-right border-btn" mat-stroked-button color="warn" (click)="onConfirm()">ใช่</button>
+  </div>
+</div>

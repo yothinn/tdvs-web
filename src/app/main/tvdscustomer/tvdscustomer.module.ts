@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { TvdscustomerService } from './services/tvdscustomer.service';
 
+
 const routes = [
   {
     path: "tvdscustomerForm/:id",
