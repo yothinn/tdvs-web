@@ -1,0 +1,146 @@
+<div class="page-layout carded  fullwidth inner-scroll">
+  <!-- TOP BACKGROUND -->
+  <div class="top-bg accent"></div>
+  <!-- / TOP BACKGROUND -->
+
+  <!-- CENTER -->
+  <div class="center">
+    <!-- HEADER -->
+    <div
+      class="header accent"
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+    >
+      <!-- APP TITLE -->
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <button class="mat-icon-button mr-0 mr-sm-16" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <div
+          class="logo mb-24 mb-md-0"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+        >
+          <mat-icon
+            class="logo-icon s-32 mr-16"
+            [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }"
+          >
+            edit
+          </mat-icon>
+          <span
+            class="logo-text h1"
+            [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }"
+          >
+          vehicleForm
+          </span>
+        </div>
+        <div
+          fxFlex="100"
+          fxFlex.gt-sm="40"
+          class="pl-20  pr-16"
+          fxLayoutAlign="end"
+        >
+          <button
+            [disabled]="vehicleForm.invalid"
+            mat-fab
+            color="warn"
+            (click)="onSave()"
+          >
+            <mat-icon class="icon-position">save</mat-icon>
+          </button>
+        </div>
+      </div>
+      <!-- / APP TITLE -->
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT CARD -->
+    <div class="content-card">
+      <!-- CONTENT -->
+      <div class="content">
+        <mat-tab-group fxFlex>
+          
+          <mat-tab label="vehicle">
+            <form [formGroup]="vehicleForm">
+              <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
+
+                <div class="pl-20 pr-16 h1 pb-20 pt-20">
+                  <mat-label>ข้อมูลรถ</mat-label>
+                </div>
+
+                <div fxLayout="row wrap" fxFlex="100">
+                <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="35" class="pl-20 pr-16">
+                  <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>ทะเบียนรถ</mat-label>
+                    <input matInput formControlName="lisenceID" name="lisenceID">
+                    <mat-error *ngIf="vehicleForm.get('lisenceID').hasError('required')">
+                      กรุณาระบุทะเบียนรถ
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="pl-20 pr-16 h1 pb-20 pt-20">
+                <mat-label>ตารางเวลา</mat-label>
+              </div>
+
+              <div fxLayout="row wrap" fxFlex="100">
+                <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="40" class="pl-20 pr-16">
+                  <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>วันเริ่มต้น</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="startDate" name="startDate">
+                    <mat-error *ngIf="vehicleForm.get('startDate').hasError('required')">
+                      กรุณาระบุวันเริ่มต้น
+                    </mat-error>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+      
+                <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="40" class="pl-20 pr-16">
+                  <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                    <mat-label>วันสิ้นสุด</mat-label>
+                    <input matInput [matDatepicker]="picker1" formControlName="endDate" name="endDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="pl-20 pr-16 h1 pb-20 pt-20">
+                <mat-label>ข้อมูลคนขับรถ</mat-label>
+              </div>
+
+              <div fxLayout="row wrap" fxFlex="100">
+              <div fxLayoutAlign="center" formGroupName="driverInfo" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                <mat-form-field appearance="outline" fxFlex>
+                  <mat-label>ชื่อ-นามสกุล คนขับรถ</mat-label>
+                  <input matInput formControlName="displayName"  name="displayName" (keyup)="updateFilter($event)" [matAutocomplete]="auto">
+                  <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getTvdsCustomers($event.option)'>
+                    <mat-option *ngFor="let customer of tvdsCustomersData.slice(0,10)" [value]="customer.displayName">
+                      <span>{{customer.displayName}}</span> 
+                    </mat-option>
+                  </mat-autocomplete>
+                  <mat-error *ngIf="vehicleForm.get('driverInfo').get('displayName').hasError('required')">
+                    กรุณาระบุชื่อ-นามสกุลคนขับรถ
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              </div>
+            {{vehicleForm.value | json}}
+
+              </div>
+            
+            </form>
+          </mat-tab>
+          
+        </mat-tab-group>
+        <!--  -->
+      </div>
+      <!-- /CONTENT -->
+    </div>
+    <!-- /CONTENT CARD -->
+  </div>
+  <!-- /CENTER -->
+</div>

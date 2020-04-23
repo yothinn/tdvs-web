@@ -12,6 +12,7 @@ import { TvdscustomerService } from '../services/tvdscustomer.service';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ValidatePID } from './pid.validate';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-tvdscustomer-form',
@@ -39,7 +40,8 @@ export class TvdscustomerFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private tvdscustomerService: TvdscustomerService,
     private route: ActivatedRoute,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private snackBar: MatSnackBar,
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
@@ -64,10 +66,10 @@ export class TvdscustomerFormComponent implements OnInit {
         mobileNo3: "",
         addressLine1: "",
         addressStreet: "",
-        addressSubdistric: "",
-        addressDistric: "",
+        addressSubDistrict: "",
+        addressDistrict: "",
         addressProvince: "",
-        addressPostcode: ""
+        addressPostCode: ""
       };
 
     if (this.tvdscustomerData._id) {
@@ -94,10 +96,10 @@ export class TvdscustomerFormComponent implements OnInit {
       mobileNo3: [this.tvdscustomerData.mobileNo3],
       addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
       addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
-      addressSubdistric: [this.tvdscustomerData.addressSubdistric, Validators.required],
-      addressDistric: [this.tvdscustomerData.addressDistric, Validators.required],
+      addressSubDistrict: [this.tvdscustomerData.addressSubDistrict, Validators.required],
+      addressDistrict: [this.tvdscustomerData.addressDistrict, Validators.required],
       addressProvince: [this.tvdscustomerData.addressProvince, Validators.required],
-      addressPostcode: [this.tvdscustomerData.addressPostcode, [Validators.required, Validators.pattern(POSTCODE_PATTERN)]],
+      addressPostCode: [this.tvdscustomerData.addressPostCode, [Validators.required, Validators.pattern(POSTCODE_PATTERN)]],
     });
   }
   editForm(): FormGroup {
@@ -113,10 +115,10 @@ export class TvdscustomerFormComponent implements OnInit {
       mobileNo3: [this.tvdscustomerData.mobileNo3],
       addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
       addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
-      addressSubdistric: [this.tvdscustomerData.addressSubdistric, Validators.required],
-      addressDistric: [this.tvdscustomerData.addressDistric, Validators.required],
+      addressSubDistrict: [this.tvdscustomerData.addressSubDistrict, Validators.required],
+      addressDistrict: [this.tvdscustomerData.addressDistrict, Validators.required],
       addressProvince: [this.tvdscustomerData.addressProvince, Validators.required],
-      addressPostcode: [this.tvdscustomerData.addressPostcode, [Validators.required, Validators.pattern(POSTCODE_PATTERN)]],
+      addressPostCode: [this.tvdscustomerData.addressPostCode, [Validators.required, Validators.pattern(POSTCODE_PATTERN)]],
     });
   }
 
@@ -134,19 +136,31 @@ export class TvdscustomerFormComponent implements OnInit {
         .updateTvdscustomerData(this.tvdscustomerForm.value)
         .then(res => {
           // console.log(res);
+          this.snackBar.open("บันทึกข้อมูลสำเร็จ", "", {
+            duration: 7000,
+          });
           this.location.back();
         })
         .catch(err => {
           this.spinner.hide();
+          this.snackBar.open(err.error.message, "", {
+            duration: 7000,
+          });
         });
     } else {
       this.tvdscustomerService
         .createTvdscustomerData(this.tvdscustomerForm.value)
         .then(() => {
+          this.snackBar.open("บันทึกข้อมูลสำเร็จ", "", {
+            duration: 7000,
+          });
           this.location.back();
         })
         .catch(err => {
           this.spinner.hide();
+          this.snackBar.open(err.error.message, "", {
+            duration: 7000,
+          });
         });
     }
   }
@@ -174,8 +188,8 @@ export class TvdscustomerFormComponent implements OnInit {
     let province = arrValue[3].trim();
 
     this.tvdscustomerForm.controls["addressProvince"].setValue(province);
-    this.tvdscustomerForm.controls["addressDistric"].setValue(district);
-    this.tvdscustomerForm.controls["addressSubdistric"].setValue(subdistrict);
+    this.tvdscustomerForm.controls["addressDistrict"].setValue(district);
+    this.tvdscustomerForm.controls["addressSubDistrict"].setValue(subdistrict);
   }
 
 

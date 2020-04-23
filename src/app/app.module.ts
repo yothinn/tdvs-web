@@ -34,6 +34,7 @@ import { ServerErrorInterceptor } from "./server-error.interceptor";
 
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
 import { environment } from 'environments/environment';
+import { DialogConfirmModule } from './dialog-confirm/dialog-confirm.module';
 
 const config: SocketIoConfig = { url: environment.apiUrl, options: {} };
 
@@ -57,6 +58,10 @@ const appRoutes: Routes = [
   {
     path: 'tvdscustomer',
     loadChildren: './main/tvdscustomer/tvdscustomer.module#TvdscustomerModule'
+  },
+  {
+    path: 'vehicle',
+    loadChildren: './main/vehicle/vehicle.module#VehicleModule'
   },
   {
     path: 'register',
@@ -112,7 +117,8 @@ export const MY_FORMATS = {
     // App modules
     LayoutModule,
     NgxSpinnerModule,
-    SampleModule
+    SampleModule,
+    DialogConfirmModule
   ],
   bootstrap: [
     AppComponent

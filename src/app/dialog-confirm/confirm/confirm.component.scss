@@ -1,0 +1,46 @@
+::ng-deep.mat-dialog-container {
+    display: block !important;
+    padding: 24px !important;
+    border-radius: 4px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    outline: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: inherit !important;
+    max-height: inherit !important;
+}
+
+.border-bt {
+    border-bottom: solid 1px #e2e2e2;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.left-text {
+    text-align: left;
+}
+
+.right-text {
+    text-align: right;
+}
+
+.btn-position {
+    padding-top: 20px;
+}
+
+.btn-left {
+    width: 80px;
+    margin-left: 0px;
+}
+
+.btn-right {
+    width: 80px;
+    margin-right: 0px;
+}
+
+.border-btn {
+    border-color: red !important;
+}

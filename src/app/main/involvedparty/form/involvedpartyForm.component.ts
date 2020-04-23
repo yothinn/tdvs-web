@@ -121,8 +121,7 @@ export class InvolvedpartyFormComponent implements OnInit {
           {
             method: "home",
             value: [
-              "",
-              [Validators.pattern(MOBILE_PATTERN)],
+              ""
             ]
           }
         ),
@@ -130,8 +129,7 @@ export class InvolvedpartyFormComponent implements OnInit {
           {
             method: "other",
             value: [
-              "",
-              [Validators.pattern(MOBILE_PATTERN)],
+              ""
             ]
           }
         )
