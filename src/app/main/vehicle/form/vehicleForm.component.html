@@ -74,6 +74,9 @@
                   <mat-form-field appearance="outline" fxFlex>
                     <mat-label>ทะเบียนรถ</mat-label>
                     <input matInput formControlName="lisenceID" name="lisenceID">
+                    <mat-error *ngIf="vehicleForm.get('lisenceID').hasError('required')">
+                      กรุณาระบุทะเบียนรถ
+                    </mat-error>
                   </mat-form-field>
                 </div>
               </div>
@@ -87,6 +90,9 @@
                   <mat-form-field appearance="outline" fxFlex>
                     <mat-label>วันเริ่มต้น</mat-label>
                     <input matInput [matDatepicker]="picker" formControlName="startDate" name="startDate">
+                    <mat-error *ngIf="vehicleForm.get('startDate').hasError('required')">
+                      กรุณาระบุวันเริ่มต้น
+                    </mat-error>
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                   </mat-form-field>
@@ -106,7 +112,7 @@
                 <mat-label>ข้อมูลคนขับรถ</mat-label>
               </div>
 
-              
+              <div fxLayout="row wrap" fxFlex="100">
               <div fxLayoutAlign="center" formGroupName="driverInfo" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                 <mat-form-field appearance="outline" fxFlex>
                   <mat-label>ชื่อ-นามสกุล คนขับรถ</mat-label>
@@ -115,11 +121,12 @@
                     <mat-option *ngFor="let customer of tvdsCustomersData.slice(0,10)" [value]="customer.displayName">
                       <span>{{customer.displayName}}</span> 
                     </mat-option>
-
-                
                   </mat-autocomplete>
+                  <mat-error *ngIf="vehicleForm.get('driverInfo').get('displayName').hasError('required')">
+                    กรุณาระบุชื่อ-นามสกุลคนขับรถ
+                  </mat-error>
                 </mat-form-field>
-
+              </div>
               </div>
             {{vehicleForm.value | json}}
 

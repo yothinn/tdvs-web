@@ -1,83 +1,190 @@
-<div class="page-layout carded  fullwidth inner-scroll">
-  <!-- TOP BACKGROUND -->
-  <div class="top-bg accent"></div>
-  <!-- / TOP BACKGROUND -->
+<div class="page-layout carded fullwidth inner-scroll">
+    <div class="content">
+        <mat-sidenav-container class="full-d-hsize">
+            <mat-sidenav #sidenave class="sidenav-side" mode="side" [(opened)]="sideNaveOpened" fixedInViewport="true"
+                fixedTopGap="65" fixedBottomGap="0">
+                <div fxLayout="row wrap" fxLayoutAlign="start center">
+                    <div class="logo mb-24 mb-md-0" fxFlex="70" fxLayoutAlign="start center">
+                        <div fxLayout="column">
+                            <div>
+                                <span class="logo-text h3">วันที่: </span>
+                                <span class="logo-text h5">{{ titleDate }}</span>
+                            </div>
+                            <div>
+                                <span class="logo-text h3">ผู้ส่ง: </span>
+                                <span class="logo-text h5" *ngIf="joborderData.carNo">{{joborderData.carNo}}</span>
+                                <span class="logo-text h5" *ngIf="!joborderData.carNo">ไม่เลือก</span>
+                            </div>
+                            <div *ngIf="joborderData.docno">
+                                <span class="logo-text h3">เลขที่ใบสั่งงาน: </span>
+                                <span class="logo-text h5">{{joborderData.docno}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div fxFlex="30" class="text-center">
+                        <button mat-button color="warn" (click)="onSave()" *ngIf="!joborderData._id">
+                            สร้าง
+                        </button>
+                        <button mat-button color="warn" (click)="onSave()" *ngIf="joborderData._id">
+                            บันทึก
+                        </button>
+                    </div>
+                </div>
 
-  <!-- CENTER -->
-  <div class="center">
-    <!-- HEADER -->
-    <div
-      class="header accent"
-      fxLayout="row"
-      fxLayoutAlign="space-between center"
-    >
-      <!-- APP TITLE -->
-      <div fxLayout="row" fxLayoutAlign="start center">
-        <button class="mat-icon-button mr-0 mr-sm-16" (click)="goBack()">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
+                <div cdkDropList (cdkDropListDropped)="drop($event)">
+                    <div class="list-bg" cdkDrag *ngFor="let item of joborderData.contactLists; let i = index">
+                        <div class="list-item">
+                            <div class="cursor" (click)="navigateByItem(item)">
+                                <div>
+                                    <span fxLayoutAlign="end center">
+                                        ({{ i + 1 }}/{{ joborderData.contactLists.length }})
+                                    </span>
+                                    <span fxLayoutAlign="start center">
+                                        ชื่อ: {{item.displayName}}
+                                    </span>
+                                </div>
+                                <div>
+                                    ที่อยู่: {{ item.addressLine1 }}
+                                    {{ item.addressStreet }}
+                                    {{ item.addressSubDistrict }}
+                                    {{ item.addressDistrict }}
+                                    {{ item.addressProvince }}
+                                    {{ item.addressPostCode }}
+                                </div>
+                                <div *ngIf="item.mobileNo1">
+                                    เบอร์โทร1: {{item.mobileNo1}}
+                                </div>
+                                <div *ngIf="item.mobileNo2">
+                                    เบอร์โทร2: {{item.mobileNo2}}
+                                </div>
+                                <div *ngIf="item.mobileNo3">
+                                    เบอร์โทร3: {{item.mobileNo3}}
+                                </div>
+                                <div *ngIf="item.lineUserId">
+                                    LineId: {{item.lineUserId}}
+                                </div>
+                                <div>
+                                    ประเภท:
+                                    <span class="delivery-color">รถธรรมธุรกิจ</span>
+                                    <span class="shareholder-color" *ngIf="item.isShareHolder">, ผู้ถือหุ้น</span>
+                                </div>
+                                <div>
+                                    Status:
+                                    <span *ngIf="item.contactStatus === 'select'">เลือกแล้ว</span>
+                                    <span *ngIf="item.contactStatus === 'waitapprove'">รอตอบกลับ</span>
+                                    <span *ngIf="item.contactStatus === 'confirm'">ยืนยัน</span>
+                                    <span *ngIf="item.contactStatus === 'reject'">ปฏิเสธ</span>
+                                </div>
+                            </div>
+                            <div class="mt-8" fxLayout="row wrap" fxLayoutAlign="start center">
+                                <div fxFlex="25" *ngIf="item.lineUserId">
+                                    <button mat-flat-button class="btn-list-status"
+                                        [ngClass]="{ 'color-s-btn':joborderData._id && item.contactStatus === 'select' }"
+                                        (click)="onChangeStatus('sendLine', i)"
+                                        [disabled]="!joborderData._id || item.contactStatus !== 'select'">
+                                        Send Line
+                                    </button>
+                                </div>
 
-        <div
-          class="logo mb-24 mb-md-0"
-          fxLayout="row"
-          fxLayoutAlign="start center"
-        >
-          <mat-icon
-            class="logo-icon s-32 mr-16"
-            [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }"
-          >
-            edit
-          </mat-icon>
-          <span
-            class="logo-text h1"
-            [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }"
-          >
-          joborderForm
-          </span>
-        </div>
-        <div
-          fxFlex="100"
-          fxFlex.gt-sm="40"
-          class="pl-20  pr-16"
-          fxLayoutAlign="end"
-        >
-          <button
-            [disabled]="joborderForm.invalid"
-            mat-fab
-            color="warn"
-            (click)="onSave()"
-          >
-            <mat-icon class="icon-position">save</mat-icon>
-          </button>
-        </div>
-      </div>
-      <!-- / APP TITLE -->
+                                <div fxFlex="25">
+                                    <button mat-flat-button class="btn-list-status" [ngClass]="{ 'color-c-btn':
+                                    (joborderData._id && item.contactStatus === 'waitapprove') ||
+                                    item.contactStatus === 'confirm' ||
+                                    item.contactStatus === 'reject' }" (click)="onChangeStatus('confirm', i)"
+                                        [disabled]="(!joborderData._id || item.contactStatus === 'select') && item.lineUserId">
+                                        Confirm
+                                    </button>
+                                </div>
+
+                                <div fxFlex="25" *ngIf="!item.haveLine">
+                                    <button mat-flat-button class="btn-list-status" [ngClass]="{ 'color-c-btn':
+                                    (joborderData._id && item.contactStatus === 'waitapprove') ||
+                                    item.contactStatus === 'confirm' ||
+                                    item.contactStatus === 'reject' }" (click)="onChangeStatus('reject', i)"
+                                        [disabled]="!joborderData._id || item.contactStatus === 'select'">
+                                        Reject
+                                    </button>
+                                </div>
+
+                                <div fxFlex="25">
+                                    <button mat-flat-button color="warn" (click)="onDeleteList(i)"
+                                        [disabled]="item.contactStatus === 'confirm' || item.contactStatus === 'reject'">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-sidenav>
+
+            <mat-sidenav-content>
+                <div class="btn-nav">
+                    <button mat-icon-button (click)="goBack()">
+                        <mat-icon>arrow_back</mat-icon>
+                    </button>
+                    <div *ngIf="!sideNaveOpened">
+                        <button mat-icon-button class="btn-sort-contain" (click)="sidenave.toggle()">
+                            <mat-icon class="btn-size">arrow_right</mat-icon>
+                        </button>
+                    </div>
+                    <div *ngIf="sideNaveOpened">
+                        <button mat-icon-button class="btn-sort-contain" (click)="sidenave.toggle()">
+                            <mat-icon class="btn-size">arrow_left</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="btn-nav2">
+                    <div>
+                        <span></span><span class="shareholder-color">ผู้ถือหุ้น</span>
+                    </div>
+                    <div>
+                        <span></span><span class="delivery-color">รถธรรมธุรกิจ</span>
+                    </div>
+                </div>
+
+                <agm-map class="map-size" (mapClick)="closeInfo()" [latitude]="lat" [longitude]="lng" [zoom]="zoom"
+                    [disableDefaultUI]="false" [zoomControl]="false">
+                    <div *ngFor="let markerItem of markersData; let i = index">
+                        <div *ngIf="markerItem.longitude || markerItem.latitude">
+                            <agm-marker (markerClick)="clickedInfoWindow(infoWindow)" [latitude]="markerItem.latitude"
+                                [longitude]="markerItem.longitude" [iconUrl]="markerItem.icon">
+                                <agm-info-window #infoWindow>
+                                    <div class="h3">
+                                        {{markerItem.title? markerItem.title: "คุณ"}}
+                                        {{markerItem.displayName? markerItem.displayName: "ไม่ระบุ"}}
+                                    </div>
+                                    <div class="h4 mt-8">
+                                        {{ markerItem.addressLine1 }}
+                                        {{ markerItem.addressStreet }}
+                                        {{ markerItem.addressSubDistrict }}
+                                        {{ markerItem.addressDistrict }}
+                                    </div>
+                                    <div class="h4">
+                                        {{ markerItem.addressProvince }}
+                                        {{ markerItem.addressPostCode }}
+                                    </div>
+                                    <div class="mt-8 text-right">
+                                        <button mat-flat-button color="primary" *ngIf="markerItem.contactStatus === ''"
+                                            (click)="clickedMarker(markerItem, i)">
+                                            เลือก
+                                        </button>
+                                        <div *ngIf="markerItem.contactStatus !== ''">
+                                            ดำเนินการแล้วที่เอกสาร
+                                            <span *ngIf="markerItem.docno === joborderData.docno">นี้</span>
+                                            <span *ngIf="markerItem.docno !== joborderData.docno">
+                                                {{ markerItem.docno }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </agm-info-window>
+                            </agm-marker>
+                        </div>
+                    </div>
+                </agm-map>
+            </mat-sidenav-content>
+        </mat-sidenav-container>
     </div>
-    <!-- / HEADER -->
-
-    <!-- CONTENT CARD -->
-    <div class="content-card">
-      <!-- CONTENT -->
-      <div class="content">
-        <mat-tab-group fxFlex>
-          <mat-tab label="joborder">
-            <form [formGroup]="joborderForm">
-              <div fxLayout="row" class="pl-20  pr-16" fxLayoutAlign="center">
-                <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                  <mat-label>ชื่อ</mat-label>
-                  <input matInput formControlName="name" name="name">
-                </mat-form-field>
-              </div>
-            
-            </form>
-          </mat-tab>
-          
-        </mat-tab-group>
-        <!--  -->
-      </div>
-      <!-- /CONTENT -->
-    </div>
-    <!-- /CONTENT CARD -->
-  </div>
-  <!-- /CENTER -->
 </div>

@@ -137,6 +137,51 @@ export class VehicleFormComponent implements OnInit {
     driverInfo.controls["lastName"].setValue(
       temp[0].lastName
     );
+    driverInfo.controls["displayName"].setValue(
+      temp[0].displayName
+    );
+    driverInfo.controls["persanalId"].setValue(
+      temp[0].persanalId
+    );
+    driverInfo.controls["isShareHolder"].setValue(
+      temp[0].isShareHolder
+    );
+    driverInfo.controls["mobileNo1"].setValue(
+      temp[0].mobileNo1
+    );
+    driverInfo.controls["mobileNo2"].setValue(
+      temp[0].mobileNo2
+    );
+    driverInfo.controls["mobileNo3"].setValue(
+      temp[0].mobileNo3
+    );
+    driverInfo.controls["addressLine1"].setValue(
+      temp[0].addressLine1
+    );
+    driverInfo.controls["addressStreet"].setValue(
+      temp[0].addressStreet
+    );
+    driverInfo.controls["addressSubDistrict"].setValue(
+      temp[0].addressSubDistrict
+    );
+    driverInfo.controls["addressDistrict"].setValue(
+      temp[0].addressDistrict
+    );
+    driverInfo.controls["addressProvince"].setValue(
+      temp[0].addressProvince
+    );
+    driverInfo.controls["addressPostCode"].setValue(
+      temp[0].addressPostCode
+    );
+    driverInfo.controls["lineUserId"].setValue(
+      temp[0].lineUserId
+    );
+    driverInfo.controls["latitude"].setValue(
+      temp[0].latitude
+    );
+    driverInfo.controls["longitude"].setValue(
+      temp[0].longitude
+    );
   }
 
   goBack(){
