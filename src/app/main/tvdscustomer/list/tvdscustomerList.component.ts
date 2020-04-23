@@ -22,6 +22,13 @@ export class TvdscustomerListComponent implements OnInit {
   temp = [];
   ColumnMode = ColumnMode;
 
+  page = {
+    limit: 10,
+    count: 0,
+    offset: 0,
+  };
+  keyword = "";
+
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private router: Router,
@@ -36,6 +43,8 @@ export class TvdscustomerListComponent implements OnInit {
   ngOnInit(): void {
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
+    this.temp = this.route.snapshot.data.items.data;
+    this.page.count = this.route.snapshot.data.items.totalCount
   }
 
   addData() {
@@ -46,20 +55,58 @@ export class TvdscustomerListComponent implements OnInit {
     this.router.navigateByUrl("/tvdscustomer/tvdscustomerForm/" + item._id);
   }
 
-  deleteData(item) {
-    this.tvdscustomerService.deleteTvdscustomerData(item).then((res) => {
-      this.tvdscustomerService.getTvdscustomerDataList().subscribe((res: any) => {
-        this.rows = res.data;
-      })
-    })
+  async deleteData(item) {
+    this.spinner.show();
+    let deleted = await this.tvdscustomerService.deleteTvdscustomerData(item);
+    this.reloadData();
+    // this.tvdscustomerService.deleteTvdscustomerData(item).then((res) => {
+    //   this.tvdscustomerService.getTvdscustomerDataList().subscribe((res: any) => {
+    //     this.rows = res.data;
+    //   })
+    // })
   }
+
+  pageCallback(pageInfo: { count?: number, pageSize?: number, limit?: number, offset?: number }) {
+    this.page.offset = pageInfo.offset;
+    this.reloadData();
+  }
+
+  async reloadData() {
+    console.log(this.keyword);
+    let res: any = await this.tvdscustomerService.getTvdscustomerDataList(
+      this.page.offset,
+      this.page.limit,
+      this.keyword
+    )
+    console.log(res.data);
+    this.rows = res.data;
+    this.temp = res.data;
+    this.page.count = res.totalCount;
+
+  }
+
+  // async reloadData(){
+  //   console.log(this.keyword);
+  //   let res: any = await this.involvedpartyService.getInvolvedpartyDataList(
+  //     this.page.offset,
+  //     this.page.limit,
+  //     this.keyword
+  //   );
+  //   console.log(res.data);
+  //   this.rows = res.data;
+  //   this.temp = res.data;
+  //   this.page.count = res.totalCount;
+  // }
 
   updateFilter(event) {
     //change search keyword to lower case
     // const val = event.target.value.toLowerCase();
 
     // filter our data
-    
+    this.keyword = event.target.value;
+    this.reloadData();
+    this.page.offset = 0;
+
   }
 
 }
