@@ -39,10 +39,10 @@ import { DialogConfirmModule } from './dialog-confirm/dialog-confirm.module';
 const config: SocketIoConfig = { url: environment.apiUrl, options: {} };
 
 const appRoutes: Routes = [
-  // {
-  //   path: 'auth',
-  //   loadChildren: './authentication/authentication.module#AuthenticationModule'
-  // },
+  { // อย่าปิดนะครับ
+    path: 'auth',
+    loadChildren: './authentication/authentication.module#AuthenticationModule'
+  },
   {
     path: 'order',
     loadChildren: './main/order/order.module#OrderModule'
