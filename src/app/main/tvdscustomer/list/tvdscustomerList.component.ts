@@ -9,6 +9,7 @@ import { ColumnMode } from "@swimlane/ngx-datatable";
 import { TvdscustomerService } from "../services/tvdscustomer.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DialogConfirmService } from "app/dialog-confirm/service/dialog-confirm.service";
+import * as moment from 'moment';
 import { environment } from 'environments/environment';
 
 @Component({
@@ -47,6 +48,15 @@ export class TvdscustomerListComponent implements OnInit {
     this.rows = this.route.snapshot.data.items.data;
     this.temp = this.route.snapshot.data.items.data;
     this.page.count = this.route.snapshot.data.items.totalCount;
+    this.formatMoment();
+  }
+
+  formatMoment() {
+    for (let i = 0; i < this.rows.length; i++) {
+      const row = this.rows[i];
+      row.created = moment(row.created).format("DD/MM/YYYY");
+      row.updated = moment(row.updated).format("DD/MM/YYYY");
+    }
   }
 
   addData() {
@@ -100,20 +110,8 @@ export class TvdscustomerListComponent implements OnInit {
     this.rows = res.data;
     this.temp = res.data;
     this.page.count = res.totalCount;
+    this.formatMoment();
   }
-
-  // async reloadData(){
-  //   console.log(this.keyword);
-  //   let res: any = await this.involvedpartyService.getInvolvedpartyDataList(
-  //     this.page.offset,
-  //     this.page.limit,
-  //     this.keyword
-  //   );
-  //   console.log(res.data);
-  //   this.rows = res.data;
-  //   this.temp = res.data;
-  //   this.page.count = res.totalCount;
-  // }
 
   updateFilter(event) {
     //change search keyword to lower case
