@@ -14,12 +14,19 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AgmCoreModule } from '@agm/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SelectCarAndDateComponent } from './select-car-and-date/select-car-and-date.component';
+import { JoborderPdfComponent } from './joborder-pdf/joborder-pdf.component';
 
 
 const routes = [
   {
     path: "joborderForm/:id",
     component: JoborderFormComponent,
+    resolve: { items: JoborderService },
+    canActivate: [AuthenGuardService]
+  },
+  {
+    path: "joborderPdf/:id",
+    component: JoborderPdfComponent,
     resolve: { items: JoborderService },
     canActivate: [AuthenGuardService]
   },
@@ -34,7 +41,7 @@ const routes = [
 @NgModule({
   declarations: [
     JoborderListComponent,
-    JoborderFormComponent, SelectCarAndDateComponent
+    JoborderFormComponent, SelectCarAndDateComponent, JoborderPdfComponent
   ],
   imports: [
     RouterModule.forChild(routes),
