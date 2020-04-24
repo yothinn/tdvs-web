@@ -50,7 +50,8 @@
         <div class="content-card">
           <div class="content">
             <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64" [footerHeight]="64"
-              rowHeight="auto" scrollbarH="true" [limit]="10" [rows]="rows">
+              rowHeight="auto" scrollbarH="true" [externalPaging]="true" [count]="page.count"
+              [offset]="page.offset" [limit]="page.limit" [rows]="rows" (page)="pageCallback($event)">
               <ngx-datatable-column name="ทะเบียนรถ" [flexGrow]="2.5">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.lisenceID }}
