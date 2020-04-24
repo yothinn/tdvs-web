@@ -10,6 +10,7 @@ import { VehicleService } from '../services/vehicle.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DialogConfirmService } from 'app/dialog-confirm/service/dialog-confirm.service';
 import * as moment from "moment";
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-vehicle-list',
@@ -37,7 +38,8 @@ export class VehicleListComponent implements OnInit {
     private route: ActivatedRoute,
     private vehicleService: VehicleService,
     private spinner: NgxSpinnerService,
-    public dialogConfirmService: DialogConfirmService
+    public dialogConfirmService: DialogConfirmService,
+    private _snackBar: MatSnackBar,
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
@@ -67,29 +69,33 @@ export class VehicleListComponent implements OnInit {
     this.router.navigateByUrl("/vehicle/vehicleForm/" + item._id);
   }
 
+
   deleteData(item) {
-    
     const body = {
-      title: "ยืนยันการลบ",
-      message: "กรุณาตรวจสอบอีกรอบ",
+      title: "คุณกำลังลบรถทะเบียน:" + " " + item.lisenceID,
+      message: "คุณได้ตรวจสอบและยืนยันการลบนี้แล้วใช่หรือไม่?",
     };
+
     this.dialogConfirmService.show(body).then(async (result) => {
       if (result) {
         this.spinner.show();
-        let deleted = await this.vehicleService.deleteVehicleData(
-          item
-        );
-        this.reloadData();
-        this.spinner.hide();
-    
-      }
+        this.vehicleService.deleteVehicleData(item).then((res) => {
+          this._snackBar.open("ลบข้อมูลการจัดการรถเสร็จสิ้น", "", {
+            duration: 5000,
+          });
+          this.reloadData();
+          this.formatMoment();
+          this.spinner.hide();
+
+          // });
+        }).catch((res) => {
+          this._snackBar.open("การลบผิดพลาด กรุณาลองใหม่ภายหลัง", "", {
+            duration: 5000,
+          });
+        });
+      };
     });
 
-    // this.vehicleService.deleteVehicleData(item).then((res) => {
-    //   this.vehicleService.getVehicleDataList().subscribe((res: any) => {
-    //     this.rows = res.data;
-    //   })
-    // })
   }
 
   pageCallback(pageInfo: {
@@ -124,7 +130,7 @@ export class VehicleListComponent implements OnInit {
     this.keyword = event.target.value;
     this.reloadData();
     this.page.offset = 0;
-    
+
   }
 
 }
