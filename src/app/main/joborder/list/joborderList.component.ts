@@ -10,6 +10,8 @@ import { ColumnMode } from '@swimlane/ngx-datatable';
 import { JoborderService } from '../services/joborder.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as moment from 'moment';
+import { DialogConfirmService } from 'app/dialog-confirm/service/dialog-confirm.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-joborder-list',
@@ -29,7 +31,9 @@ export class JoborderListComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private joborderService: JoborderService,
+    public dialogConfirmService: DialogConfirmService,
     private spinner: NgxSpinnerService,
+    private _snackBar: MatSnackBar,
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
@@ -83,13 +87,32 @@ export class JoborderListComponent implements OnInit {
   }
 
   deleteData(item) {
-    this.joborderService.deleteJoborderData(item).then((res) => {
-      this.joborderService.getJoborderDataList().subscribe((res: any) => {
-        this.rows = res.data;
-        this.formatMoment();
-        this.sortRows();
-      })
-    })
+    const body = {
+      title: "คุณกำลังลบใบสั่งงาน: " + item.docno,
+      message: "คุณได้ตรวจสอบและยืนยันการลบนี้แล้วใช่หรือไม่?",
+    };
+
+    this.dialogConfirmService.show(body).then(async (result) => {
+      if (result) {
+        this.spinner.show();
+        this.joborderService.deleteJoborderData(item).then((res) => {
+          this._snackBar.open("ลบใบสั่งงานเสร็จสิ้น", "", {
+            duration: 5000,
+          });
+          this.joborderService.getJoborderDataList().subscribe((res: any) => {
+            this.rows = res.data;
+            this.formatMoment();
+            this.sortRows();
+            this.spinner.hide();
+          });
+        }).catch((res)=>{
+          this._snackBar.open("การลบผิดพลาด กรุณาลองใหม่ภายหลัง", "", {
+            duration: 5000,
+          });
+        });
+      };
+    });
+
   }
 
   updateFilter(event) {
@@ -133,7 +156,7 @@ export class JoborderListComponent implements OnInit {
       let contact: any = data.contactLists[index];
       let mno = "";
       contact.directContact.forEach(ch => {
-        if(ch.method === "mobile"){
+        if (ch.method === "mobile") {
           mno += ch.value + " ";
         }
       });
@@ -149,7 +172,7 @@ export class JoborderListComponent implements OnInit {
       );
       doc.text(45, line + 10, `${contact.contactAddress.addressLine1} ${contact.contactAddress.addressStreet}`);
       doc.text(45, line + 20, `${contact.contactAddress.addressSubDistrict} ${contact.contactAddress.addressDistrict} ${contact.contactAddress.addressProvince} ${contact.contactAddress.addressPostalCode}`);
-      
+
       line += 33;
     }
 
