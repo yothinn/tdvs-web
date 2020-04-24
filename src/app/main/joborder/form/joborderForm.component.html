@@ -72,6 +72,7 @@
                                     Status:
                                     <span *ngIf="item.contactStatus === 'select'">เลือกแล้ว</span>
                                     <span *ngIf="item.contactStatus === 'waitapprove'">รอตอบกลับ</span>
+                                    <span *ngIf="item.contactStatus === 'waitcontact'">รอติดต่อ</span>
                                     <span *ngIf="item.contactStatus === 'confirm'">ยืนยัน</span>
                                     <span *ngIf="item.contactStatus === 'reject'">ปฏิเสธ</span>
                                 </div>
@@ -86,22 +87,38 @@
                                     </button>
                                 </div>
 
-                                <div fxFlex="25">
+                                <div fxFlex="25" *ngIf="item.lineUserId">
                                     <button mat-flat-button class="btn-list-status" [ngClass]="{ 'color-c-btn':
                                     (joborderData._id && item.contactStatus === 'waitapprove') ||
                                     item.contactStatus === 'confirm' ||
                                     item.contactStatus === 'reject' }" (click)="onChangeStatus('confirm', i)"
-                                        [disabled]="(!joborderData._id || item.contactStatus === 'select') && item.lineUserId">
+                                        [disabled]="!joborderData._id || item.contactStatus === 'select'">
                                         Confirm
                                     </button>
                                 </div>
 
-                                <div fxFlex="25" *ngIf="!item.haveLine">
-                                    <button mat-flat-button class="btn-list-status" [ngClass]="{ 'color-c-btn':
+                                <div fxFlex="25" *ngIf="item.lineUserId">
+                                    <button mat-flat-button class="btn-list-status" [ngClass]="{ 'color-r-btn':
                                     (joborderData._id && item.contactStatus === 'waitapprove') ||
                                     item.contactStatus === 'confirm' ||
                                     item.contactStatus === 'reject' }" (click)="onChangeStatus('reject', i)"
                                         [disabled]="!joborderData._id || item.contactStatus === 'select'">
+                                        Reject
+                                    </button>
+                                </div>
+
+                                <div fxFlex="25" *ngIf="!item.lineUserId">
+                                    <button mat-flat-button class="btn-list-status"
+                                        [ngClass]="{ 'color-c-btn':joborderData._id}"
+                                        (click)="onChangeStatus('confirm', i)" [disabled]="!joborderData._id">
+                                        Confirm
+                                    </button>
+                                </div>
+
+                                <div fxFlex="25" *ngIf="!item.lineUserId">
+                                    <button mat-flat-button class="btn-list-status"
+                                        [ngClass]="{ 'color-r-btn':joborderData._id}"
+                                        (click)="onChangeStatus('reject', i)" [disabled]="!joborderData._id">
                                         Reject
                                     </button>
                                 </div>
