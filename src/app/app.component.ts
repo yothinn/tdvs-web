@@ -15,6 +15,7 @@ import { navigation } from 'app/navigation/navigation';
 import { locale as navigationEnglish } from 'app/navigation/i18n/en';
 import { locale as navigationThai } from 'app/navigation/i18n/th';
 import { Socket } from 'ng-socket-io';
+import { environment } from 'environments/environment';
 
 @Component({
     selector   : 'app',
@@ -56,16 +57,18 @@ export class AppComponent implements OnInit, OnDestroy
         this.socket.connect();
 
         //รอรับข้อความ
-        this.socket.on('check-connection', (message) => {
-            console.log(message);
-        });
+        // this.socket.on('check-connection', (message) => {
+        //     console.log(message);
+        // });
 
-        this.socket.on('user-confirm-reject', (message) => {
-            console.log(message);
-        });
+        // this.socket.on('user-confirm-reject', (message) => {
+        //     console.log(message);
+        // });
 
         //ส่งข้อความ
-        socket.emit('my message', 'hello socket');
+        // socket.emit('my message', 'hello socket');
+
+        
 
 
 

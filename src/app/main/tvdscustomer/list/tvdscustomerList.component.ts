@@ -9,6 +9,7 @@ import { ColumnMode } from "@swimlane/ngx-datatable";
 import { TvdscustomerService } from "../services/tvdscustomer.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DialogConfirmService } from "app/dialog-confirm/service/dialog-confirm.service";
+import { environment } from 'environments/environment';
 
 @Component({
   selector: "app-tvdscustomer-list",
@@ -41,6 +42,7 @@ export class TvdscustomerListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(environment.apiUrl);
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
     this.temp = this.route.snapshot.data.items.data;
