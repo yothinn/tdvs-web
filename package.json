@@ -9,6 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "heroku-postbuild": "ng build --prod",
+    "deploy": "node --max-old-space-size=8192 node_modules/@angular/cli/bin/ng build --prod --aot",
     "deploy-staging": "node --max-old-space-size=8192 node_modules/@angular/cli/bin/ng build --configuration=staging",
     "deploy-prod": "node --max-old-space-size=8192 node_modules/@angular/cli/bin/ng build --configuration=production"
   },
