@@ -5,14 +5,14 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import { hmrBootstrap } from 'hmr';
 
-if ( environment.production )
+if ( environment.production || environment.staging)
 {
     enableProdMode();
 }
 
 const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
-if ( environment.hmr )
+if ( environment.hrm)
 {
     if ( module['hot'] )
     {

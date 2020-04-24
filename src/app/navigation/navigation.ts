@@ -14,6 +14,14 @@ export const navigation: FuseNavigation[] = [
                 type: 'item',
                 icon: 'description',
                 url: '/order'
+            },
+            {
+                id: 'joborder',
+                title: 'joborder',
+                translate: 'รายการใบสั่งงาน(new)',
+                type: 'item',
+                icon: 'description',
+                url: '/joborder'
             }
         ]
     },
