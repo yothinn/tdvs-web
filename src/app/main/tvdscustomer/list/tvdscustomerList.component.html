@@ -13,7 +13,7 @@
           format_list_numbered
         </mat-icon>
         <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
-          tvdscustomerList
+          รายการข้อมูลสมาชิก
         </span>
       </div>
       <!-- / APP TITLE -->
@@ -39,41 +39,57 @@
               [footerHeight]="64" rowHeight="auto" scrollbarH="true" [externalPaging]="true" [count]="page.count"
               [offset]="page.offset" [limit]="page.limit" [rows]="rows" (page)="pageCallback($event)">
 
-              <ngx-datatable-column name="ชื่อ - นามสกุล" [flexGrow]="2.5">
+              <ngx-datatable-column name="ชื่อ-นามสกุล" [flexGrow]="3">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  {{ row.displayName }}
+                  {{ row.displayName ? row.displayName : "" }}
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="ที่อยู่" [flexGrow]="5">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{
-                     row.addressLine1 
+                    row.addressLine1 ? row.addressLine1 : ""
                   }}
                   {{
-                    row.addressSubdistric
-                      
+                    row.addressStreet ? row.addressStreet : ""
                   }}
                   {{
-                    row.addressDistric
+                    row.addressSubDistrict ? row.addressSubDistrict : ""
                   }}
                   {{
-                    row.addressProvince 
+                    row.addressDistrict ? row.addressDistrict : ""
+                  }}
+                  {{
+                    row.addressProvince ? row.addressProvince : ""
                   }}
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="รหัสไปรษณี" [flexGrow]="2.5">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{
-                    row.addressPostcode
-                     
+                    row.addressPostCode ? row.addressPostCode : ""
+                  }}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="วันที่สร้างข้อมูล" [flexGrow]="3">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                  {{
+                    row.created ? row.created : ""
+                  }}
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="วันที่แก้ไขข้อมูล" [flexGrow]="3">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                  {{
+                    row.updated ? row.updated : ""
                   }}
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="เบอร์โทรศัพท์" [flexGrow]="2.5">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  {{ row.mobileNo1 }}
+                  {{ row.mobileNo1 ? row.mobileNo1 : "" }}
                 </ng-template>
               </ngx-datatable-column>
+
               <ngx-datatable-column [flexGrow]="1">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   <button class="mat-icon-button" aria-label="More" [matMenuTriggerFor]="moreMenu"

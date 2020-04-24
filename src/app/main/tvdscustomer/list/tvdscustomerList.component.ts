@@ -9,6 +9,7 @@ import { ColumnMode } from "@swimlane/ngx-datatable";
 import { TvdscustomerService } from "../services/tvdscustomer.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DialogConfirmService } from "app/dialog-confirm/service/dialog-confirm.service";
+import * as moment from 'moment';
 
 @Component({
   selector: "app-tvdscustomer-list",
@@ -45,6 +46,15 @@ export class TvdscustomerListComponent implements OnInit {
     this.rows = this.route.snapshot.data.items.data;
     this.temp = this.route.snapshot.data.items.data;
     this.page.count = this.route.snapshot.data.items.totalCount;
+    this.formatMoment();
+  }
+
+  formatMoment() {
+    for (let i = 0; i < this.rows.length; i++) {
+      const row = this.rows[i];
+      row.created = moment(row.created).format("DD/MM/YYYY");
+      row.updated = moment(row.updated).format("DD/MM/YYYY");
+    }
   }
 
   addData() {
