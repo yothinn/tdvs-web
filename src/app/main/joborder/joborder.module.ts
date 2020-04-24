@@ -20,14 +20,14 @@ const routes = [
   {
     path: "joborderForm/:id",
     component: JoborderFormComponent,
-    resolve: { items: JoborderService }
-    // canActivate: [AuthenGuardService]
+    resolve: { items: JoborderService },
+    canActivate: [AuthenGuardService]
   },
   {
     path: '**',
     component: JoborderListComponent,
-    resolve: { items: JoborderService }
-    // canActivate: [AuthenGuardService]
+    resolve: { items: JoborderService },
+    canActivate: [AuthenGuardService]
   }
 ];
 
