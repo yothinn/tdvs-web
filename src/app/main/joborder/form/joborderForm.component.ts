@@ -168,11 +168,16 @@ export class JoborderFormComponent implements OnInit {
       });
       // console.log(mIndex)
       // console.log(item)
+      let defualtStatus = "select"
+
+      if (!item.lineUserId) {
+        defualtStatus = "waitcontact"
+      }
 
       if (mIndex === -1) {
         let itemList = {
           _id: item._id,
-          contactStatus: "select",
+          contactStatus: defualtStatus,
           title: item.title,
           firstName: item.firstName,
           lastName: item.lastName,
