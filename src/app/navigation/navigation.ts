@@ -56,5 +56,21 @@ export const navigation: FuseNavigation[] = [
                 url: '/tvdscustomer'
             }
         ]
+    },
+    {
+        id: 'Menu Vehicle',
+        title: 'Menu Vehicle',
+        translate: 'การจัดการรถ',
+        type: 'group',
+        children: [
+            {
+                id: 'vehicle',
+                title: 'vehicle',
+                translate: 'รายการข้อมูลการจัดการรถ',
+                type: 'item',
+                icon: 'directions_car',
+                url: '/vehicle'
+            }
+        ]
     }
 ];
