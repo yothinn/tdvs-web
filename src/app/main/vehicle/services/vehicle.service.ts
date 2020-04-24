@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { ActivatedRouteSnapshot } from "@angular/router";
 import { Observable, BehaviorSubject } from "rxjs";
 import { environment } from "environments/environment";
@@ -30,7 +30,7 @@ export class VehicleService {
         return this.getVehicleData(this.routeParams.id);
       }
     } else {
-      return this.getVehicleDataList();
+      return this.getVehicleDataList(0, 10, '');
     }
   }
 
@@ -41,11 +41,17 @@ export class VehicleService {
     });
   }
 
-  getVehicleDataList(){
+  getVehicleDataList(pageNo, pageSize, keyword){
+    const params = new HttpParams()
+    .set("pageNo", `${pageNo + 1}`)
+    .set("size", `${pageSize}`)
+    .set("keyword", `${keyword}`);
+
     return this.http
     .get(api_url, {
-      headers: this.authorizationHeader()
-    });
+      headers: this.authorizationHeader(),
+      params: params,
+    }).toPromise();
   }
 
   getVehicleData(id: any) {
