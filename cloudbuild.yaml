@@ -20,3 +20,4 @@ steps:
     # Deploy container image to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['run', 'deploy', 'tvds-web-prod', '--image', 'gcr.io/$PROJECT_ID/tvds-web-prod', '--region', 'asia-east1','--platform', 'managed', '--allow-unauthenticated']  
+timeout: 900s
