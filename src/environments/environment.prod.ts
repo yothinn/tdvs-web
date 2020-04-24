@@ -1,6 +1,6 @@
 export const environment = {
-    production: true,
-    hmr       : false,
-    appName : 'tvds-prod',
-    apiUrl : $ENV.API_URL || 'https://tvds-service-7lgq2xsobq-de.a.run.app'
+  production: true,
+  staging: false,
+  appName: "tvds-prod",
+  apiUrl: "https://tvds-service-prod-7lgq2xsobq-de.a.run.app",
 };
