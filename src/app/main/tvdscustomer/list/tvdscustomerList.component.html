@@ -70,23 +70,25 @@
                   }}
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="วันที่สร้างข้อมูล" [flexGrow]="3">
+
+              <ngx-datatable-column name="เบอร์โทรศัพท์" [flexGrow]="2.5">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                  {{ row.mobileNo1 ? row.mobileNo1 : "" }}
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="วันที่สร้างข้อมูล" [flexGrow]="2.5">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{
                     row.created ? row.created : ""
                   }}
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="วันที่แก้ไขข้อมูล" [flexGrow]="3">
+              <ngx-datatable-column name="วันที่แก้ไขข้อมูล" [flexGrow]="2.5">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{
                     row.updated ? row.updated : ""
                   }}
-                </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="เบอร์โทรศัพท์" [flexGrow]="2.5">
-                <ng-template ngx-datatable-cell-template let-row="row">
-                  {{ row.mobileNo1 ? row.mobileNo1 : "" }}
                 </ng-template>
               </ngx-datatable-column>
 
