@@ -69,7 +69,7 @@ const appRoutes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'order'
+    redirectTo: 'joborder'
   }
 ];
 
