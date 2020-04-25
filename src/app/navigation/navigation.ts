@@ -7,18 +7,18 @@ export const navigation: FuseNavigation[] = [
         translate: 'ใบสั่งงาน',
         type: 'group',
         children: [
-            {
-                id: 'order',
-                title: 'order',
-                translate: 'รายการใบสั่งงาน',
-                type: 'item',
-                icon: 'description',
-                url: '/order'
-            },
+            // {
+            //     id: 'order',
+            //     title: 'order',
+            //     translate: 'รายการใบสั่งงาน',
+            //     type: 'item',
+            //     icon: 'description',
+            //     url: '/order'
+            // },
             {
                 id: 'joborder',
                 title: 'joborder',
-                translate: 'รายการใบสั่งงาน(new)',
+                translate: 'รายการใบสั่งงาน',
                 type: 'item',
                 icon: 'description',
                 url: '/joborder'

@@ -1,33 +1,31 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.service';
-import { fuseAnimations } from '@fuse/animations';
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
+import { fuseAnimations } from "@fuse/animations";
 
-import { Location } from '@angular/common';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Location } from "@angular/common";
+import { FormGroup, Validators, FormBuilder } from "@angular/forms";
 
-import { locale as english } from '../i18n/en';
-import { locale as thai } from '../i18n/th';
+import { locale as english } from "../i18n/en";
+import { locale as thai } from "../i18n/th";
 
-import { JoborderService } from '../services/joborder.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { JoborderService } from "../services/joborder.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { NgxSpinnerService } from "ngx-spinner";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { Socket } from "ng-socket-io";
-import { MatDialog } from '@angular/material/dialog';
-import * as moment from 'moment';
-import { SelectCarAndDateComponent } from '../select-car-and-date/select-car-and-date.component';
+import { MatDialog } from "@angular/material/dialog";
+import * as moment from "moment";
+import { SelectCarAndDateComponent } from "../select-car-and-date/select-car-and-date.component";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 
-
 @Component({
-  selector: 'app-joborder-form',
-  templateUrl: './joborderForm.component.html',
-  styleUrls: ['./joborderForm.component.scss'],
+  selector: "app-joborder-form",
+  templateUrl: "./joborderForm.component.html",
+  styleUrls: ["./joborderForm.component.scss"],
   encapsulation: ViewEncapsulation.None,
-  animations: fuseAnimations
+  animations: fuseAnimations,
 })
 export class JoborderFormComponent implements OnInit {
-
   joborderData: any = {};
   vehicleData: Array<any> = [];
   markersData: Array<any> = [];
@@ -59,19 +57,17 @@ export class JoborderFormComponent implements OnInit {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
-
   ngOnInit(): void {
-
     this.joborderData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
-        docno: "",
-        docdate: "",
-        carNo: "",
-        cusAmount: null,
-        orderStatus: "draft",
-        contactLists: [],
-      };
+          docno: "",
+          docdate: "",
+          carNo: "",
+          cusAmount: null,
+          orderStatus: "draft",
+          contactLists: [],
+        };
     console.log(this.joborderData);
 
     if (this.joborderData.contactLists.length > 0) {
@@ -88,21 +84,46 @@ export class JoborderFormComponent implements OnInit {
       console.log(message);
       if (message.docno === this.joborderData.docno) {
         this.joborderData = message;
+        this.socketUpdateMarkerOnMap();
       }
     });
 
     this.spinner.hide();
   }
 
-  getVehicleData() {
-    this.joborderService.getVehicleData().then((res) => {
-      this.vehicleData = res;
-      this.openCarAndDate();
-      this.spinner.hide();
-    }).catch((err) => {
-      console.log(err);
-      this.spinner.hide();
+  socketUpdateMarkerOnMap() {
+    this.joborderData.contactLists.forEach((contact) => {
+      // console.log(contact.contactStatus.substring(0,1).toUpperCase());
+      let label = contact.contactStatus.substring(0, 1).toUpperCase();
+      if (contact.contactStatus === "waitcontact") {
+        label = "S";
+      }
+      this.findOnMap(contact, label);
     });
+  }
+
+  getVehicleData() {
+    this.joborderService
+      .getVehicleData()
+      .then((res) => {
+        this.vehicleData = res;
+
+        // พี่โก๋ปรับให้ Modal เฉพาะกรณีสร้างใหม่
+        if (this.joborderData.docno === "") {
+          this.openCarAndDate();
+        } else {
+          let docdate = {
+            docdate: this.joborderData.docdate,
+          };
+          this.getMarkerData(docdate);
+        }
+
+        this.spinner.hide();
+      })
+      .catch((err) => {
+        console.log(err);
+        this.spinner.hide();
+      });
   }
 
   openCarAndDate(): void {
@@ -113,6 +134,7 @@ export class JoborderFormComponent implements OnInit {
         carNo: this.joborderData.carNo,
         docdate: this.joborderData.docdate,
         cars: this.vehicleData,
+        docno: this.joborderData.docno,
       },
     });
 
@@ -127,9 +149,17 @@ export class JoborderFormComponent implements OnInit {
         let docdate = {
           docdate: result.docdate,
         };
-        this.getMarkerData(docdate);
+        // console.log(docdate);
+        if (!this.joborderData._id) {
+          this.getMarkerData(docdate);
+        }else{
+          // this.spinner.hide();
+          this.onSave();
+        }
       } else {
-        this.router.navigateByUrl("/joborder");
+        if (!this.joborderData._id) {
+          this.router.navigateByUrl("/joborder");
+        }
       }
     });
   }
@@ -168,10 +198,10 @@ export class JoborderFormComponent implements OnInit {
       });
       // console.log(mIndex)
       // console.log(item)
-      let defualtStatus = "select"
+      let defualtStatus = "select";
 
       if (!item.lineUserId) {
-        defualtStatus = "waitcontact"
+        defualtStatus = "waitcontact";
       }
 
       if (mIndex === -1) {
@@ -195,7 +225,7 @@ export class JoborderFormComponent implements OnInit {
           addressPostCode: item.addressPostCode,
           lineUserId: item.lineUserId,
           latitude: item.latitude,
-          longitude: item.longitude
+          longitude: item.longitude,
         };
         // console.log(itemList)
 
@@ -211,6 +241,8 @@ export class JoborderFormComponent implements OnInit {
       if (this.joborderData.contactLists.length > 0) {
         this.sideNaveOpened = true;
       }
+      // พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
+      this.onSave();
     }
   }
 
@@ -220,6 +252,8 @@ export class JoborderFormComponent implements OnInit {
     if (this.joborderData.contactLists.length === 0) {
       this.sideNaveOpened = false;
     }
+    // พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
+    this.onSave();
   }
 
   onChangeStatus(status, i) {
@@ -242,19 +276,22 @@ export class JoborderFormComponent implements OnInit {
   }
 
   onSaveStatus(txt) {
-    this.joborderService.updateJoborderData(this.joborderData._id, this.joborderData).then(res => {
-      this.joborderData = res;
+    this.joborderService
+      .updateJoborderData(this.joborderData._id, this.joborderData)
+      .then((res) => {
+        this.joborderData = res;
 
-      if (txt === "c" || txt === "r") {
-        this._snackBar.open("อัพเดทสถานะเรียบร้อย", "", {
+        if (txt === "c" || txt === "r") {
+          this._snackBar.open("อัพเดทสถานะเรียบร้อย", "", {
+            duration: 7000,
+          });
+        }
+      })
+      .catch((err) => {
+        this._snackBar.open("อัพเดทสถานะไม่สำเร็จ โปรดลองใหม่", "", {
           duration: 7000,
         });
-      }
-    }).catch((err) => {
-      this._snackBar.open("อัพเดทสถานะไม่สำเร็จ โปรดลองใหม่", "", {
-        duration: 7000,
       });
-    })
   }
 
   findOnMap(jobOrderDataItem, txt) {
@@ -313,40 +350,50 @@ export class JoborderFormComponent implements OnInit {
                   type: "message",
                   label: "รับนัดหมาย",
                   text:
-                    "รับนัดหมาย วัน" + this.nameDate + "ที่: " + this.titleDate + " เลขเอกสาร: " + this.joborderData.docno
+                    "รับนัดหมาย วัน" +
+                    this.nameDate +
+                    "ที่: " +
+                    this.titleDate +
+                    " เลขเอกสาร: " +
+                    this.joborderData.docno,
                 },
                 {
                   type: "message",
                   label: "ปฏิเสธ",
                   text:
-                    "ปฏิเสธ วัน" + this.nameDate + "ที่: " + this.titleDate + " เลขเอกสาร: " + this.joborderData.docno
+                    "ปฏิเสธ วัน" +
+                    this.nameDate +
+                    "ที่: " +
+                    this.titleDate +
+                    " เลขเอกสาร: " +
+                    this.joborderData.docno,
                 },
               ],
               text:
                 "ตามที่ท่านได้ลงทะเบียนบริการกับ รถธรรมธุรกิจ ไว้ เรามีความยินดีที่จะนำสินค้า ข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวัน" +
-                this.nameDate + "ที่: " + this.titleDate +
-                " กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยเราจะติดต่อท่านอีกครั้งก่อนออกเดินทางไปยังที่นัดหมาย ขอบคุณครับ ธรรมธุรกิจ"
-            }
-          }
-        ]
+                this.nameDate +
+                "ที่: " +
+                this.titleDate +
+                " กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยเราจะติดต่อท่านอีกครั้งก่อนออกเดินทางไปยังที่นัดหมาย ขอบคุณครับ ธรรมธุรกิจ",
+            },
+          },
+        ],
       };
       // console.log(body)
-      this.joborderService.sendConFirmData(body).then((res) => {
-        this._snackBar.open("ส่งข้อความสำเร็จ รอยืนยัน", "", {
-          duration: 5000,
+      this.joborderService
+        .sendConFirmData(body)
+        .then((res) => {
+          this._snackBar.open("ส่งข้อความสำเร็จ รอยืนยัน", "", {
+            duration: 5000,
+          });
+        })
+        .catch((error) => {
+          this._snackBar.open("ส่งข้อความไม่สำเร็จ โปรดส่งใหม่", "", {
+            duration: 5000,
+          });
         });
-      }).catch((error) => {
-        this._snackBar.open("ส่งข้อความไม่สำเร็จ โปรดส่งใหม่", "", {
-          duration: 5000,
-        });
-      })
-
-    };
-
-
+    }
   }
-
-
 
   goBack() {
     this.spinner.show();
@@ -360,7 +407,7 @@ export class JoborderFormComponent implements OnInit {
     if (this.joborderData._id) {
       this.joborderService
         .updateJoborderData(this.joborderData._id, this.joborderData)
-        .then(res => {
+        .then((res) => {
           // console.log(res);
           this.joborderData = res;
 
@@ -370,7 +417,7 @@ export class JoborderFormComponent implements OnInit {
             duration: 7000,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.spinner.hide();
           this._snackBar.open("บันทึกไม่สำเร็จ", "", {
             duration: 7000,
@@ -396,10 +443,12 @@ export class JoborderFormComponent implements OnInit {
             duration: 7000,
           });
           if (this.joborderData._id) {
-            this.router.navigateByUrl("/joborder/joborderForm/" + this.joborderData._id);
+            this.router.navigateByUrl(
+              "/joborder/joborderForm/" + this.joborderData._id
+            );
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.spinner.hide();
           this._snackBar.open("สร้างเอกสารไม่สำเร็จ โปรดลองใหม่", "", {
             duration: 7000,
@@ -415,8 +464,8 @@ export class JoborderFormComponent implements OnInit {
       event.previousIndex,
       event.currentIndex
     );
-    console.log(this.joborderData.contactLists);
+    // console.log(this.joborderData.contactLists);
+    // พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
+    this.onSave();
   }
-
-
 }

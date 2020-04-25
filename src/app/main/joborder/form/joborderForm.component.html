@@ -4,14 +4,14 @@
             <mat-sidenav #sidenave class="sidenav-side" mode="side" [(opened)]="sideNaveOpened" fixedInViewport="true"
                 fixedTopGap="65" fixedBottomGap="0">
                 <div fxLayout="row wrap" fxLayoutAlign="start center">
-                    <div class="logo mb-24 mb-md-0" fxFlex="70" fxLayoutAlign="start center">
+                    <div class="logo mb-24 mb-md-0" fxFlex="60" fxLayoutAlign="start center">
                         <div fxLayout="column">
                             <div>
                                 <span class="logo-text h3">วันที่: </span>
                                 <span class="logo-text h5">{{ titleDate }}</span>
                             </div>
                             <div>
-                                <span class="logo-text h3">ผู้ส่ง: </span>
+                                <span class="logo-text h3">คนขับ: </span>
                                 <span class="logo-text h5" *ngIf="joborderData.carNo">{{joborderData.carNo}}</span>
                                 <span class="logo-text h5" *ngIf="!joborderData.carNo">ไม่เลือก</span>
                             </div>
@@ -21,13 +21,19 @@
                             </div>
                         </div>
                     </div>
-                    <div fxFlex="30" class="text-center">
-                        <button mat-button color="warn" (click)="onSave()" *ngIf="!joborderData._id">
+                    <div fxFlex="40" class="text-center">
+                        <!--พี่โก๋เอาออกเพราะทุก Action พี่โก๋ Save หมด-->
+                        <!-- <button mat-button color="warn" (click)="onSave()" *ngIf="!joborderData._id">
                             สร้าง
                         </button>
                         <button mat-button color="warn" (click)="onSave()" *ngIf="joborderData._id">
                             บันทึก
+                        </button> -->
+
+                        <button mat-button color="warn" (click)="openCarAndDate()" *ngIf="joborderData._id">
+                            แก้ไขข้อมูลคนขับ
                         </button>
+
                     </div>
                 </div>
 
