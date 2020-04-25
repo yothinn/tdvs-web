@@ -1,4 +1,3 @@
-import { jsPDF } from 'jspdf';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.service';
 import { fuseAnimations } from '@fuse/animations';
@@ -10,6 +9,8 @@ import { ColumnMode } from '@swimlane/ngx-datatable';
 import { JoborderService } from '../services/joborder.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as moment from 'moment';
+// import { jsPDF } from 'jspdf';
+import * as jsPDF from 'jspdf';
 import { DialogConfirmService } from 'app/dialog-confirm/service/dialog-confirm.service';
 import { MatSnackBar } from '@angular/material';
 
@@ -154,12 +155,7 @@ export class JoborderListComponent implements OnInit {
     let line = 57;
     for (let index = 0; index < data.contactLists.length; index++) {
       let contact: any = data.contactLists[index];
-      let mno = "";
-      contact.directContact.forEach(ch => {
-        if (ch.method === "mobile") {
-          mno += ch.value + " ";
-        }
-      });
+      let mno = `${contact.mobileNo1}`;
       if (line >= 257) {
         doc.addPage();
         line = 15;
@@ -168,10 +164,10 @@ export class JoborderListComponent implements OnInit {
       doc.text(
         45,
         line,
-        `คุณ ${contact.personalInfo.firstNameThai} ${contact.personalInfo.lastNameThai} [ ${mno}]`
+        `คุณ ${contact.firstName} ${contact.lastName} [ ${mno}]`
       );
-      doc.text(45, line + 10, `${contact.contactAddress.addressLine1} ${contact.contactAddress.addressStreet}`);
-      doc.text(45, line + 20, `${contact.contactAddress.addressSubDistrict} ${contact.contactAddress.addressDistrict} ${contact.contactAddress.addressProvince} ${contact.contactAddress.addressPostalCode}`);
+      doc.text(45, line + 10, `${contact.addressLine1} ${contact.addressStreet}`);
+      doc.text(45, line + 20, `${contact.addressSubDistrict} ${contact.addressDistrict} ${contact.addressProvince} ${contact.addressPostCode}`);
 
       line += 33;
     }
