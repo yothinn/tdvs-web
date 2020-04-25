@@ -7,7 +7,7 @@ import { environment } from "environments/environment";
 const api_url = environment.apiUrl + "/api/joborders/";
 const api_url_vehicle = environment.apiUrl + "/api/vehicles/";
 const api_url_markers = environment.apiUrl + "/api/jobordersupdatemap/";
-const api_url_line = environment.apiUrl + "/api/chatbot/sendmessage";
+const api_url_line = environment.apiUrl + "/api/lineconnects/members/push";
 
 @Injectable({
   providedIn: "root"
