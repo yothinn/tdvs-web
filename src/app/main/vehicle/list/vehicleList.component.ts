@@ -57,7 +57,12 @@ export class VehicleListComponent implements OnInit {
     for (let i = 0; i < this.rows.length; i++) {
       const row = this.rows[i];
       row.startDate = moment(row.startDate).format("DD/MM/YYYY");
-      row.endDate = moment(row.endDate).format("DD/MM/YYYY");
+      if(row.endDate){
+        row.endDate = moment(row.endDate).format("DD/MM/YYYY");
+      }else{
+        row.endDate = "ไม่กำหนด";
+      }
+      
     }
   }
 
