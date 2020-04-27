@@ -28,8 +28,8 @@ export class VehicledataFormComponent implements OnInit {
   // isOwner: string[] = ['บริษัท ธรรมธุรกิจ วิสาหกิจเพื่อสังคม จำกัด', 'รถร่วมบริการ'];
   // isCompany: string[] = ['บุคคลธรรมดา', 'นิติบุคคล'];
   isOwner: any[] = [
-    { name: 'บริษัท ธรรมธุรกิจ วิสาหกิจเพื่อสังคม จำกัด', value: 'BusinessFair' },
-    { name: 'รถร่วมบริการ', value: 'CarSharing' }
+    { name: 'บริษัท ธรรมธุรกิจ วิสาหกิจเพื่อสังคม จำกัด', value: 'true' },
+    { name: 'รถร่วมบริการ', value: 'false' }
   ];
 
   isCompany: any[] = [
@@ -38,26 +38,39 @@ export class VehicledataFormComponent implements OnInit {
   ];
 
   vehicleType: Array<any> = [
-    { value: 'กระบะ ตอนเดียว', viewValue: 'Pickup in one episode' },
+    { value: 'กระบะ ตอนเดียว', viewValue: 'กระบะ ตอนเดียว' },
+    { value: 'กระบะ 4 ประตู', viewValue: 'กระบะ 4 ประตู' }
+    // { value: 'กระบะ ตอนเดียว', viewValue: 'Pickup in one episode' },
     // { value: 'กระบะ แคป', viewValue: 'Pickup Truck Cap' },
-    { value: 'กระบะ 4 ประตู', viewValue: 'Pickup Double Cab' }
+    // { value: 'กระบะ 4 ประตู', viewValue: 'Pickup Double Cab' }
   ];
 
   vehicleBrand: Array<any> = [
-    { value: 'โตโยต้า', viewValue: 'Toyota Revo' },
-    { value: 'อีซูซุ', viewValue: 'Isuzu D-MAX' },
-    { value: 'ฟอร์ดเรนเจอร์', viewValue: 'Ford Ranger' },
-    { value: 'มาสด้า BT-50', viewValue: 'Mazda BT-50' },
-    { value: 'มิตซูบิชิไทรทัน', viewValue: 'Mitsubishi Triton' },
-    { value: 'นิสสันนาวารา', viewValue: 'Nissan Navara' },
-    { value: 'เชฟโรเลตโคโลราโด', viewValue: 'Chevrolet Colorado' },
-    { value: 'ทาทาซีนอน', viewValue: 'TATA Xenon' }
+    { value: 'โตโยต้า รีโว่', viewValue: 'โตโยต้า รีโว่' },
+    { value: 'อีซูซุ', viewValue: 'อีซูซุ' },
+    { value: 'ฟอร์ดเรนเจอร์', viewValue: 'ฟอร์ดเรนเจอร์' },
+    { value: 'มาสด้า BT-50', viewValue: 'มาสด้า BT-50' },
+    { value: 'มิตซูบิชิไทรทัน', viewValue: 'มิตซูบิชิไทรทัน' },
+    { value: 'นิสสันนาวารา', viewValue: 'นิสสันนาวารา' },
+    { value: 'เชฟโรเลตโคโลราโด', viewValue: 'เชฟโรเลตโคโลราโด' },
+    { value: 'ทาทาซีนอน', viewValue: 'ทาทาซีนอน' }
+    // { value: 'โตโยต้า', viewValue: 'Toyota Revo' },
+    // { value: 'อีซูซุ', viewValue: 'Isuzu D-MAX' },
+    // { value: 'ฟอร์ดเรนเจอร์', viewValue: 'Ford Ranger' },
+    // { value: 'มาสด้า BT-50', viewValue: 'Mazda BT-50' },
+    // { value: 'มิตซูบิชิไทรทัน', viewValue: 'Mitsubishi Triton' },
+    // { value: 'นิสสันนาวารา', viewValue: 'Nissan Navara' },
+    // { value: 'เชฟโรเลตโคโลราโด', viewValue: 'Chevrolet Colorado' },
+    // { value: 'ทาทาซีนอน', viewValue: 'TATA Xenon' }
   ];
 
   vehicleColor: Array<any> = [
-    { value: 'สีแดง', viewValue: 'red' },
-    { value: 'สีน้ำเงิน', viewValue: 'blue' },
-    { value: 'สีม่วง', viewValue: 'purple' }
+    // { value: 'สีแดง', viewValue: 'red' },
+    // { value: 'สีน้ำเงิน', viewValue: 'blue' },
+    // { value: 'สีม่วง', viewValue: 'purple' }
+    { value: 'สีแดง', viewValue: 'สีแดง' },
+    { value: 'สีน้ำเงิน', viewValue: 'สีน้ำเงิน' },
+    { value: 'สีม่วง', viewValue: 'สีม่วง' }
   ];
 
   constructor(
@@ -86,13 +99,13 @@ export class VehicledataFormComponent implements OnInit {
         vehicleType: "",
         vehicleColor: "",
         vehicleBrand: "",
-        isOwner: "BusinessFair",
+        isOwner: "",
         ownerInfo: {
           title: "",
           firstName: "",
           lastName: "",
           displayName: "",
-          isCompany: "Individual",
+          isCompany: "",
           refId: "",
           mobileNo1: "",
           mobileNo2: "",
@@ -122,7 +135,7 @@ export class VehicledataFormComponent implements OnInit {
       vehicleType: [this.vehicledataData.vehicleType, Validators.required],
       vehicleColor: [this.vehicledataData.vehicleColor, Validators.required],
       vehicleBrand: [this.vehicledataData.vehicleBrand, Validators.required],
-      isOwner: [this.vehicledataData.isOwner, Validators.required],
+      isOwner: [this.vehicledataData.isOwner || 'true', Validators.required],
       ownerInfo: this.ownerInfoForm()
     });
   }
@@ -132,7 +145,7 @@ export class VehicledataFormComponent implements OnInit {
       firstName: [this.vehicledataData.ownerInfo.firstName, Validators.required],
       lastName: [this.vehicledataData.ownerInfo.lastName, Validators.required],
       displayName: [this.vehicledataData.ownerInfo.displayName, Validators.required],
-      isCompany: [this.vehicledataData.ownerInfo.isCompany],
+      isCompany: [this.vehicledataData.ownerInfo.isCompany || 'Individual'],
       refId: [this.vehicledataData.ownerInfo.refId, Validators.required],
       mobileNo1: [this.vehicledataData.ownerInfo.mobileNo1, Validators.required],
       mobileNo2: [this.vehicledataData.ownerInfo.mobileNo2],
@@ -151,7 +164,7 @@ export class VehicledataFormComponent implements OnInit {
       vehicleType: [this.vehicledataData.vehicleType, Validators.required],
       vehicleColor: [this.vehicledataData.vehicleColor, Validators.required],
       vehicleBrand: [this.vehicledataData.vehicleBrand, Validators.required],
-      isOwner: [this.vehicledataData.isOwner, Validators.required],
+      isOwner: [this.vehicledataData.isOwner || 'true', Validators.required],
       ownerInfo: this.ownerInfoForm()
     });
   }

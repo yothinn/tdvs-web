@@ -98,6 +98,8 @@
                   </div>
                 </div>
 
+                {{vehicledataForm.value | json}};
+
               </div>
             </form>
           </mat-tab>
@@ -121,24 +123,27 @@
                   </div>
                 </div>
 
-                <div *ngIf="vehicledataForm.value.isOwner ==='CarSharing'" fxLayout="row wrap" fxFlex="100" class="pt-20">
+                <div *ngIf="vehicledataForm.value.isOwner ==='false'" fxLayout="row wrap" fxFlex="100"
+                  class="pt-20">
 
                   <div class="pl-20 pr-16 h1 pb-20 pt-20">
                     <mat-label>ข้อมูลรายละเอียดเจ้าของรถ</mat-label>
                   </div>
-  
+
                   <div fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
                     <div fxLayoutAlign="start" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                       <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
                         formControlName="isCompany" name="isCompany">
-                        <mat-radio-button class="example-radio-button" *ngFor="let item of isCompany" [value]="item.value">
+                        <mat-radio-button class="example-radio-button" *ngFor="let item of isCompany"
+                          [value]="item.value">
                           {{item.name}}
                         </mat-radio-button>
                       </mat-radio-group>
                     </div>
                   </div>
-  
-                  <div *ngIf="vehicledataForm.value.ownerInfo.isCompany ==='Individual'" fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
+
+                  <div *ngIf="vehicledataForm.value.ownerInfo.isCompany ==='Individual'" fxLayout="row wrap"
+                    formGroupName="ownerInfo" fxFlex="100" class="pt-20">
                     <div fxLayoutAlign="start" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                       <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                         <mat-label>ชื่อเจ้าของรถ</mat-label>
@@ -171,7 +176,7 @@
                       </mat-form-field>
                     </div>
                   </div>
-  
+
                   <div fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
                     <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                       <mat-form-field class="example-full-width" appearance="outline" fxFlex>
@@ -192,7 +197,7 @@
                       </mat-form-field>
                     </div>
                   </div>
-  
+
                   <div fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
                     <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                       <mat-form-field class="example-full-width" appearance="outline" fxFlex>
@@ -241,16 +246,16 @@
                       <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                         <mat-label>รหัสไปรษณีย์</mat-label>
                         <!-- <input matInput formControlName="addressPostCode" name="addressPostCode"> -->
-                        <input matInput maxlength="5" minlength="5" formControlName="addressPostCode" name="addressPostCode"
-                        (keyup)="updateFilter($event)" [matAutocomplete]="auto">
-                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getPosts($event.option)'>
-                        <mat-option *ngFor="let postcode of postcodesList.slice(0,10)" [value]="postcode.postcode">
-                          <span>{{ postcode.postcode }}</span> |
-                          <small>{{ postcode.subdistrict }}</small> |
-                          <small>{{ postcode.district }}</small> |
-                          <small>{{ postcode.province }}</small>
-                        </mat-option>
-                      </mat-autocomplete>
+                        <input matInput maxlength="5" minlength="5" formControlName="addressPostCode"
+                          name="addressPostCode" (keyup)="updateFilter($event)" [matAutocomplete]="auto">
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getPosts($event.option)'>
+                          <mat-option *ngFor="let postcode of postcodesList.slice(0,10)" [value]="postcode.postcode">
+                            <span>{{ postcode.postcode }}</span> |
+                            <small>{{ postcode.subdistrict }}</small> |
+                            <small>{{ postcode.district }}</small> |
+                            <small>{{ postcode.province }}</small>
+                          </mat-option>
+                        </mat-autocomplete>
                         <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('addressPostCode').hasError('required')">
                           กรุณาระบุ รหัสไปรษณีย์
                         </mat-error>
@@ -263,7 +268,8 @@
                       <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                         <mat-label>ตำบล/แขวง</mat-label>
                         <input matInput formControlName="addressSubDistrict" name="addressSubDistrict">
-                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('addressSubDistrict').hasError('required')">
+                        <mat-error
+                          *ngIf="vehicledataForm.get('ownerInfo').get('addressSubDistrict').hasError('required')">
                           กรุณาระบุ ตำบล/แขวง
                         </mat-error>
                       </mat-form-field>
@@ -287,6 +293,8 @@
                       </mat-form-field>
                     </div>
                   </div>
+
+                  {{vehicledataForm.value | json}};
 
                 </div>
               </div>
