@@ -11,8 +11,12 @@
                                 <span class="logo-text h5">{{ titleDate }}</span>
                             </div>
                             <div>
+                                <span class="logo-text h3">ทะเบียนรถ: </span>
+                                <span class="logo-text h5">{{ joborderData.carNo.lisenceID }}</span>
+                            </div>
+                            <div>
                                 <span class="logo-text h3">คนขับ: </span>
-                                <span class="logo-text h5" *ngIf="joborderData.carNo">{{joborderData.carNo}}</span>
+                                <span class="logo-text h5" *ngIf="joborderData.carNo">{{joborderData.carNo.driverInfo.displayName}}</span>
                                 <span class="logo-text h5" *ngIf="!joborderData.carNo">ไม่เลือก</span>
                             </div>
                             <div *ngIf="joborderData.docno">
