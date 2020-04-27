@@ -36,7 +36,73 @@
       <!-- CONTENT -->
       <div class="content">
         <mat-tab-group fxFlex>
-          <mat-tab label="vehicledata">
+          <mat-tab label="ข้อมูลรถ">
+            <form [formGroup]="vehicledataForm">
+              <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
+
+                <div class="pl-20 pr-16 h1 pb-20 pt-20">
+                  <mat-label>ข้อมูลรถ</mat-label>
+                </div>
+
+                <div fxLayout="row wrap" fxFlex="100" class="pt-20">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>ทะเบียนรถ</mat-label>
+                      <input matInput formControlName="lisenceID" name="lisenceID">
+                      <mat-error *ngIf="vehicledataForm.get('lisenceID').hasError('required')">
+                        กรุณาระบุ ทะเบียนรถ
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>ประเภทรถ</mat-label>
+                      <mat-select formControlName="vehicleType" name="vehicleType">
+                        <mat-option *ngFor="let itemt of vehicleType" [value]="itemt.viewValue">
+                          {{itemt.value}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="vehicledataForm.get('vehicleType').hasError('required')">
+                        กรุณาระบุ ประเภทรถ
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <div fxLayout="row wrap" fxFlex="100" class="pt-20">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>ยี่ห้อรถ</mat-label>
+                      <mat-select formControlName="vehicleBrand" name="vehicleBrand">
+                        <mat-option *ngFor="let itemt of vehicleBrand" [value]="itemt.viewValue">
+                          {{itemt.value}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="vehicledataForm.get('vehicleBrand').hasError('required')">
+                        กรุณาระบุ ยี่ห้อรถ
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                      <mat-label>สีรถ</mat-label>
+                      <mat-select formControlName="vehicleColor" name="vehicleColor">
+                        <mat-option *ngFor="let itemt of vehicleColor" [value]="itemt.viewValue">
+                          {{itemt.value}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="vehicledataForm.get('vehicleColor').hasError('required')">
+                        กรุณาระบุ สีรถ
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+          </mat-tab>
+
+          <mat-tab label="ข้อมูลเจ้าของรถ">
             <form [formGroup]="vehicledataForm">
               <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
 
@@ -44,43 +110,186 @@
                   <mat-label>ข้อมูลเจ้าของรถ</mat-label>
                 </div>
 
-                <!-- <div fxLayout="row wrap" fxFlex="100" class="pt-20">
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                <div fxLayout="row wrap" fxFlex="100" class="pt-20">
+                  <div fxLayoutAlign="start" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                     <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
-                      formControlName="isCompany" name="isCompany">
-                      <mat-radio-button class="example-radio-button" *ngFor="let item of isCompany" [value]="item">
-                        {{item}}
+                      formControlName="isOwner" name="isOwner">
+                      <mat-radio-button class="example-radio-button" *ngFor="let item of isOwner" [value]="item.value">
+                        {{item.name}}
                       </mat-radio-button>
                     </mat-radio-group>
                   </div>
-                </div> -->
-
-                <div class="pl-20 pr-16 h1 pb-20 pt-20">
-                  <mat-label>ข้อมูลรายละเอียดเจ้าของรถ</mat-label>
                 </div>
 
-                <div fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>ชื่อ</mat-label>
-                      <input matInput formControlName="firstName" name="firstName">
-                      <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('firstName').hasError('required')">
-                        กรุณาระบุ ชื่อ
-                      </mat-error>
-                    </mat-form-field>
+                <div *ngIf="vehicledataForm.value.isOwner ==='CarSharing'" fxLayout="row wrap" fxFlex="100" class="pt-20">
+
+                  <div class="pl-20 pr-16 h1 pb-20 pt-20">
+                    <mat-label>ข้อมูลรายละเอียดเจ้าของรถ</mat-label>
                   </div>
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
-                      <mat-label>นามสกุล</mat-label>
-                      <input matInput formControlName="lastName" name="lastName">
-                      <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('firstName').hasError('required')">
-                        กรุณาระบุ นามสกุล
-                      </mat-error>
-                    </mat-form-field>
+  
+                  <div fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
+                    <div fxLayoutAlign="start" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                      <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+                        formControlName="isCompany" name="isCompany">
+                        <mat-radio-button class="example-radio-button" *ngFor="let item of isCompany" [value]="item.value">
+                          {{item.name}}
+                        </mat-radio-button>
+                      </mat-radio-group>
+                    </div>
                   </div>
+  
+                  <div *ngIf="vehicledataForm.value.ownerInfo.isCompany ==='Individual'" fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
+                    <div fxLayoutAlign="start" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>ชื่อเจ้าของรถ</mat-label>
+                        <input matInput formControlName="firstName" name="firstName">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('firstName').hasError('required')">
+                          กรุณาระบุ ชื่อเจ้าของรถ
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>นามสกุลเจ้าของรถ</mat-label>
+                        <input matInput formControlName="lastName" name="lastName">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('firstName').hasError('required')">
+                          กรุณาระบุ นามสกุลเจ้าของรถ
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <!-- {{vehicledataForm.value.ownerInfo.isCompany | json}}; -->
+                  <div *ngIf="vehicledataForm.value.ownerInfo.isCompany ==='Legalentity'" fxLayout="row wrap"
+                    formGroupName="ownerInfo" fxFlex="100" class="pt-20">
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="100" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>ชื่อ บริษัท</mat-label>
+                        <input matInput formControlName="displayName" name="displayName">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('displayName').hasError('required')">
+                          กรุณาระบุ ชื่อ บริษัท
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+  
+                  <div fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>เลขที่บัตรประจำตัวประชาชน หรือ เลขประจำตัวผู้เสียภาษี</mat-label>
+                        <input matInput formControlName="refId" name="refId">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('refId').hasError('required')">
+                          กรุณาระบุ เลขที่บัตรประจำตัวประชาชน หรือ เลขประจำตัวผู้เสียภาษี
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>เบอร์โทรติดต่อ</mat-label>
+                        <input matInput formControlName="mobileNo1" name="mobileNo1">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('mobileNo1').hasError('required')">
+                          กรุณาระบุ เบอร์โทรติดต่อ
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+  
+                  <div fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>เบอร์อื่น ๆ</mat-label>
+                        <input matInput formControlName="mobileNo2" name="mobileNo2">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('mobileNo2').hasError('required')">
+                          กรุณาระบุ เบอร์อื่น ๆ
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>เบอร์อื่น ๆ</mat-label>
+                        <input matInput formControlName="mobileNo3" name="mobileNo3">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('mobileNo3').hasError('required')">
+                          กรุณาระบุ เบอร์อื่น ๆ
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                  <div class="pl-20 pr-16 h1 pb-20 pt-20">
+                    <mat-label>ที่อยู่</mat-label>
+                  </div>
+
+                  <div fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>บ้านเลขที่</mat-label>
+                        <input matInput formControlName="addressLine1" name="addressLine1">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('addressLine1').hasError('required')">
+                          กรุณาระบุ บ้านเลขที่
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>ถนน</mat-label>
+                        <input matInput formControlName="addressStreet" name="addressStreet">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('addressStreet').hasError('required')">
+                          กรุณาระบุ ถนน
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>รหัสไปรษณีย์</mat-label>
+                        <!-- <input matInput formControlName="addressPostCode" name="addressPostCode"> -->
+                        <input matInput maxlength="5" minlength="5" formControlName="addressPostCode" name="addressPostCode"
+                        (keyup)="updateFilter($event)" [matAutocomplete]="auto">
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getPosts($event.option)'>
+                        <mat-option *ngFor="let postcode of postcodesList.slice(0,10)" [value]="postcode.postcode">
+                          <span>{{ postcode.postcode }}</span> |
+                          <small>{{ postcode.subdistrict }}</small> |
+                          <small>{{ postcode.district }}</small> |
+                          <small>{{ postcode.province }}</small>
+                        </mat-option>
+                      </mat-autocomplete>
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('addressPostCode').hasError('required')">
+                          กรุณาระบุ รหัสไปรษณีย์
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                  <div fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>ตำบล/แขวง</mat-label>
+                        <input matInput formControlName="addressSubDistrict" name="addressSubDistrict">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('addressSubDistrict').hasError('required')">
+                          กรุณาระบุ ตำบล/แขวง
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>อำเภอ/เขต</mat-label>
+                        <input matInput formControlName="addressDistrict" name="addressDistrict">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('addressDistrict').hasError('required')">
+                          กรุณาระบุ อำเภอ/เขต
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>จังหวัด</mat-label>
+                        <input matInput formControlName="addressProvince" name="addressProvince">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('addressProvince').hasError('required')">
+                          กรุณาระบุ จังหวัด
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+
                 </div>
               </div>
-
             </form>
           </mat-tab>
 
