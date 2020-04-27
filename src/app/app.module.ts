@@ -64,6 +64,10 @@ const appRoutes: Routes = [
     loadChildren: './main/vehicle/vehicle.module#VehicleModule'
   },
   {
+    path: 'vehicledata',
+    loadChildren: './main/vehicledata/vehicledata.module#VehicledataModule'
+  },
+  {
     path: 'register',
     loadChildren: './authentication/register/register.module#RegisterModule'
   },
