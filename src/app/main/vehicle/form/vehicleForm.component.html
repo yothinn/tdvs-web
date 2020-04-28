@@ -73,7 +73,12 @@
                 <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="35" class="pl-20 pr-16">
                   <mat-form-field appearance="outline" fxFlex>
                     <mat-label>ทะเบียนรถ</mat-label>
-                    <input matInput formControlName="lisenceID" name="lisenceID">
+                    <input matInput formControlName="lisenceID" name="lisenceID" (keyup)="updateFilterVehicleDetail($event)" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getVehicleDetailData($event.option)'>
+                      <mat-option *ngFor="let vehicleDetail of vehicleDetailData.slice(0,10)" [value]="vehicleDetail.lisenceID">
+                        <span>{{vehicleDetail.lisenceID}}</span> 
+                      </mat-option>
+                    </mat-autocomplete>
                     <mat-error *ngIf="vehicleForm.get('lisenceID').hasError('required')">
                       กรุณาระบุทะเบียนรถ
                     </mat-error>
