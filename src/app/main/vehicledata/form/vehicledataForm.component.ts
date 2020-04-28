@@ -11,6 +11,7 @@ import { locale as thai } from '../i18n/th';
 import { VehicledataService } from '../services/vehicledata.service';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ValidatePID } from './pid.validate';
 
 @Component({
   selector: 'app-vehicledata-form',
@@ -39,6 +40,7 @@ export class VehicledataFormComponent implements OnInit {
 
   vehicleType: Array<any> = [
     { value: 'กระบะ ตอนเดียว', viewValue: 'กระบะ ตอนเดียว' },
+    { value: 'กระบะ แคป', viewValue: 'กระบะ แคป' },
     { value: 'กระบะ 4 ประตู', viewValue: 'กระบะ 4 ประตู' }
     // { value: 'กระบะ ตอนเดียว', viewValue: 'Pickup in one episode' },
     // { value: 'กระบะ แคป', viewValue: 'Pickup Truck Cap' },
@@ -140,14 +142,16 @@ export class VehicledataFormComponent implements OnInit {
     });
   }
   ownerInfoForm(): FormGroup {
+    let POSTCODE_PATTERN = /^[0-9]{5,5}$/;
+    let MOBILE_PATTERN = /^[0-9]{10,10}$/;
     return this.formBuilder.group({
       title: [this.vehicledataData.ownerInfo.title],
       firstName: [this.vehicledataData.ownerInfo.firstName],
       lastName: [this.vehicledataData.ownerInfo.lastName],
       displayName: [this.vehicledataData.ownerInfo.displayName],
       isCompany: [this.vehicledataData.ownerInfo.isCompany || 'Individual'],
-      refId: [this.vehicledataData.ownerInfo.refId, Validators.required],
-      mobileNo1: [this.vehicledataData.ownerInfo.mobileNo1, Validators.required],
+      refId: [this.vehicledataData.ownerInfo.refId, [ValidatePID]],
+      mobileNo1: [this.vehicledataData.ownerInfo.mobileNo1, [Validators.required, Validators.pattern(MOBILE_PATTERN)]],
       mobileNo2: [this.vehicledataData.ownerInfo.mobileNo2],
       mobileNo3: [this.vehicledataData.ownerInfo.mobileNo3],
       addressLine1: [this.vehicledataData.ownerInfo.addressLine1, Validators.required],
@@ -155,7 +159,7 @@ export class VehicledataFormComponent implements OnInit {
       addressSubDistrict: [this.vehicledataData.ownerInfo.addressSubDistrict, Validators.required],
       addressDistrict: [this.vehicledataData.ownerInfo.addressDistrict, Validators.required],
       addressProvince: [this.vehicledataData.ownerInfo.addressProvince, Validators.required],
-      addressPostCode: [this.vehicledataData.ownerInfo.addressPostCode, Validators.required],
+      addressPostCode: [this.vehicledataData.ownerInfo.addressPostCode, [Validators.required, Validators.pattern(POSTCODE_PATTERN)]],
     });
   }
   editForm(): FormGroup {

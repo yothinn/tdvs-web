@@ -123,8 +123,7 @@
                   </div>
                 </div>
 
-                <div *ngIf="vehicledataForm.value.isOwner ==='false'" fxLayout="row wrap" fxFlex="100"
-                  class="pt-20">
+                <div *ngIf="vehicledataForm.value.isOwner ==='false'" fxLayout="row wrap" fxFlex="100" class="pt-20">
 
                   <div class="pl-20 pr-16 h1 pb-20 pt-20">
                     <mat-label>ข้อมูลรายละเอียดเจ้าของรถ</mat-label>
@@ -181,8 +180,8 @@
                     <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                       <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                         <mat-label>เลขที่บัตรประจำตัวประชาชน หรือ เลขประจำตัวผู้เสียภาษี</mat-label>
-                        <input matInput formControlName="refId" name="refId">
-                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('refId').hasError('required')">
+                        <input matInput maxlength="13" minlength="13" formControlName="refId" name="refId">
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('refId').dirty">
                           กรุณาระบุ เลขที่บัตรประจำตัวประชาชน หรือ เลขประจำตัวผู้เสียภาษี
                         </mat-error>
                       </mat-form-field>
@@ -190,9 +189,13 @@
                     <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                       <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                         <mat-label>เบอร์โทรติดต่อ</mat-label>
-                        <input matInput formControlName="mobileNo1" name="mobileNo1">
+                        <input matInput maxlength="10" minlength="10" formControlName="mobileNo1" name="mobileNo1"
+                          placeholder="xxx-xxx-xxxx">
                         <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('mobileNo1').hasError('required')">
                           กรุณาระบุ เบอร์โทรติดต่อ
+                        </mat-error>
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('mobileNo1').dirty">
+                          กรุณาระบุ เบอร์โทรติดต่อของท่านไม่ถูกต้อง
                         </mat-error>
                       </mat-form-field>
                     </div>
@@ -202,18 +205,26 @@
                     <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                       <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                         <mat-label>เบอร์อื่น ๆ</mat-label>
-                        <input matInput formControlName="mobileNo2" name="mobileNo2">
+                        <input matInput maxlength="10" minlength="10" formControlName="mobileNo2" name="mobileNo2"
+                          placeholder="xxx-xxx-xxxx">
                         <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('mobileNo2').hasError('required')">
-                          กรุณาระบุ เบอร์อื่น ๆ
+                          กรุณาระบุ เบอร์โทรติดต่อ
+                        </mat-error>
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('mobileNo2').dirty">
+                          กรุณาระบุ เบอร์โทรติดต่อของท่านไม่ถูกต้อง
                         </mat-error>
                       </mat-form-field>
                     </div>
                     <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                       <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                         <mat-label>เบอร์อื่น ๆ</mat-label>
-                        <input matInput formControlName="mobileNo3" name="mobileNo3">
+                        <input matInput maxlength="10" minlength="10" formControlName="mobileNo3" name="mobileNo3"
+                          placeholder="xxx-xxx-xxxx">
                         <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('mobileNo3').hasError('required')">
-                          กรุณาระบุ เบอร์อื่น ๆ
+                          กรุณาระบุ เบอร์โทรติดต่อ
+                        </mat-error>
+                        <mat-error *ngIf="vehicledataForm.get('ownerInfo').get('mobileNo3').dirty">
+                          กรุณาระบุ เบอร์โทรติดต่อของท่านไม่ถูกต้อง
                         </mat-error>
                       </mat-form-field>
                     </div>
@@ -245,7 +256,6 @@
                     <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.3" class="pl-20 pr-16">
                       <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                         <mat-label>รหัสไปรษณีย์</mat-label>
-                        <!-- <input matInput formControlName="addressPostCode" name="addressPostCode"> -->
                         <input matInput maxlength="5" minlength="5" formControlName="addressPostCode"
                           name="addressPostCode" (keyup)="updateFilter($event)" [matAutocomplete]="auto">
                         <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getPosts($event.option)'>
