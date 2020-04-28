@@ -127,7 +127,7 @@ export class VehicleFormComponent implements OnInit {
 
     // update the rows
     this.vehicleDetailData = tempVehicle;
-    // console.log(this.postcodes);
+    console.log(this.vehicleDetailData);
   }
 
   getVehicleDetailData(option){
@@ -135,7 +135,8 @@ export class VehicleFormComponent implements OnInit {
     const tempVehicle: any = this.tempVehicle.filter(function (d) {
       return d.lisenceID.toLowerCase().indexOf(option.value) !== -1 || !option.value;
     });
-    console.log(tempVehicle);
+    
+    
   }
 
   updateFilter(event) {
