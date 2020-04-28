@@ -49,18 +49,18 @@
       <div class="content">
         <div class="content-card">
           <div class="content">
-            <ngx-datatable
+            <ngx-datatable 
               #table
               class="material fullscreen"
               [columnMode]="'flex'"
               [headerHeight]="64"
               [footerHeight]="64"
               rowHeight="auto"
-              scrollbarH="true"
+              [scrollbarH]="true"
               [limit]="10"
               [rows]="rows"
             >
-              <ngx-datatable-column name="เลขที่ใบสั่งงาน" [flexGrow]="2.2">
+              <ngx-datatable-column name="เลขที่ใบสั่งงาน" [flexGrow]="2.2" >
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.docno }}
                 </ng-template>
@@ -72,7 +72,6 @@
               </ngx-datatable-column>
               <ngx-datatable-column name="รถที่รับผิดชอบ" [flexGrow]="3.8">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  <!-- ({{ row.carNo.lisenceID }}) {{row.carNo.driverInfo ? row.carNo.driverInfo.displayName : "ยังไม่ระบุ"}} -->
                   {{ row.carNo.lisenceID ? "(" + row.carNo.lisenceID + ")" + " " + row.carNo.driverInfo.displayName : "ยังไม่ระบุ" }}
                 </ng-template>
               </ngx-datatable-column>
