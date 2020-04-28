@@ -37,7 +37,7 @@
           <div class="content">
             <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64"
               [footerHeight]="64" rowHeight="auto" scrollbarH="true" [limit]="10" [rows]="rows">
-              <ngx-datatable-column name="ทะเบียนรถ" [flexGrow]="3">
+              <ngx-datatable-column name="ทะเบียนรถ" [flexGrow]="5">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.lisenceID ? row.lisenceID : "" }}
                 </ng-template>
@@ -49,7 +49,7 @@
                   {{ row.vehicleType ? row.vehicleType : "" }}
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="เจ้าของรถ" [flexGrow]="6">
+              <ngx-datatable-column name="เจ้าของรถ" [flexGrow]="5">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.ownerInfo.displayName ? row.ownerInfo.displayName : "" }}
                 </ng-template>

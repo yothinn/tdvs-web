@@ -142,9 +142,9 @@ export class VehicledataFormComponent implements OnInit {
   ownerInfoForm(): FormGroup {
     return this.formBuilder.group({
       title: [this.vehicledataData.ownerInfo.title],
-      firstName: [this.vehicledataData.ownerInfo.firstName, Validators.required],
-      lastName: [this.vehicledataData.ownerInfo.lastName, Validators.required],
-      displayName: [this.vehicledataData.ownerInfo.displayName, Validators.required],
+      firstName: [this.vehicledataData.ownerInfo.firstName],
+      lastName: [this.vehicledataData.ownerInfo.lastName],
+      displayName: [this.vehicledataData.ownerInfo.displayName],
       isCompany: [this.vehicledataData.ownerInfo.isCompany || 'Individual'],
       refId: [this.vehicledataData.ownerInfo.refId, Validators.required],
       mobileNo1: [this.vehicledataData.ownerInfo.mobileNo1, Validators.required],

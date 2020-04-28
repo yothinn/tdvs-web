@@ -36,6 +36,20 @@ export class VehicledataListComponent implements OnInit {
   ngOnInit(): void {
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
+    this.checkList();
+  }
+
+  checkList() {
+    for (let i = 0; i < this.rows.length; i++) {
+      const row = this.rows[i];
+      if (row.ownerInfo.displayName) {
+        // console.log("displayName");
+        row.ownerInfo.displayName;
+      } else {
+        // console.log("firstName" + " " + "lastName");
+        row.ownerInfo.displayName = row.ownerInfo.firstName + " " + row.ownerInfo.lastName
+      }
+    }
   }
 
   addData() {
@@ -50,6 +64,7 @@ export class VehicledataListComponent implements OnInit {
     this.vehicledataService.deleteVehicledataData(item).then((res) => {
       this.vehicledataService.getVehicledataDataList().subscribe((res: any) => {
         this.rows = res.data;
+        this.checkList();
       })
     })
   }
@@ -59,7 +74,7 @@ export class VehicledataListComponent implements OnInit {
     // const val = event.target.value.toLowerCase();
 
     // filter our data
-    
+
   }
 
 }
