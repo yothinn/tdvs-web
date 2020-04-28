@@ -12,12 +12,11 @@
                             </div>
                             <div>
                                 <span class="logo-text h3">ทะเบียนรถ: </span>
-                                <span class="logo-text h5">{{ joborderData.carNo.lisenceID }}</span>
+                                <span class="logo-text h5">{{ joborderData.carNo.lisenceID || "ไม่ระบุ" }}</span>
                             </div>
                             <div>
                                 <span class="logo-text h3">คนขับ: </span>
-                                <span class="logo-text h5" *ngIf="joborderData.carNo">{{joborderData.carNo.driverInfo.displayName}}</span>
-                                <span class="logo-text h5" *ngIf="!joborderData.carNo">ไม่เลือก</span>
+                                <span class="logo-text h5" >{{joborderData.carNo.driverInfo ? joborderData.carNo.driverInfo.displayName : "ไม่ระบุ"}}</span>
                             </div>
                             <div *ngIf="joborderData.docno">
                                 <span class="logo-text h3">เลขที่ใบสั่งงาน: </span>
