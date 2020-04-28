@@ -61,7 +61,7 @@
       <div class="content">
         <mat-tab-group fxFlex>
           
-          <mat-tab label="vehicle">
+          <mat-tab label="ข้อมูลการจัดการรถ">
             <form [formGroup]="vehicleForm">
               <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
 
@@ -117,8 +117,8 @@
                 <mat-form-field appearance="outline" fxFlex>
                   <mat-label>ชื่อ-นามสกุล คนขับรถ</mat-label>
                   <input matInput formControlName="displayName"  name="displayName" (keyup)="updateFilter($event)" [matAutocomplete]="auto">
-                  <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getTvdsCustomers($event.option)'>
-                    <mat-option *ngFor="let customer of tvdsCustomersData.slice(0,10)" [value]="customer.displayName">
+                  <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getVehicleStaff($event.option)'>
+                    <mat-option *ngFor="let customer of vehicleStaffData.slice(0,10)" [value]="customer.displayName">
                       <span>{{customer.displayName}}</span> 
                     </mat-option>
                   </mat-autocomplete>
@@ -128,7 +128,7 @@
                 </mat-form-field>
               </div>
               </div>
-            
+              {{vehicleForm.value  | json}}
 
               </div>
             
