@@ -72,5 +72,21 @@ export const navigation: FuseNavigation[] = [
                 url: '/vehicle'
             }
         ]
+    },
+    {
+        id: 'Menu vehicledata',
+        title: 'Menu vehicledata',
+        translate: 'ข้อมูลรถ',
+        type: 'group',
+        children: [
+            {
+                id: 'vehicledata',
+                title: 'vehicledata',
+                translate: 'รายการข้อมูลรถ',
+                type: 'item',
+                icon: 'directions_car',
+                url: '/vehicledata'
+            }
+        ]
     }
 ];

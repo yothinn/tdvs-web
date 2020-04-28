@@ -18,7 +18,7 @@
             edit
           </mat-icon>
           <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
-            vehicledataForm
+            ข้อมูลรถ
           </span>
         </div>
         <div fxFlex="100" fxFlex.gt-sm="40" class="pl-20  pr-16" fxLayoutAlign="end">
@@ -163,7 +163,7 @@
                       </mat-form-field>
                     </div>
                   </div>
-                  <!-- {{vehicledataForm.value.ownerInfo.isCompany | json}}; -->
+
                   <div *ngIf="vehicledataForm.value.ownerInfo.isCompany ==='Legalentity'" fxLayout="row wrap"
                     formGroupName="ownerInfo" fxFlex="100" class="pt-20">
                     <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="100" class="pl-20 pr-16">
