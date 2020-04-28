@@ -5,7 +5,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { environment } from "environments/environment";
 
 const api_url = environment.apiUrl + "/api/vehicles/";
-const api_url_customer = environment.apiUrl + "/api/tvdscustomers/";
+const api_url_customer = environment.apiUrl + "/api/vehiclestaffs";
 
 @Injectable({
   providedIn: "root"
@@ -34,7 +34,7 @@ export class VehicleService {
     }
   }
 
-  getTvdsCustomerList() {
+  getVehicleStaffList() {
     return this.http
     .get(api_url_customer, {
       headers: this.authorizationHeader()

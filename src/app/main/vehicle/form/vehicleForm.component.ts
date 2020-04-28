@@ -22,7 +22,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class VehicleFormComponent implements OnInit {
   vehicleForm: FormGroup;
   vehicleData: any = {};
-  tvdsCustomersData: Array<any> = [];
+  vehicleStaffData: Array<any> = [];
   temp: Array<any> = [];
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
@@ -38,8 +38,8 @@ export class VehicleFormComponent implements OnInit {
 
    ngOnInit()  {
 
-    this.vehicleService.getTvdsCustomerList().subscribe((res: any) => {
-      this.tvdsCustomersData = res.data;
+    this.vehicleService.getVehicleStaffList().subscribe((res: any) => {
+      this.vehicleStaffData = res.data;
       this.temp = res.data;
     })
 
@@ -117,11 +117,11 @@ export class VehicleFormComponent implements OnInit {
     });
 
     // update the rows
-    this.tvdsCustomersData = temp;
+    this.vehicleStaffData = temp;
     // console.log(this.postcodes);
   }
 
-  getTvdsCustomers(option){
+  getVehicleStaff(option){
     // filter our data
     const temp: any = this.temp.filter(function (d) {
       return d.displayName.toLowerCase().indexOf(option.value) !== -1 || !option.value;
