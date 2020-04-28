@@ -5,6 +5,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { environment } from "environments/environment";
 
 const api_url = environment.apiUrl + "/api/vehicledatas/";
+const api_url_postcodes = environment.apiUrl + "/api/postcodes";
 
 @Injectable({
   providedIn: "root"
@@ -32,6 +33,13 @@ export class VehicledataService {
       return this.getVehicledataDataList();
     }
   }
+
+  getPostcodesList() {
+    return this.http.get(api_url_postcodes, {
+      headers: this.authorizationHeader(),
+    });
+  }
+
 
   getVehicledataDataList(){
     return this.http

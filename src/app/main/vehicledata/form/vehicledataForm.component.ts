@@ -22,8 +22,56 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class VehicledataFormComponent implements OnInit {
   vehicledataForm: FormGroup;
   vehicledataData: any = {};
+  postcodesList: any = [];
+  temp = [];
 
-  isCompany: string[] = ['บริษัท ธรรมธุรกิจ วิสาหกิจเพื่อสังคม จำกัด', 'รถร่วมบริการ'];
+  // isOwner: string[] = ['บริษัท ธรรมธุรกิจ วิสาหกิจเพื่อสังคม จำกัด', 'รถร่วมบริการ'];
+  // isCompany: string[] = ['บุคคลธรรมดา', 'นิติบุคคล'];
+  isOwner: any[] = [
+    { name: 'บริษัท ธรรมธุรกิจ วิสาหกิจเพื่อสังคม จำกัด', value: 'true' },
+    { name: 'รถร่วมบริการ', value: 'false' }
+  ];
+
+  isCompany: any[] = [
+    { name: 'บุคคลธรรมดา', value: 'Individual' },
+    { name: 'นิติบุคคล', value: 'Legalentity' }
+  ];
+
+  vehicleType: Array<any> = [
+    { value: 'กระบะ ตอนเดียว', viewValue: 'กระบะ ตอนเดียว' },
+    { value: 'กระบะ 4 ประตู', viewValue: 'กระบะ 4 ประตู' }
+    // { value: 'กระบะ ตอนเดียว', viewValue: 'Pickup in one episode' },
+    // { value: 'กระบะ แคป', viewValue: 'Pickup Truck Cap' },
+    // { value: 'กระบะ 4 ประตู', viewValue: 'Pickup Double Cab' }
+  ];
+
+  vehicleBrand: Array<any> = [
+    { value: 'โตโยต้า รีโว่', viewValue: 'โตโยต้า รีโว่' },
+    { value: 'อีซูซุ', viewValue: 'อีซูซุ' },
+    { value: 'ฟอร์ดเรนเจอร์', viewValue: 'ฟอร์ดเรนเจอร์' },
+    { value: 'มาสด้า BT-50', viewValue: 'มาสด้า BT-50' },
+    { value: 'มิตซูบิชิไทรทัน', viewValue: 'มิตซูบิชิไทรทัน' },
+    { value: 'นิสสันนาวารา', viewValue: 'นิสสันนาวารา' },
+    { value: 'เชฟโรเลตโคโลราโด', viewValue: 'เชฟโรเลตโคโลราโด' },
+    { value: 'ทาทาซีนอน', viewValue: 'ทาทาซีนอน' }
+    // { value: 'โตโยต้า', viewValue: 'Toyota Revo' },
+    // { value: 'อีซูซุ', viewValue: 'Isuzu D-MAX' },
+    // { value: 'ฟอร์ดเรนเจอร์', viewValue: 'Ford Ranger' },
+    // { value: 'มาสด้า BT-50', viewValue: 'Mazda BT-50' },
+    // { value: 'มิตซูบิชิไทรทัน', viewValue: 'Mitsubishi Triton' },
+    // { value: 'นิสสันนาวารา', viewValue: 'Nissan Navara' },
+    // { value: 'เชฟโรเลตโคโลราโด', viewValue: 'Chevrolet Colorado' },
+    // { value: 'ทาทาซีนอน', viewValue: 'TATA Xenon' }
+  ];
+
+  vehicleColor: Array<any> = [
+    // { value: 'สีแดง', viewValue: 'red' },
+    // { value: 'สีน้ำเงิน', viewValue: 'blue' },
+    // { value: 'สีม่วง', viewValue: 'purple' }
+    { value: 'สีแดง', viewValue: 'สีแดง' },
+    { value: 'สีน้ำเงิน', viewValue: 'สีน้ำเงิน' },
+    { value: 'สีม่วง', viewValue: 'สีม่วง' }
+  ];
 
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
@@ -39,6 +87,11 @@ export class VehicledataFormComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.vehicledataService.getPostcodesList().subscribe((res: any) => {
+      this.postcodesList = res.data;
+      this.temp = res.data;
+    })
+
     this.vehicledataData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
@@ -46,6 +99,7 @@ export class VehicledataFormComponent implements OnInit {
         vehicleType: "",
         vehicleColor: "",
         vehicleBrand: "",
+        isOwner: "",
         ownerInfo: {
           title: "",
           firstName: "",
@@ -81,6 +135,7 @@ export class VehicledataFormComponent implements OnInit {
       vehicleType: [this.vehicledataData.vehicleType, Validators.required],
       vehicleColor: [this.vehicledataData.vehicleColor, Validators.required],
       vehicleBrand: [this.vehicledataData.vehicleBrand, Validators.required],
+      isOwner: [this.vehicledataData.isOwner || 'true', Validators.required],
       ownerInfo: this.ownerInfoForm()
     });
   }
@@ -90,7 +145,7 @@ export class VehicledataFormComponent implements OnInit {
       firstName: [this.vehicledataData.ownerInfo.firstName, Validators.required],
       lastName: [this.vehicledataData.ownerInfo.lastName, Validators.required],
       displayName: [this.vehicledataData.ownerInfo.displayName, Validators.required],
-      isCompany: [this.vehicledataData.ownerInfo.displayName],
+      isCompany: [this.vehicledataData.ownerInfo.isCompany || 'Individual'],
       refId: [this.vehicledataData.ownerInfo.refId, Validators.required],
       mobileNo1: [this.vehicledataData.ownerInfo.mobileNo1, Validators.required],
       mobileNo2: [this.vehicledataData.ownerInfo.mobileNo2],
@@ -109,6 +164,7 @@ export class VehicledataFormComponent implements OnInit {
       vehicleType: [this.vehicledataData.vehicleType, Validators.required],
       vehicleColor: [this.vehicledataData.vehicleColor, Validators.required],
       vehicleBrand: [this.vehicledataData.vehicleBrand, Validators.required],
+      isOwner: [this.vehicledataData.isOwner || 'true', Validators.required],
       ownerInfo: this.ownerInfoForm()
     });
   }
@@ -142,6 +198,40 @@ export class VehicledataFormComponent implements OnInit {
           this.spinner.hide();
         });
     }
+  }
+
+  updateFilter(event) {
+    //change search keyword to lower case
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.postcode.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.postcodesList = temp;
+    console.log(this.postcodesList);
+  }
+
+  getPosts(val) {
+    //12150 | บึงคำพร้อย | อำเภอลำลูกกา | ปทุมธานี
+    let viewValue = val.viewValue;
+    let arrValue = val.viewValue.split("|");
+    let subdistrict = arrValue[1].trim();
+    let district = arrValue[2].trim();
+    let province = arrValue[3].trim();
+
+    let ownerInfo: FormGroup = <FormGroup>this.vehicledataForm.controls["ownerInfo"];
+    ownerInfo.controls["addressProvince"].setValue(
+      province
+    );
+    ownerInfo.controls["addressDistrict"].setValue(
+      district
+    );
+    ownerInfo.controls["addressSubDistrict"].setValue(
+      subdistrict
+    );
   }
 
 

@@ -93,17 +93,13 @@
                     fxFlex.gt-xs="50" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" *ngIf="item.value.method==='mobile'" [formGroupName]="i" appearance="outline" fxFlex>
                       <mat-label *ngIf="item.value.method==='mobile'">เบอร์มือถือ(10 หลัก)</mat-label>
-<<<<<<< HEAD
-                      <input matInput maxlength="10" formControlName="value" placeholder="xxx-xxx-xxxx">
-=======
                       <mat-label *ngIf="item.value.method==='home'">เบอร์บ้าน</mat-label>
                       <mat-label *ngIf="item.value.method==='other'">เบอร์อื่น ๆ</mat-label>
                       <input matInput formControlName="value" placeholder="xxx-xxx-xxxx">
->>>>>>> 662e6a11ee8fbfd20c70e517503caa14f0fd7cdf
-                      <mat-error *ngIf="item.controls.value.hasError('required')">
+                      <mat-error *ngIf="item.get('value').hasError('required')">
                         กรุณาระบุ เบอร์โทรศัพท์มือถือของท่าน
                       </mat-error>
-                      <mat-error *ngIf="item.controls.value.dirty">
+                      <mat-error *ngIf="item.get('value').dirty">
                         เบอร์โทรศัพท์มือถือของท่านไม่ถูกต้อง
                       </mat-error>
                     </mat-form-field>
