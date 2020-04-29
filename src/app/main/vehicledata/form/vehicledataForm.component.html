@@ -1,4 +1,4 @@
-<div class="page-layout carded  fullwidth inner-scroll">
+<div class="page-layout carded fullwidth inner-scroll">
   <!-- TOP BACKGROUND -->
   <div class="top-bg accent"></div>
   <!-- / TOP BACKGROUND -->
@@ -6,23 +6,49 @@
   <!-- CENTER -->
   <div class="center">
     <!-- HEADER -->
-    <div class="header accent" fxLayout="row" fxLayoutAlign="space-between center">
+    <div
+      class="header accent"
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+    >
       <!-- APP TITLE -->
       <div fxLayout="row" fxLayoutAlign="start center" fxFlex="100">
         <button class="mat-icon-button mr-0 mr-sm-16" (click)="goBack()">
           <mat-icon>arrow_back</mat-icon>
         </button>
 
-        <div class="logo mb-24 mb-md-0" fxLayout="row" fxFlex="100" fxFlex.gt-sm="80" fxLayoutAlign="start center">
-          <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
+        <div
+          class="logo mb-24 mb-md-0"
+          fxLayout="row"
+          fxFlex="100"
+          fxFlex.gt-sm="80"
+          fxLayoutAlign="start center"
+        >
+          <mat-icon
+            class="logo-icon s-32 mr-16"
+            [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }"
+          >
             edit
           </mat-icon>
-          <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
+          <span
+            class="logo-text h1"
+            [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }"
+          >
             ข้อมูลรถ
           </span>
         </div>
-        <div fxFlex="100" fxFlex.gt-sm="20" class="pl-20  pr-16" fxLayoutAlign="end">
-          <button [disabled]="vehicledataForm.invalid" mat-fab color="warn" (click)="onSave()">
+        <div
+          fxFlex="100"
+          fxFlex.gt-sm="20"
+          class="pl-20 pr-16"
+          fxLayoutAlign="end"
+        >
+          <button
+            [disabled]="vehicleDataForm.invalid || ownerDataForm.invalid"
+            mat-fab
+            color="warn"
+            (click)="onSave()"
+          >
             <mat-icon class="icon-position">save</mat-icon>
           </button>
         </div>
@@ -37,32 +63,69 @@
       <div class="content">
         <mat-tab-group fxFlex>
           <mat-tab label="ข้อมูลรถ">
-            <form [formGroup]="vehicledataForm">
+            <form [formGroup]="vehicleDataForm">
               <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
-
                 <div class="pl-20 pr-16 h1 pb-20 pt-20">
                   <mat-label>ข้อมูลรถ</mat-label>
                 </div>
 
                 <div fxLayout="row wrap" fxFlex="100" class="pt-20">
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                  <div
+                    fxLayoutAlign="center"
+                    fxFlex="100"
+                    fxFlex.gt-xs="50"
+                    class="pl-20 pr-16"
+                  >
+                    <mat-form-field
+                      class="example-full-width"
+                      appearance="outline"
+                      fxFlex
+                    >
                       <mat-label>ทะเบียนรถ</mat-label>
-                      <input matInput formControlName="lisenceID" name="lisenceID">
-                      <mat-error *ngIf="vehicledataForm.get('lisenceID').hasError('required')">
+                      <input
+                        matInput
+                        formControlName="lisenceID"
+                        name="lisenceID"
+                      />
+                      <mat-error
+                        *ngIf="
+                          vehicleDataForm.get('lisenceID').hasError('required')
+                        "
+                      >
                         กรุณาระบุ ทะเบียนรถ
                       </mat-error>
                     </mat-form-field>
                   </div>
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                  <div
+                    fxLayoutAlign="center"
+                    fxFlex="100"
+                    fxFlex.gt-xs="50"
+                    class="pl-20 pr-16"
+                  >
+                    <mat-form-field
+                      class="example-full-width"
+                      appearance="outline"
+                      fxFlex
+                    >
                       <mat-label>ประเภทรถ</mat-label>
-                      <mat-select formControlName="vehicleType" name="vehicleType">
-                        <mat-option *ngFor="let itemt of vehicleType" [value]="itemt.viewValue">
-                          {{itemt.value}}
+                      <mat-select
+                        formControlName="vehicleType"
+                        name="vehicleType"
+                      >
+                        <mat-option
+                          *ngFor="let itemt of vehicleType"
+                          [value]="itemt.viewValue"
+                        >
+                          {{ itemt.value }}
                         </mat-option>
                       </mat-select>
-                      <mat-error *ngIf="vehicledataForm.get('vehicleType').hasError('required')">
+                      <mat-error
+                        *ngIf="
+                          vehicleDataForm
+                            .get('vehicleType')
+                            .hasError('required')
+                        "
+                      >
                         กรุณาระบุ ประเภทรถ
                       </mat-error>
                     </mat-form-field>
@@ -70,64 +133,120 @@
                 </div>
 
                 <div fxLayout="row wrap" fxFlex="100" class="pt-20">
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                  <div
+                    fxLayoutAlign="center"
+                    fxFlex="100"
+                    fxFlex.gt-xs="50"
+                    class="pl-20 pr-16"
+                  >
+                    <mat-form-field
+                      class="example-full-width"
+                      appearance="outline"
+                      fxFlex
+                    >
                       <mat-label>ยี่ห้อรถ</mat-label>
-                      <mat-select formControlName="vehicleBrand" name="vehicleBrand">
-                        <mat-option *ngFor="let itemt of vehicleBrand" [value]="itemt.viewValue">
-                          {{itemt.value}}
+                      <mat-select
+                        formControlName="vehicleBrand"
+                        name="vehicleBrand"
+                      >
+                        <mat-option
+                          *ngFor="let itemt of vehicleBrand"
+                          [value]="itemt.viewValue"
+                        >
+                          {{ itemt.value }}
                         </mat-option>
                       </mat-select>
-                      <mat-error *ngIf="vehicledataForm.get('vehicleBrand').hasError('required')">
+                      <mat-error
+                        *ngIf="
+                          vehicleDataForm
+                            .get('vehicleBrand')
+                            .hasError('required')
+                        "
+                      >
                         กรุณาระบุ ยี่ห้อรถ
                       </mat-error>
                     </mat-form-field>
                   </div>
-                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
-                    <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                  <div
+                    fxLayoutAlign="center"
+                    fxFlex="100"
+                    fxFlex.gt-xs="50"
+                    class="pl-20 pr-16"
+                  >
+                    <mat-form-field
+                      class="example-full-width"
+                      appearance="outline"
+                      fxFlex
+                    >
                       <mat-label>สีรถ</mat-label>
-                      <mat-select formControlName="vehicleColor" name="vehicleColor">
-                        <mat-option *ngFor="let itemt of vehicleColor" [value]="itemt.viewValue">
-                          {{itemt.value}}
+                      <mat-select
+                        formControlName="vehicleColor"
+                        name="vehicleColor"
+                      >
+                        <mat-option
+                          *ngFor="let itemt of vehicleColor"
+                          [value]="itemt.viewValue"
+                        >
+                          {{ itemt.value }}
                         </mat-option>
                       </mat-select>
-                      <mat-error *ngIf="vehicledataForm.get('vehicleColor').hasError('required')">
+                      <mat-error
+                        *ngIf="
+                          vehicleDataForm
+                            .get('vehicleColor')
+                            .hasError('required')
+                        "
+                      >
                         กรุณาระบุ สีรถ
                       </mat-error>
                     </mat-form-field>
                   </div>
                 </div>
-
               </div>
             </form>
           </mat-tab>
 
           <mat-tab label="ข้อมูลเจ้าของรถ">
-            <form [formGroup]="vehicledataForm">
+            <div class="pl-20 pr-16 h1 pb-20 pt-20">
+              <mat-label>ข้อมูลเจ้าของรถ</mat-label>
+            </div>
+            <form [formGroup]="vehicleDataForm">
               <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
-
-                <div class="pl-20 pr-16 h1 pb-20 pt-20">
-                  <mat-label>ข้อมูลเจ้าของรถ</mat-label>
-                </div>
-
                 <div fxLayout="row wrap" fxFlex="100" class="pt-20">
-                  <div fxLayoutAlign="start" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
-                    <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
-                      formControlName="isOwner" name="isOwner">
-                      <mat-radio-button class="example-radio-button" *ngFor="let item of isOwner" [value]="item.value">
-                        {{item.name}}
+                  <div fxLayoutAlign="start" fxFlex="100" class="pl-20 pr-16">
+                    <mat-radio-group
+                      fxFlex="100"
+                      aria-labelledby="example-radio-group-label"
+                      class="example-radio-group"
+                      formControlName="isOwner"
+                      name="isOwner"
+                    >
+                      <mat-radio-button
+                        fxFlex="100"
+                        fxFlex.gt-xs="50"
+                        class="example-radio-button"
+                        *ngFor="let item of isOwner"
+                        [value]="item.value"
+                        (change)="isOwnerChanged($event)"
+                      >
+                        {{ item.name }}
                       </mat-radio-button>
                     </mat-radio-group>
                   </div>
                 </div>
 
-                <div *ngIf="vehicledataForm.value.isOwner ==='false'" fxLayout="row wrap" fxFlex="100" class="pt-20">
-
-                  <div class="pl-20 pr-16 h1 pb-20 pt-20">
-                    <mat-label>ข้อมูลรายละเอียดเจ้าของรถ</mat-label>
+                <div
+                  *ngIf="!vehicleDataForm.value.isOwner"
+                  fxLayout="row wrap"
+                  fxFlex="100"
+                  class="pt-20"
+                >
+                  <div fxFlex="100" class="pl-20 pr-16 h1 pb-20 pt-20">
+                    <!-- <mat-label>ข้อมูลรายละเอียดเจ้าของรถ</mat-label> -->
+                    <h2>ข้อมูลรายละเอียดเจ้าของรถ</h2>
                   </div>
 
-                  <div fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
+                  <!-- <div fxLayout="row wrap" formGroupName="ownerInfo" fxFlex="100" class="pt-20">
                     <div fxLayoutAlign="start" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                       <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
                         formControlName="isCompany" name="isCompany">
@@ -300,13 +419,72 @@
                         </mat-error>
                       </mat-form-field>
                     </div>
-                  </div>
-
+                  </div> -->
                 </div>
               </div>
             </form>
-          </mat-tab>
+            <form [formGroup]="ownerDataForm" *ngIf="!vehicleDataForm.value.isOwner">
+              <div fxLayout="column" fxLayout.gt-xs="row wrap" fxFlex="100">
+                <div fxLayout="row wrap" fxFlex="100" class="pt-20">
+                  <div fxLayoutAlign="start" fxFlex="100" class="pl-20 pr-16">
+                    <mat-radio-group
+                      fxFlex="100"
+                      aria-labelledby="example-radio-group-label"
+                      class="example-radio-group"
+                      formControlName="isCompany"
+                      name="isCompany"
+                    >
+                      <mat-radio-button
+                        fxFlex="100"
+                        fxFlex.gt-xs="50"
+                        class="example-radio-button"
+                        *ngFor="let item of isCompany"
+                        [value]="item.value"
+                        (change)="isCompanyChanged($event)"
+                      >
+                        {{ item.name }}
+                      </mat-radio-button>
+                    </mat-radio-group>
+                  </div>
 
+                  <div *ngIf="!ownerDataForm.value.isCompany" fxLayout="row wrap" fxFlex="100" class="pt-20">
+                    <div fxLayoutAlign="start" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>ชื่อเจ้าของรถ</mat-label>
+                        <input matInput formControlName="firstName" name="firstName">
+                        <mat-error *ngIf="ownerDataForm.get('firstName').hasError('required')">
+                          กรุณาระบุ ชื่อเจ้าของรถ
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>นามสกุลเจ้าของรถ</mat-label>
+                        <input matInput formControlName="lastName" name="lastName">
+                        <mat-error *ngIf="ownerDataForm.get('lastName').hasError('required')">
+                          กรุณาระบุ นามสกุลเจ้าของรถ
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                  <div *ngIf="ownerDataForm.value.isCompany" fxLayout="row wrap"
+                     fxFlex="100" class="pt-20">
+                    <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="100" class="pl-20 pr-16">
+                      <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+                        <mat-label>ชื่อ บริษัท</mat-label>
+                        <input matInput formControlName="displayName" name="displayName">
+                        <mat-error *ngIf="ownerDataForm.get('displayName').hasError('required')">
+                          กรุณาระบุ ชื่อ บริษัท
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+          </mat-tab>
         </mat-tab-group>
         <!--  -->
       </div>
