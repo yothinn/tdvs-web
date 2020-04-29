@@ -108,10 +108,8 @@ export class VehicledataFormComponent implements OnInit {
         }
       };
     if (this.vehicledataData._id) {
-      console.log("case Edit");
       this.vehicledataForm = this.editForm();
     } else {
-      console.log("case New");
       this.vehicledataForm = this.createForm();
     }
 
@@ -173,7 +171,6 @@ export class VehicledataFormComponent implements OnInit {
       this.vehicledataService
         .updateVehicledataData(this.vehicledataForm.value)
         .then(res => {
-          // console.log(res);
           this.location.back();
         })
         .catch(err => {
@@ -202,7 +199,6 @@ export class VehicledataFormComponent implements OnInit {
 
     // update the rows
     this.postcodesList = temp;
-    console.log(this.postcodesList);
   }
 
   getPosts(val) {

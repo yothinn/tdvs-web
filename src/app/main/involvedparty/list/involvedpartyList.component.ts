@@ -77,8 +77,6 @@ export class InvolvedpartyListComponent implements OnInit {
     this.page.count = res.totalCount;
   }
 
-
-
   updateFilter(event) {
     this.keyword = event.target.value;
     this.reloadData();

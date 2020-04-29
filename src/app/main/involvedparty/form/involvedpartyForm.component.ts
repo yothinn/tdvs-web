@@ -83,16 +83,12 @@ export class InvolvedpartyFormComponent implements OnInit {
         }
       };
 
-      // console.log(this.involvedpartyData);
-
     if (this.involvedpartyData.directContact || this.involvedpartyData.membership ) {
-      // console.log('case Edit');
       this.involvedpartyForm = this.editForm();
       this.caseEditArray();
       this.caseEditmembershipArray();
 
     } else {
-      // console.log('case New');
       this.involvedpartyForm = this.createForm();
     }
     this.spinner.hide();
