@@ -114,13 +114,11 @@ export class VehicleListComponent implements OnInit {
   }
 
   async reloadData() {
-    console.log(this.keyword);
     let res: any = await this.vehicleService.getVehicleDataList(
       this.page.offset,
       this.page.limit,
       this.keyword
     );
-    console.log(res.data);
     this.rows = res.data;
     this.temp = res.data;
     this.page.count = res.totalCount;
