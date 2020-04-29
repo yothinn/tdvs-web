@@ -8,12 +8,12 @@
     <!-- HEADER -->
     <div class="header accent" fxLayout="row" fxLayoutAlign="space-between center">
       <!-- APP TITLE -->
-      <div fxLayout="row" fxLayoutAlign="start center">
+      <div fxLayout="row" fxFlex="100" fxLayoutAlign="start center">
         <button class="mat-icon-button mr-0 mr-sm-16" (click)="goBack()">
           <mat-icon>arrow_back</mat-icon>
         </button>
 
-        <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
+        <div class="logo mb-24 mb-md-0" fxLayout="row" fxFlex="100" fxFlex.gt-sm="80" fxLayoutAlign="start center">
           <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
             edit
           </mat-icon>
@@ -21,7 +21,7 @@
             ข้อมูลสมาชิก
           </span>
         </div>
-        <div fxFlex="100" fxFlex.gt-sm="40" class="pl-20  pr-16" fxLayoutAlign="end">
+        <div fxFlex="100" fxFlex.gt-sm="20" class="pl-20  pr-16" fxLayoutAlign="end">
           <button [disabled]="tvdscustomerForm.invalid" mat-fab color="warn" (click)="onSave()">
             <mat-icon class="icon-position">save</mat-icon>
           </button>
