@@ -26,7 +26,7 @@ export class InvolvedpartyListComponent implements OnInit {
     count: 0,
     offset: 0,
   };
-  keyword="";
+  keyword = "";
 
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
@@ -55,15 +55,6 @@ export class InvolvedpartyListComponent implements OnInit {
 
   async deleteData(item) {
     this.spinner.show();
-    // this.involvedpartyService.deleteInvolvedpartyData(item).then((res) => {
-    //   // this.involvedpartyService
-    //   //   .getInvolvedpartyDataList()
-    //   //   .subscribe((res: any) => {
-    //   //     this.spinner.hide;
-    //   //     this.rows = res.data;
-    //   //     this.temp = res.data;
-    //   //   });
-    // });
     let deleted = await this.involvedpartyService.deleteInvolvedpartyData(item);
     this.reloadData();
   }
@@ -73,7 +64,7 @@ export class InvolvedpartyListComponent implements OnInit {
     this.reloadData();
   }
 
-  async reloadData(){
+  async reloadData() {
     console.log(this.keyword);
     let res: any = await this.involvedpartyService.getInvolvedpartyDataList(
       this.page.offset,
@@ -86,33 +77,7 @@ export class InvolvedpartyListComponent implements OnInit {
     this.page.count = res.totalCount;
   }
 
-  
-
   updateFilter(event) {
-    //change search keyword to lower case
-    // const val = event.target.value.toLowerCase();
-    // console.log(val);
-    // filter our data
-    // const temp = this.temp.filter(function (d) {
-    //   try {
-    //     return (
-    //       d.personalInfo.firstNameThai.toLowerCase().indexOf(val) !== -1 ||
-    //       d.personalInfo.lastNameThai.toLowerCase().indexOf(val) !== -1 ||
-    //       d.contactAddress.addressPostalCode.indexOf(val) !== -1 ||
-    //       d.directContact[0].value.indexOf(val) !== -1 ||
-    //       !val
-    //     );
-    //   } catch (error) {}
-    // });
-
-    
-
-
-    // update the rows
-    // this.rows = temp;
-    // Whenever the filter changes, always go back to the first page
-    // this.table.offset = 0;
-
     this.keyword = event.target.value;
     this.reloadData();
     this.page.offset = 0;

@@ -73,10 +73,8 @@ export class TvdscustomerFormComponent implements OnInit {
       };
 
     if (this.tvdscustomerData._id) {
-      console.log('case Edit');
       this.tvdscustomerForm = this.editForm();
     } else {
-      console.log('case New');
       this.tvdscustomerForm = this.createForm();
     }
 
@@ -135,7 +133,6 @@ export class TvdscustomerFormComponent implements OnInit {
       this.tvdscustomerService
         .updateTvdscustomerData(this.tvdscustomerForm.value)
         .then(res => {
-          // console.log(res);
           this.snackBar.open("บันทึกข้อมูลสำเร็จ", "", {
             duration: 7000,
           });
@@ -176,7 +173,6 @@ export class TvdscustomerFormComponent implements OnInit {
 
     // update the rows
     this.postcodesList = temp;
-    console.log(this.postcodesList);
   }
 
   getPosts(val) {

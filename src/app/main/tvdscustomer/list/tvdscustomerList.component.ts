@@ -69,35 +69,6 @@ export class TvdscustomerListComponent implements OnInit {
     this.router.navigateByUrl("/tvdscustomer/tvdscustomerForm/" + item._id);
   }
 
-  // deleteData(item) {
-  //   const body = {
-  //     title: "คุณกำลังลบใบสั่งงาน: " + item.docno,
-  //     message: "คุณได้ตรวจสอบและยืนยันการลบนี้แล้วใช่หรือไม่?",
-  //   };
-
-  //   this.dialogConfirmService.show(body).then(async (result) => {
-  //     if (result) {
-  //       this.spinner.show();
-  //       this.joborderService.deleteJoborderData(item).then((res) => {
-  //         this._snackBar.open("ลบใบสั่งงานเสร็จสิ้น", "", {
-  //           duration: 5000,
-  //         });
-  //         this.joborderService.getJoborderDataList().subscribe((res: any) => {
-  //           this.rows = res.data;
-  //           this.formatMoment();
-  //           this.sortRows();
-  //           this.spinner.hide();
-  //         });
-  //       }).catch((res)=>{
-  //         this._snackBar.open("การลบผิดพลาด กรุณาลองใหม่ภายหลัง", "", {
-  //           duration: 5000,
-  //         });
-  //       });
-  //     };
-  //   });
-
-  // }
-
   async deleteData(item) {
     const body = {
       title: "คุณกำลังลบข้อมูล" + " " + item.displayName,
@@ -106,9 +77,6 @@ export class TvdscustomerListComponent implements OnInit {
     this.dialogConfirmService.show(body).then(async (result) => {
       if (result) {
         this.spinner.show();
-        // let deleted = await this.tvdscustomerService.deleteTvdscustomerData(
-        //   item
-        // );
         this.tvdscustomerService.deleteTvdscustomerData(item).then((res) => {
           this._snackBar.open("ลบข้อมูลสมาชิกเสร็จสิ้น", "", {
             duration: 5000,
@@ -121,11 +89,6 @@ export class TvdscustomerListComponent implements OnInit {
             duration: 5000,
           });
         });
-        // this.tvdscustomerService.deleteTvdscustomerData(item).then((res) => {
-        //   this.tvdscustomerService.getTvdscustomerDataList().subscribe((res: any) => {
-        //     this.rows = res.data;
-        //   })
-        // })
       }
     });
   }
@@ -141,13 +104,11 @@ export class TvdscustomerListComponent implements OnInit {
   }
 
   async reloadData() {
-    console.log(this.keyword);
     let res: any = await this.tvdscustomerService.getTvdscustomerDataList(
       this.page.offset,
       this.page.limit,
       this.keyword
     );
-    console.log(res.data);
     this.rows = res.data;
     this.temp = res.data;
     this.page.count = res.totalCount;

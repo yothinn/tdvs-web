@@ -39,7 +39,6 @@ export class VehicleFormComponent implements OnInit {
   }
 
    ngOnInit()  {
-
     this.vehicleService.getVehicleStaffList().subscribe((res: any) => {
       this.vehicleStaffData = res.data;
       this.temp = res.data;
@@ -48,8 +47,6 @@ export class VehicleFormComponent implements OnInit {
     this.vehicleService.getVehicleDetailList().subscribe((res: any) => {
       this.vehicleDetailData = res.data;
       this.tempVehicle = res.data;
-      console.log(this.vehicleDetailData);
-      console.log(this.tempVehicle);
     })
 
     this.vehicleData = this.route.snapshot.data.items
@@ -112,7 +109,6 @@ export class VehicleFormComponent implements OnInit {
       lineUserId: [this.vehicleData.driverInfo.lineUserId],
       latitude: [this.vehicleData.driverInfo.latitude],
       longitude: [this.vehicleData.driverInfo.longitude],
-
     });
   }
 
@@ -127,7 +123,6 @@ export class VehicleFormComponent implements OnInit {
 
     // update the rows
     this.vehicleDetailData = tempVehicle;
-    console.log(this.vehicleDetailData);
   }
 
   getVehicleDetailData(option){
@@ -135,8 +130,6 @@ export class VehicleFormComponent implements OnInit {
     const tempVehicle: any = this.tempVehicle.filter(function (d) {
       return d.lisenceID.toLowerCase().indexOf(option.value) !== -1 || !option.value;
     });
-    
-    
   }
 
   updateFilter(event) {
@@ -158,7 +151,6 @@ export class VehicleFormComponent implements OnInit {
     const temp: any = this.temp.filter(function (d) {
       return d.displayName.toLowerCase().indexOf(option.value) !== -1 || !option.value;
     });
-    console.log(temp);
     let driverInfo: FormGroup = <FormGroup>this.vehicleForm.controls["driverInfo"];
     driverInfo.controls["title"].setValue(
       temp[0].title
@@ -247,6 +239,5 @@ export class VehicleFormComponent implements OnInit {
     }
 
   }
-
 
 }

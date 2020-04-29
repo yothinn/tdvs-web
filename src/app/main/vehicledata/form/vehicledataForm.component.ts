@@ -249,7 +249,6 @@ export class VehicledataFormComponent implements OnInit {
 
     // update the rows
     this.postcodesList = temp;
-    console.log(this.postcodesList);
   }
 
   getPosts(val) {
