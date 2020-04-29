@@ -49,7 +49,8 @@ export class VehicledataFormComponent implements OnInit {
     { value: 'มาสด้า', viewValue: 'มาสด้า' },
     { value: 'มิตซูบิชิ', viewValue: 'มิตซูบิชิ' },
     { value: 'นิสสัน', viewValue: 'นิสสัน' },
-    { value: 'เชฟโรเลต', viewValue: 'เชฟโรเลต' }
+    { value: 'เชฟโรเลต', viewValue: 'เชฟโรเลต' },
+    { value: 'ยี่ห้ออื่น ๆ', viewValue: 'ยี่ห้อ อื่น ๆ' }
   ];
 
   vehicleColor: Array<any> = [
