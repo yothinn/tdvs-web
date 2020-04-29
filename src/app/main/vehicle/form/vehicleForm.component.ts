@@ -24,6 +24,9 @@ export class VehicleFormComponent implements OnInit {
   vehicleData: any = {};
   vehicleStaffData: Array<any> = [];
   temp: Array<any> = [];
+
+  vehicleDetailData: Array<any> = [];
+  tempVehicle: Array<any> = [];
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private location: Location,
@@ -35,12 +38,18 @@ export class VehicleFormComponent implements OnInit {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
-
    ngOnInit()  {
 
     this.vehicleService.getVehicleStaffList().subscribe((res: any) => {
       this.vehicleStaffData = res.data;
       this.temp = res.data;
+    })
+
+    this.vehicleService.getVehicleDetailList().subscribe((res: any) => {
+      this.vehicleDetailData = res.data;
+      this.tempVehicle = res.data;
+      console.log(this.vehicleDetailData);
+      console.log(this.tempVehicle);
     })
 
     this.vehicleData = this.route.snapshot.data.items
@@ -105,6 +114,29 @@ export class VehicleFormComponent implements OnInit {
       longitude: [this.vehicleData.driverInfo.longitude],
 
     });
+  }
+
+  updateFilterVehicleDetail(event) {
+    //change search keyword to lower case
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const tempVehicle = this.tempVehicle.filter(function (d) {
+      return d.lisenceID.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.vehicleDetailData = tempVehicle;
+    console.log(this.vehicleDetailData);
+  }
+
+  getVehicleDetailData(option){
+    // filter our data
+    const tempVehicle: any = this.tempVehicle.filter(function (d) {
+      return d.lisenceID.toLowerCase().indexOf(option.value) !== -1 || !option.value;
+    });
+    
+    
   }
 
   updateFilter(event) {

@@ -26,8 +26,6 @@ export class VehicledataFormComponent implements OnInit {
   postcodesList: any = [];
   temp = [];
 
-  // isOwner: string[] = ['บริษัท ธรรมธุรกิจ วิสาหกิจเพื่อสังคม จำกัด', 'รถร่วมบริการ'];
-  // isCompany: string[] = ['บุคคลธรรมดา', 'นิติบุคคล'];
   isOwner: any[] = [
     { name: 'บริษัท ธรรมธุรกิจ วิสาหกิจเพื่อสังคม จำกัด', value: 'true' },
     { name: 'รถร่วมบริการ', value: 'false' }
@@ -42,37 +40,25 @@ export class VehicledataFormComponent implements OnInit {
     { value: 'กระบะ ตอนเดียว', viewValue: 'กระบะ ตอนเดียว' },
     { value: 'กระบะ แคป', viewValue: 'กระบะ แคป' },
     { value: 'กระบะ 4 ประตู', viewValue: 'กระบะ 4 ประตู' }
-    // { value: 'กระบะ ตอนเดียว', viewValue: 'Pickup in one episode' },
-    // { value: 'กระบะ แคป', viewValue: 'Pickup Truck Cap' },
-    // { value: 'กระบะ 4 ประตู', viewValue: 'Pickup Double Cab' }
   ];
 
   vehicleBrand: Array<any> = [
-    { value: 'โตโยต้า รีโว่', viewValue: 'โตโยต้า รีโว่' },
+    { value: 'โตโยต้า', viewValue: 'โตโยต้า' },
     { value: 'อีซูซุ', viewValue: 'อีซูซุ' },
-    { value: 'ฟอร์ดเรนเจอร์', viewValue: 'ฟอร์ดเรนเจอร์' },
-    { value: 'มาสด้า BT-50', viewValue: 'มาสด้า BT-50' },
-    { value: 'มิตซูบิชิไทรทัน', viewValue: 'มิตซูบิชิไทรทัน' },
-    { value: 'นิสสันนาวารา', viewValue: 'นิสสันนาวารา' },
-    { value: 'เชฟโรเลตโคโลราโด', viewValue: 'เชฟโรเลตโคโลราโด' },
-    { value: 'ทาทาซีนอน', viewValue: 'ทาทาซีนอน' }
-    // { value: 'โตโยต้า', viewValue: 'Toyota Revo' },
-    // { value: 'อีซูซุ', viewValue: 'Isuzu D-MAX' },
-    // { value: 'ฟอร์ดเรนเจอร์', viewValue: 'Ford Ranger' },
-    // { value: 'มาสด้า BT-50', viewValue: 'Mazda BT-50' },
-    // { value: 'มิตซูบิชิไทรทัน', viewValue: 'Mitsubishi Triton' },
-    // { value: 'นิสสันนาวารา', viewValue: 'Nissan Navara' },
-    // { value: 'เชฟโรเลตโคโลราโด', viewValue: 'Chevrolet Colorado' },
-    // { value: 'ทาทาซีนอน', viewValue: 'TATA Xenon' }
+    { value: 'ฟอร์ด', viewValue: 'ฟอร์ด' },
+    { value: 'มาสด้า', viewValue: 'มาสด้า' },
+    { value: 'มิตซูบิชิ', viewValue: 'มิตซูบิชิ' },
+    { value: 'นิสสัน', viewValue: 'นิสสัน' },
+    { value: 'เชฟโรเลต', viewValue: 'เชฟโรเลต' }
   ];
 
   vehicleColor: Array<any> = [
-    // { value: 'สีแดง', viewValue: 'red' },
-    // { value: 'สีน้ำเงิน', viewValue: 'blue' },
-    // { value: 'สีม่วง', viewValue: 'purple' }
+    { value: 'สีดำ', viewValue: 'สีดำ' },
+    { value: 'สีขาว', viewValue: 'สีขาว' },
     { value: 'สีแดง', viewValue: 'สีแดง' },
     { value: 'สีน้ำเงิน', viewValue: 'สีน้ำเงิน' },
-    { value: 'สีม่วง', viewValue: 'สีม่วง' }
+    { value: 'สีบอลเงิน', viewValue: 'สีบอลเงิน' },
+    { value: 'สีอื่น ๆ', viewValue: 'สีอื่น ๆ' }
   ];
 
   constructor(

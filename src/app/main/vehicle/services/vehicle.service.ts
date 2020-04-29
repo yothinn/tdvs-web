@@ -6,6 +6,7 @@ import { environment } from "environments/environment";
 
 const api_url = environment.apiUrl + "/api/vehicles/";
 const api_url_customer = environment.apiUrl + "/api/vehiclestaffs";
+const api_url_vehicledetail = environment.apiUrl + "/api/vehicledatas";
 
 @Injectable({
   providedIn: "root"
@@ -33,6 +34,14 @@ export class VehicleService {
       return this.getVehicleDataList(0, 10, '');
     }
   }
+
+  getVehicleDetailList() {
+    return this.http
+    .get(api_url_vehicledetail, {
+      headers: this.authorizationHeader()
+    });
+  }
+
 
   getVehicleStaffList() {
     return this.http
