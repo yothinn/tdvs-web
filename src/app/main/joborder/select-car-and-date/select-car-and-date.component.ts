@@ -17,24 +17,15 @@ export class SelectCarAndDateComponent implements OnInit {
   ngOnInit() {
     this.data.cars.forEach((el) => {
       if (el.lisenceID && el.driverInfo && el.driverInfo.displayName) {
-        let car = "(" + el.lisenceID + ") " + el.driverInfo.displayName;
         this.cars.push({
           lisenceID: el.lisenceID,
+          startDate: el.startDate, 
+          endDate: el.endDate,
           driverInfo: el.driverInfo,
         });
       }
     });
-
-    // console.log(this.cars);
-    // console.log(this.data);
   }
-
-  // selectionChange(ev) {
-  //   console.log(ev.value);
-  //   this.data.lisenceID = ev.value.lisenceID;
-  //   this.data.driverInfo = ev.value.driverInfo;
-  //   console.log(this.data);
-  // }
 
   onCancel() {
     this.dialogRef.close();

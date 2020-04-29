@@ -14,7 +14,7 @@
   <mat-form-field class="full-wsize">
     <mat-label>เลือกรถ</mat-label>
     <mat-select [(value)]="data.carNo" >
-      <mat-option *ngFor="let car of cars" [value]="car">
+      <mat-option *ngFor="let car of cars | servicedatefilter:data.docdate" [value]="car">
         ({{car.lisenceID}}) {{car.driverInfo.displayName}}
       </mat-option>
     </mat-select>

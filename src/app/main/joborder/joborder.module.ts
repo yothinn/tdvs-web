@@ -15,6 +15,7 @@ import { AgmCoreModule } from '@agm/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SelectCarAndDateComponent } from './select-car-and-date/select-car-and-date.component';
 import { JoborderPdfComponent } from './joborder-pdf/joborder-pdf.component';
+import { ServiceDateFilterPipe } from './select-car-and-date/select-car-and-date.pipe';
 
 
 const routes = [
@@ -41,7 +42,8 @@ const routes = [
 @NgModule({
   declarations: [
     JoborderListComponent,
-    JoborderFormComponent, SelectCarAndDateComponent, JoborderPdfComponent
+    JoborderFormComponent, SelectCarAndDateComponent, JoborderPdfComponent, 
+    ServiceDateFilterPipe
   ],
   imports: [
     RouterModule.forChild(routes),

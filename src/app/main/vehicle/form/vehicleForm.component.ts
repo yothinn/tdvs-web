@@ -96,7 +96,7 @@ export class VehicleFormComponent implements OnInit {
       lastName: [this.vehicleData.driverInfo.displayName],
       displayName: [this.vehicleData.driverInfo.displayName, Validators.required],
       persanalId: [this.vehicleData.driverInfo.persanalId],
-      isShareHolder: [this.vehicleData.driverInfo.isShareHolder],
+      driverId: [this.vehicleData.driverInfo.driverId],
       mobileNo1: [this.vehicleData.driverInfo.mobileNo1],
       mobileNo2: [this.vehicleData.driverInfo.mobileNo2],
       mobileNo3: [this.vehicleData.driverInfo.mobileNo3],
@@ -167,8 +167,8 @@ export class VehicleFormComponent implements OnInit {
     driverInfo.controls["persanalId"].setValue(
       temp[0].persanalId
     );
-    driverInfo.controls["isShareHolder"].setValue(
-      temp[0].isShareHolder
+    driverInfo.controls["driverId"].setValue(
+      temp[0].driverId
     );
     driverInfo.controls["mobileNo1"].setValue(
       temp[0].mobileNo1
