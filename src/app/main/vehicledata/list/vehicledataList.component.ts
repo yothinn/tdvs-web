@@ -43,10 +43,8 @@ export class VehicledataListComponent implements OnInit {
     for (let i = 0; i < this.rows.length; i++) {
       const row = this.rows[i];
       if (row.ownerInfo.displayName) {
-        // console.log("displayName");
         row.ownerInfo.displayName;
       } else {
-        // console.log("firstName" + " " + "lastName");
         row.ownerInfo.displayName = row.ownerInfo.firstName + " " + row.ownerInfo.lastName
       }
     }
