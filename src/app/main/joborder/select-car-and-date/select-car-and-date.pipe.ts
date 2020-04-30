@@ -16,7 +16,7 @@ export class ServiceDateFilterPipe implements PipeTransform {
     return items.filter((item: any) => {
       // console.log(`${new Date(item.startDate).getTime()} <= ${new Date(filter).getTime()}`)
       return new Date(item.startDate).getTime() <= new Date(filter).getTime() 
-      && (item.endDate ? new Date(item.endDate).getTime() : new Date('2120-12-31').getTime()) > new Date(filter).getTime();
+      && (item.endDate ? new Date(item.endDate).getTime() : new Date('2120-12-31').getTime()) >= new Date(filter).getTime();
     });
   }
 }
