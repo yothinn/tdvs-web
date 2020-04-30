@@ -153,6 +153,7 @@ export class VehicleFormComponent implements OnInit {
       return d.lisenceID.toLowerCase().indexOf(val) !== -1 || !val;
     });
 
+    console.log(tempVehicle);
     // update the rows
     this.vehicleDetailData = tempVehicle;
   }
@@ -221,6 +222,13 @@ export class VehicleFormComponent implements OnInit {
   async onSave() {
     this.spinner.show();
 
+    if(this.vehicleDetailData.length > 0){
+      this.vehicleForm.value.vehicleType = this.vehicleDetailData[0].vehicleType;
+      this.vehicleForm.value.vehicleColor = this.vehicleDetailData[0].vehicleColor;
+      this.vehicleForm.value.vehicleBrand = this.vehicleDetailData[0].vehicleBrand;
+      this.vehicleForm.value.isOwner = this.vehicleDetailData[0].isOwner;
+      this.vehicleForm.value.ownerInfo = this.vehicleDetailData[0].ownerInfo;
+    }
     if (this.vehicleData._id) {
       this.vehicleForm.value._id = this.vehicleData._id;
       this.vehicleService
