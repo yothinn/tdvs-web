@@ -51,7 +51,7 @@
               </ngx-datatable-column>
               <ngx-datatable-column name="เจ้าของรถ" [flexGrow]="5">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  {{ row.ownerInfo.displayName ? row.ownerInfo.displayName : "" }}
+                  {{row.isOwner ? "บริษัท ธรรมธุรกิจ วิสาหกิจเพื่อสังคม จำกัด" :  row.ownerInfo.displayName ? row.ownerInfo.displayName : "" }}
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column [flexGrow]="1">

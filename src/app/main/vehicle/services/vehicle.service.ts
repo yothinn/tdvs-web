@@ -47,7 +47,7 @@ export class VehicleService {
     return this.http
     .get(api_url_customer, {
       headers: this.authorizationHeader()
-    });
+    }).toPromise();
   }
 
   getVehicleDataList(pageNo, pageSize, keyword){

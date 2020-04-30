@@ -130,8 +130,9 @@ export class VehicledataFormComponent implements OnInit {
   }
 
   createVehicleForm(): FormGroup {
+    let LISENCEID = /^[0-9ก-ฮ][ก-ฮ][ก-ฮ]? [0-9]{1,4}$/;
     return this.formBuilder.group({
-      lisenceID: [this.vehicledataData.lisenceID, Validators.required],
+      lisenceID: [this.vehicledataData.lisenceID, [Validators.required,Validators.pattern(LISENCEID)]],
       vehicleType: [this.vehicledataData.vehicleType, Validators.required],
       vehicleColor: [this.vehicledataData.vehicleColor, Validators.required],
       vehicleBrand: [this.vehicledataData.vehicleBrand, Validators.required],

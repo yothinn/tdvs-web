@@ -84,6 +84,7 @@
                       <mat-label>ทะเบียนรถ</mat-label>
                       <input
                         matInput
+                        maxlength="10"
                         formControlName="lisenceID"
                         name="lisenceID"
                       />
@@ -93,6 +94,9 @@
                         "
                       >
                         กรุณาระบุ ทะเบียนรถ
+                      </mat-error>
+                      <mat-error *ngIf="vehicleDataForm.get('lisenceID').dirty">
+                        กรุณาระบุ ทะเบียนรถของท่านไม่ถูกต้อง ตัวอย่าง "5กน 213"
                       </mat-error>
                     </mat-form-field>
                   </div>
@@ -321,8 +325,7 @@
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>เบอร์โทรติดต่อ</mat-label>
-                      <input matInput maxlength="10" minlength="10" formControlName="mobileNo1" name="mobileNo1"
-                        placeholder="xxx-xxx-xxxx">
+                      <input matInput maxlength="10" minlength="10" formControlName="mobileNo1" name="mobileNo1">
                       <mat-error *ngIf="ownerDataForm.get('mobileNo1').hasError('required')">
                         กรุณาระบุ เบอร์โทรติดต่อ
                       </mat-error>

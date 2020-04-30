@@ -8,6 +8,7 @@ import {
   Validators,
   FormBuilder,
   AbstractControl,
+  ValidatorFn,
 } from "@angular/forms";
 
 import { locale as english } from "../i18n/en";
@@ -43,17 +44,21 @@ export class VehicleFormComponent implements OnInit {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
-  ngOnInit() {
-    this.vehicleService.getVehicleStaffList().subscribe((res: any) => {
-      this.vehicleStaffData = res.data;
-      this.temp = res.data;
-    });
+  async ngOnInit() {
+    // this.vehicleService.getVehicleStaffList().subscribe((res: any) => {
+    //   this.vehicleStaffData = res.data;
+    //   this.temp = res.data;
+    // });
+    let res: any = await this.vehicleService.getVehicleStaffList();
+    this.vehicleStaffData = res.data;
+    this.temp = res.data;
 
     this.vehicleService.getVehicleDetailList().subscribe((res: any) => {
       this.vehicleDetailData = res.data;
       this.tempVehicle = res.data;
     });
 
+    
     this.vehicleData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
@@ -76,33 +81,13 @@ export class VehicleFormComponent implements OnInit {
     this.spinner.hide();
   }
 
-  validDateEnd(control: AbstractControl) {
-    // console.log(control.value);
-    let frmGroup: FormGroup = <FormGroup>control.parent;
-    try {
-      console.log(new Date(frmGroup.controls["startDate"].value).getTime());
-      if (new Date(control.value).getTime() < new Date(frmGroup.controls["startDate"].value).getTime()) {
-        console.log("invalid");
-        return { validDate: true };
-      }
-    } catch (error) {
-
-    }
-    // try {
-    //   if (control.value < this.vehicleForm.controls["startDate"]) {
-    //     console.log("sdfsdf");
-    //     return { validDate: true };
-    //   }else{
-    //     console.log("no");
-    //   }
-    // } catch (error) {}
-
-    return null;
-  }
-
   createForm(): FormGroup {
+    let LISENCEID = /^[0-9ก-ฮ][ก-ฮ][ก-ฮ]? [0-9]{1,4}$/;
     return this.formBuilder.group({
-      lisenceID: [this.vehicleData.lisenceID, Validators.required],
+      lisenceID: [
+        this.vehicleData.lisenceID,
+        [Validators.required, Validators.pattern(LISENCEID)],
+      ],
       startDate: [this.vehicleData.startDate, Validators.required],
       endDate: [this.vehicleData.endDate, this.validDateEnd],
       driverInfo: this.driverInfoForm(),
@@ -110,13 +95,19 @@ export class VehicleFormComponent implements OnInit {
   }
 
   editForm(): FormGroup {
+    let LISENCEID = /^[0-9ก-ฮ][ก-ฮ][ก-ฮ]? [0-9]{1,4}$/;
     return this.formBuilder.group({
-      lisenceID: [this.vehicleData.lisenceID, Validators.required],
+      lisenceID: [
+        this.vehicleData.lisenceID,
+        [Validators.required, Validators.pattern(LISENCEID)],
+      ],
       startDate: [this.vehicleData.startDate, Validators.required],
       endDate: [this.vehicleData.endDate, this.validDateEnd],
       driverInfo: this.driverInfoForm(),
     });
   }
+
+  
 
   driverInfoForm(): FormGroup {
     return this.formBuilder.group({
@@ -125,7 +116,7 @@ export class VehicleFormComponent implements OnInit {
       lastName: [this.vehicleData.driverInfo.displayName],
       displayName: [
         this.vehicleData.driverInfo.displayName,
-        Validators.required,
+        [Validators.required, this.valueSelected(this.vehicleStaffData)],
       ],
       persanalId: [this.vehicleData.driverInfo.persanalId],
       driverId: [this.vehicleData.driverInfo.driverId],
@@ -243,4 +234,42 @@ export class VehicleFormComponent implements OnInit {
         });
     }
   }
+
+  validDateEnd(control: AbstractControl) {
+    // console.log(control.value);
+    if(!control.value) return null;
+    let frmGroup: FormGroup = <FormGroup>control.parent;
+    try {
+      console.log(new Date(frmGroup.controls["startDate"].value).getTime());
+      if (
+        new Date(control.value).getTime() <
+        new Date(frmGroup.controls["startDate"].value).getTime()
+      ) {
+        console.log("invalid");
+        return { validDate: true };
+      }
+    } catch (error) {}
+
+    return null;
+  }
+
+  valueSelected(myArray: any[]): ValidatorFn {
+    return (c: AbstractControl): { [key: string]: boolean } | null => {
+      let selectboxValue = c.value;
+      // console.log(myArray);
+      // console.log(selectboxValue)
+      let pickedOrNot = myArray.filter((alias) => {
+        return alias.displayName === selectboxValue;
+      });
+      // console.log(pickedOrNot.length);
+      if (pickedOrNot.length > 0) {
+        // everything's fine. return no error. therefore it's null.
+        return null;
+      } else {
+        //there's no matching selectboxvalue selected. so return match error.
+        return { match: true };
+      }
+    };
+  }
+  
 }
