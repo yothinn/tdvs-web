@@ -17,6 +17,7 @@ import { locale as thai } from "../i18n/th";
 import { VehicleService } from "../services/vehicle.service";
 import { ActivatedRoute } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: "app-vehicle-form",
@@ -39,7 +40,8 @@ export class VehicleFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private vehicleService: VehicleService,
     private route: ActivatedRoute,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private snackBar: MatSnackBar
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
@@ -49,16 +51,12 @@ export class VehicleFormComponent implements OnInit {
     //   this.vehicleStaffData = res.data;
     //   this.temp = res.data;
     // });
-    let res: any = await this.vehicleService.getVehicleStaffList();
-    this.vehicleStaffData = res.data;
-    this.temp = res.data;
 
     this.vehicleService.getVehicleDetailList().subscribe((res: any) => {
       this.vehicleDetailData = res.data;
       this.tempVehicle = res.data;
     });
 
-    
     this.vehicleData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
@@ -77,6 +75,19 @@ export class VehicleFormComponent implements OnInit {
       console.log("case New");
       this.vehicleForm = this.createForm();
     }
+    let res: any = await this.vehicleService.getVehicleStaffList();
+    this.vehicleStaffData = res.data;
+    this.temp = res.data;
+
+    let driverInfo: FormGroup = <FormGroup>(
+      this.vehicleForm.controls["driverInfo"]
+    );
+
+    driverInfo.controls["displayName"].setValidators([
+      Validators.required,
+      this.valueSelected(this.vehicleStaffData),
+    ]);
+    //
 
     this.spinner.hide();
   }
@@ -107,8 +118,6 @@ export class VehicleFormComponent implements OnInit {
     });
   }
 
-  
-
   driverInfoForm(): FormGroup {
     return this.formBuilder.group({
       title: [this.vehicleData.driverInfo.title],
@@ -116,7 +125,7 @@ export class VehicleFormComponent implements OnInit {
       lastName: [this.vehicleData.driverInfo.displayName],
       displayName: [
         this.vehicleData.driverInfo.displayName,
-        [Validators.required, this.valueSelected(this.vehicleStaffData)],
+        [Validators.required],
       ],
       persanalId: [this.vehicleData.driverInfo.persanalId],
       driverId: [this.vehicleData.driverInfo.driverId],
@@ -222,6 +231,9 @@ export class VehicleFormComponent implements OnInit {
         })
         .catch((err) => {
           this.spinner.hide();
+          this.snackBar.open(err.error.message, "", {
+            duration: 7000,
+          });
         });
     } else {
       this.vehicleService
@@ -231,13 +243,16 @@ export class VehicleFormComponent implements OnInit {
         })
         .catch((err) => {
           this.spinner.hide();
+          this.snackBar.open(err.error.message, "", {
+            duration: 7000,
+          });
         });
     }
   }
 
   validDateEnd(control: AbstractControl) {
     // console.log(control.value);
-    if(!control.value) return null;
+    if (!control.value) return null;
     let frmGroup: FormGroup = <FormGroup>control.parent;
     try {
       console.log(new Date(frmGroup.controls["startDate"].value).getTime());
@@ -271,5 +286,4 @@ export class VehicleFormComponent implements OnInit {
       }
     };
   }
-  
 }

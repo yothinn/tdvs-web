@@ -49,7 +49,7 @@ export class TvdscustomerService {
   getPostcodesList() {
     return this.http.get(api_url_postcodes, {
       headers: this.authorizationHeader(),
-    });
+    }).toPromise();
   }
 
   getTvdscustomerData(id: any) {

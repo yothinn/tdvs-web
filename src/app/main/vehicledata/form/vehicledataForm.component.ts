@@ -3,7 +3,13 @@ import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.
 import { fuseAnimations } from "@fuse/animations";
 
 import { Location } from "@angular/common";
-import { FormGroup, Validators, FormBuilder } from "@angular/forms";
+import {
+  FormGroup,
+  Validators,
+  FormBuilder,
+  ValidatorFn,
+  AbstractControl,
+} from "@angular/forms";
 
 import { locale as english } from "../i18n/en";
 import { locale as thai } from "../i18n/th";
@@ -12,6 +18,7 @@ import { VehicledataService } from "../services/vehicledata.service";
 import { ActivatedRoute } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ValidatePID } from "./pid.validate";
+import { MatSnackBar } from "@angular/material";
 
 @Component({
   selector: "app-vehicledata-form",
@@ -70,17 +77,13 @@ export class VehicledataFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private vehicledataService: VehicledataService,
     private route: ActivatedRoute,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private snackBar: MatSnackBar
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
-  ngOnInit(): void {
-    this.vehicledataService.getPostcodesList().subscribe((res: any) => {
-      this.postcodesList = res.data;
-      this.temp = res.data;
-    });
-
+  async ngOnInit() {
     this.vehicledataData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
@@ -126,13 +129,25 @@ export class VehicledataFormComponent implements OnInit {
       ]);
       this.ownerDataForm.controls["displayName"].setValidators(null);
     }
+    let res: any = await this.vehicledataService.getPostcodesList();
+    this.postcodesList = res.data;
+    this.temp = res.data;
+
+    this.ownerDataForm.controls["addressPostCode"].setValidators([
+      Validators.required,
+      this.validatePostCode(this.postcodesList),
+    ]);
+
     this.spinner.hide();
   }
 
   createVehicleForm(): FormGroup {
     let LISENCEID = /^[0-9ก-ฮ][ก-ฮ][ก-ฮ]? [0-9]{1,4}$/;
     return this.formBuilder.group({
-      lisenceID: [this.vehicledataData.lisenceID, [Validators.required,Validators.pattern(LISENCEID)]],
+      lisenceID: [
+        this.vehicledataData.lisenceID,
+        [Validators.required, Validators.pattern(LISENCEID)],
+      ],
       vehicleType: [this.vehicledataData.vehicleType, Validators.required],
       vehicleColor: [this.vehicledataData.vehicleColor, Validators.required],
       vehicleBrand: [this.vehicledataData.vehicleBrand, Validators.required],
@@ -213,7 +228,7 @@ export class VehicledataFormComponent implements OnInit {
   async onSave() {
     this.spinner.show();
 
-    let body : any = this.vehicleDataForm.value;
+    let body: any = this.vehicleDataForm.value;
     body.ownerInfo = this.ownerDataForm.value;
 
     if (this.vehicledataData._id) {
@@ -222,10 +237,14 @@ export class VehicledataFormComponent implements OnInit {
         .updateVehicledataData(body)
         .then((res) => {
           // console.log(res);
+
           this.location.back();
         })
         .catch((err) => {
           this.spinner.hide();
+          this.snackBar.open(err.error.message, "", {
+            duration: 7000,
+          });
         });
     } else {
       this.vehicledataService
@@ -235,6 +254,9 @@ export class VehicledataFormComponent implements OnInit {
         })
         .catch((err) => {
           this.spinner.hide();
+          this.snackBar.open(err.error.message, "", {
+            duration: 7000,
+          });
         });
     }
   }
@@ -259,7 +281,7 @@ export class VehicledataFormComponent implements OnInit {
     let subdistrict = arrValue[1].trim();
     let district = arrValue[2].trim();
     let province = arrValue[3].trim();
-    
+
     this.ownerDataForm.controls["addressProvince"].setValue(province);
     this.ownerDataForm.controls["addressDistrict"].setValue(district);
     this.ownerDataForm.controls["addressSubDistrict"].setValue(subdistrict);
@@ -277,6 +299,9 @@ export class VehicledataFormComponent implements OnInit {
       this.ownerDataForm.controls["displayName"].setValidators([
         Validators.required,
       ]);
+
+      this.ownerDataForm.controls["firstName"].setValue("");
+      this.ownerDataForm.controls["lastName"].setValue("");
     } else {
       this.ownerDataForm.controls["firstName"].setValidators([
         Validators.required,
@@ -285,6 +310,28 @@ export class VehicledataFormComponent implements OnInit {
         Validators.required,
       ]);
       this.ownerDataForm.controls["displayName"].setValidators(null);
+
+      this.ownerDataForm.controls["displayName"].setValue("");
     }
+  }
+
+  validatePostCode(myArray: any[]): ValidatorFn {
+    if (myArray.length === 0) return null;
+    return (c: AbstractControl): { [key: string]: boolean } | null => {
+      let selectboxValue = c.value;
+      console.log(myArray);
+      console.log(selectboxValue);
+      let pickedOrNot = myArray.filter((alias) => {
+        return alias.postcode === selectboxValue;
+      });
+      console.log(pickedOrNot.length);
+      if (pickedOrNot.length > 0) {
+        // everything's fine. return no error. therefore it's null.
+        return null;
+      } else {
+        //there's no matching selectboxvalue selected. so return match error.
+        return { match: true };
+      }
+    };
   }
 }

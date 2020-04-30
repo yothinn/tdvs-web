@@ -1,25 +1,25 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.service';
-import { fuseAnimations } from '@fuse/animations';
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
+import { fuseAnimations } from "@fuse/animations";
 
-import { Location } from '@angular/common';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Location } from "@angular/common";
+import { FormGroup, Validators, FormBuilder, AbstractControl, ValidatorFn } from "@angular/forms";
 
-import { locale as english } from '../i18n/en';
-import { locale as thai } from '../i18n/th';
+import { locale as english } from "../i18n/en";
+import { locale as thai } from "../i18n/th";
 
-import { TvdscustomerService } from '../services/tvdscustomer.service';
-import { ActivatedRoute } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ValidatePID } from './pid.validate';
-import { MatSnackBar } from '@angular/material';
+import { TvdscustomerService } from "../services/tvdscustomer.service";
+import { ActivatedRoute } from "@angular/router";
+import { NgxSpinnerService } from "ngx-spinner";
+import { ValidatePID } from "./pid.validate";
+import { MatSnackBar } from "@angular/material";
 
 @Component({
-  selector: 'app-tvdscustomer-form',
-  templateUrl: './tvdscustomerForm.component.html',
-  styleUrls: ['./tvdscustomerForm.component.scss'],
+  selector: "app-tvdscustomer-form",
+  templateUrl: "./tvdscustomerForm.component.html",
+  styleUrls: ["./tvdscustomerForm.component.scss"],
   encapsulation: ViewEncapsulation.None,
-  animations: fuseAnimations
+  animations: fuseAnimations,
 })
 export class TvdscustomerFormComponent implements OnInit {
   tvdscustomerForm: FormGroup;
@@ -29,9 +29,9 @@ export class TvdscustomerFormComponent implements OnInit {
   temp = [];
 
   title: Array<any> = [
-    { value: 'นาย', viewValue: 'นาย' },
-    { value: 'นาง', viewValue: 'นาง' },
-    { value: 'นางสาว', viewValue: 'นางสาว' }
+    { value: "นาย", viewValue: "นาย" },
+    { value: "นาง", viewValue: "นาง" },
+    { value: "นางสาว", viewValue: "นางสาว" },
   ];
 
   constructor(
@@ -41,42 +41,48 @@ export class TvdscustomerFormComponent implements OnInit {
     private tvdscustomerService: TvdscustomerService,
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
-    private snackBar: MatSnackBar,
+    private snackBar: MatSnackBar
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
-
-  ngOnInit(): void {
-
-    this.tvdscustomerService.getPostcodesList().subscribe((res: any) => {
-      this.postcodesList = res.data;
-      this.temp = res.data;
-    })
-
+  async ngOnInit() {
     this.tvdscustomerData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
-        title: "",
-        firstName: "",
-        lastName: "",
-        persanalId: "",
-        mobileNo1: "",
-        mobileNo2: "",
-        mobileNo3: "",
-        addressLine1: "",
-        addressStreet: "",
-        addressSubDistrict: "",
-        addressDistrict: "",
-        addressProvince: "",
-        addressPostCode: ""
-      };
+          title: "",
+          firstName: "",
+          lastName: "",
+          persanalId: "",
+          mobileNo1: "",
+          mobileNo2: "",
+          mobileNo3: "",
+          addressLine1: "",
+          addressStreet: "",
+          addressSubDistrict: "",
+          addressDistrict: "",
+          addressProvince: "",
+          addressPostCode: "",
+        };
 
     if (this.tvdscustomerData._id) {
       this.tvdscustomerForm = this.editForm();
     } else {
       this.tvdscustomerForm = this.createForm();
     }
+
+    // this.tvdscustomerService.getPostcodesList().subscribe((res: any) => {
+    //   this.postcodesList = res.data;
+    //   this.temp = res.data;
+    // })
+    let res: any = await this.tvdscustomerService.getPostcodesList();
+    this.postcodesList = res.data;
+    this.temp = res.data;
+
+    this.tvdscustomerForm.controls["addressPostCode"].setValidators([
+      Validators.required,
+      this.validatePostCode(this.postcodesList),
+    ]);
 
     this.spinner.hide();
   }
@@ -89,15 +95,30 @@ export class TvdscustomerFormComponent implements OnInit {
       firstName: [this.tvdscustomerData.firstName, Validators.required],
       lastName: [this.tvdscustomerData.lastName, Validators.required],
       persanalId: [this.tvdscustomerData.persanalId, [ValidatePID]],
-      mobileNo1: [this.tvdscustomerData.mobileNo1, [Validators.required, Validators.pattern(MOBILE_PATTERN)]],
+      mobileNo1: [
+        this.tvdscustomerData.mobileNo1,
+        [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+      ],
       mobileNo2: [this.tvdscustomerData.mobileNo2],
       mobileNo3: [this.tvdscustomerData.mobileNo3],
       addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
       addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
-      addressSubDistrict: [this.tvdscustomerData.addressSubDistrict, Validators.required],
-      addressDistrict: [this.tvdscustomerData.addressDistrict, Validators.required],
-      addressProvince: [this.tvdscustomerData.addressProvince, Validators.required],
-      addressPostCode: [this.tvdscustomerData.addressPostCode, [Validators.required, Validators.pattern(POSTCODE_PATTERN)]],
+      addressSubDistrict: [
+        this.tvdscustomerData.addressSubDistrict,
+        Validators.required,
+      ],
+      addressDistrict: [
+        this.tvdscustomerData.addressDistrict,
+        Validators.required,
+      ],
+      addressProvince: [
+        this.tvdscustomerData.addressProvince,
+        Validators.required,
+      ],
+      addressPostCode: [
+        this.tvdscustomerData.addressPostCode,
+        [Validators.required, Validators.pattern(POSTCODE_PATTERN)],
+      ],
     });
   }
   editForm(): FormGroup {
@@ -108,15 +129,30 @@ export class TvdscustomerFormComponent implements OnInit {
       firstName: [this.tvdscustomerData.firstName, Validators.required],
       lastName: [this.tvdscustomerData.lastName, Validators.required],
       persanalId: [this.tvdscustomerData.persanalId, [ValidatePID]],
-      mobileNo1: [this.tvdscustomerData.mobileNo1, [Validators.required, Validators.pattern(MOBILE_PATTERN)]],
+      mobileNo1: [
+        this.tvdscustomerData.mobileNo1,
+        [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+      ],
       mobileNo2: [this.tvdscustomerData.mobileNo2],
       mobileNo3: [this.tvdscustomerData.mobileNo3],
       addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
       addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
-      addressSubDistrict: [this.tvdscustomerData.addressSubDistrict, Validators.required],
-      addressDistrict: [this.tvdscustomerData.addressDistrict, Validators.required],
-      addressProvince: [this.tvdscustomerData.addressProvince, Validators.required],
-      addressPostCode: [this.tvdscustomerData.addressPostCode, [Validators.required, Validators.pattern(POSTCODE_PATTERN)]],
+      addressSubDistrict: [
+        this.tvdscustomerData.addressSubDistrict,
+        Validators.required,
+      ],
+      addressDistrict: [
+        this.tvdscustomerData.addressDistrict,
+        Validators.required,
+      ],
+      addressProvince: [
+        this.tvdscustomerData.addressProvince,
+        Validators.required,
+      ],
+      addressPostCode: [
+        this.tvdscustomerData.addressPostCode,
+        [Validators.required, Validators.pattern(POSTCODE_PATTERN)],
+      ],
     });
   }
 
@@ -132,13 +168,13 @@ export class TvdscustomerFormComponent implements OnInit {
       this.tvdscustomerForm.value._id = this.tvdscustomerData._id;
       this.tvdscustomerService
         .updateTvdscustomerData(this.tvdscustomerForm.value)
-        .then(res => {
+        .then((res) => {
           this.snackBar.open("บันทึกข้อมูลสำเร็จ", "", {
             duration: 7000,
           });
           this.location.back();
         })
-        .catch(err => {
+        .catch((err) => {
           this.spinner.hide();
           this.snackBar.open(err.error.message, "", {
             duration: 7000,
@@ -153,7 +189,7 @@ export class TvdscustomerFormComponent implements OnInit {
           });
           this.location.back();
         })
-        .catch(err => {
+        .catch((err) => {
           this.spinner.hide();
           this.snackBar.open(err.error.message, "", {
             duration: 7000,
@@ -188,5 +224,23 @@ export class TvdscustomerFormComponent implements OnInit {
     this.tvdscustomerForm.controls["addressSubDistrict"].setValue(subdistrict);
   }
 
-
+  validatePostCode(myArray: any[]): ValidatorFn {
+    if (myArray.length === 0) return null;
+    return (c: AbstractControl): { [key: string]: boolean } | null => {
+      let selectboxValue = c.value;
+      console.log(myArray);
+      console.log(selectboxValue);
+      let pickedOrNot = myArray.filter((alias) => {
+        return alias.postcode === selectboxValue;
+      });
+      console.log(pickedOrNot.length);
+      if (pickedOrNot.length > 0) {
+        // everything's fine. return no error. therefore it's null.
+        return null;
+      } else {
+        //there's no matching selectboxvalue selected. so return match error.
+        return { match: true };
+      }
+    };
+  }
 }
