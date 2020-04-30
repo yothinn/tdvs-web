@@ -1,23 +1,28 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.service';
-import { fuseAnimations } from '@fuse/animations';
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
+import { fuseAnimations } from "@fuse/animations";
 
-import { Location } from '@angular/common';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Location } from "@angular/common";
+import {
+  FormGroup,
+  Validators,
+  FormBuilder,
+  AbstractControl,
+} from "@angular/forms";
 
-import { locale as english } from '../i18n/en';
-import { locale as thai } from '../i18n/th';
+import { locale as english } from "../i18n/en";
+import { locale as thai } from "../i18n/th";
 
-import { VehicleService } from '../services/vehicle.service';
-import { ActivatedRoute } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { VehicleService } from "../services/vehicle.service";
+import { ActivatedRoute } from "@angular/router";
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
-  selector: 'app-vehicle-form',
-  templateUrl: './vehicleForm.component.html',
-  styleUrls: ['./vehicleForm.component.scss'],
+  selector: "app-vehicle-form",
+  templateUrl: "./vehicleForm.component.html",
+  styleUrls: ["./vehicleForm.component.scss"],
   encapsulation: ViewEncapsulation.None,
-  animations: fuseAnimations
+  animations: fuseAnimations,
 })
 export class VehicleFormComponent implements OnInit {
   vehicleForm: FormGroup;
@@ -38,45 +43,69 @@ export class VehicleFormComponent implements OnInit {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
-   ngOnInit()  {
+  ngOnInit() {
     this.vehicleService.getVehicleStaffList().subscribe((res: any) => {
       this.vehicleStaffData = res.data;
       this.temp = res.data;
-    })
+    });
 
     this.vehicleService.getVehicleDetailList().subscribe((res: any) => {
       this.vehicleDetailData = res.data;
       this.tempVehicle = res.data;
-    })
+    });
 
     this.vehicleData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
           lisenceID: "",
-          startDate: '',
-          endDate: '',
+          startDate: "",
+          endDate: "",
           driverInfo: {
-              displayName: ''
-          }
+            displayName: "",
+          },
         };
 
-        if (this.vehicleData._id) {
-          console.log('case Edit');
-          this.vehicleForm = this.editForm();
-        } else {
-          console.log('case New');
-          this.vehicleForm = this.createForm();
-        }
+    if (this.vehicleData._id) {
+      console.log("case Edit");
+      this.vehicleForm = this.editForm();
+    } else {
+      console.log("case New");
+      this.vehicleForm = this.createForm();
+    }
 
     this.spinner.hide();
+  }
+
+  validDateEnd(control: AbstractControl) {
+    // console.log(control.value);
+    let frmGroup: FormGroup = <FormGroup>control.parent;
+    try {
+      console.log(new Date(frmGroup.controls["startDate"].value).getTime());
+      if (new Date(control.value).getTime() < new Date(frmGroup.controls["startDate"].value).getTime()) {
+        console.log("invalid");
+        return { validDate: true };
+      }
+    } catch (error) {
+
+    }
+    // try {
+    //   if (control.value < this.vehicleForm.controls["startDate"]) {
+    //     console.log("sdfsdf");
+    //     return { validDate: true };
+    //   }else{
+    //     console.log("no");
+    //   }
+    // } catch (error) {}
+
+    return null;
   }
 
   createForm(): FormGroup {
     return this.formBuilder.group({
       lisenceID: [this.vehicleData.lisenceID, Validators.required],
       startDate: [this.vehicleData.startDate, Validators.required],
-      endDate: [this.vehicleData.endDate],
-      driverInfo: this.driverInfoForm()
+      endDate: [this.vehicleData.endDate, this.validDateEnd],
+      driverInfo: this.driverInfoForm(),
     });
   }
 
@@ -84,9 +113,9 @@ export class VehicleFormComponent implements OnInit {
     return this.formBuilder.group({
       lisenceID: [this.vehicleData.lisenceID, Validators.required],
       startDate: [this.vehicleData.startDate, Validators.required],
-      endDate: [this.vehicleData.endDate],
-      driverInfo: this.driverInfoForm()
-    })
+      endDate: [this.vehicleData.endDate, this.validDateEnd],
+      driverInfo: this.driverInfoForm(),
+    });
   }
 
   driverInfoForm(): FormGroup {
@@ -94,7 +123,10 @@ export class VehicleFormComponent implements OnInit {
       title: [this.vehicleData.driverInfo.title],
       firstName: [this.vehicleData.driverInfo.firstName],
       lastName: [this.vehicleData.driverInfo.displayName],
-      displayName: [this.vehicleData.driverInfo.displayName, Validators.required],
+      displayName: [
+        this.vehicleData.driverInfo.displayName,
+        Validators.required,
+      ],
       persanalId: [this.vehicleData.driverInfo.persanalId],
       driverId: [this.vehicleData.driverInfo.driverId],
       mobileNo1: [this.vehicleData.driverInfo.mobileNo1],
@@ -125,10 +157,12 @@ export class VehicleFormComponent implements OnInit {
     this.vehicleDetailData = tempVehicle;
   }
 
-  getVehicleDetailData(option){
+  getVehicleDetailData(option) {
     // filter our data
     const tempVehicle: any = this.tempVehicle.filter(function (d) {
-      return d.lisenceID.toLowerCase().indexOf(option.value) !== -1 || !option.value;
+      return (
+        d.lisenceID.toLowerCase().indexOf(option.value) !== -1 || !option.value
+      );
     });
   }
 
@@ -146,85 +180,56 @@ export class VehicleFormComponent implements OnInit {
     // console.log(this.postcodes);
   }
 
-  getVehicleStaff(option){
+  getVehicleStaff(option) {
     // filter our data
     const temp: any = this.temp.filter(function (d) {
-      return d.displayName.toLowerCase().indexOf(option.value) !== -1 || !option.value;
+      return (
+        d.displayName.toLowerCase().indexOf(option.value) !== -1 ||
+        !option.value
+      );
     });
-    let driverInfo: FormGroup = <FormGroup>this.vehicleForm.controls["driverInfo"];
-    driverInfo.controls["title"].setValue(
-      temp[0].title
+    let driverInfo: FormGroup = <FormGroup>(
+      this.vehicleForm.controls["driverInfo"]
     );
-    driverInfo.controls["firstName"].setValue(
-      temp[0].firstName
-    );
-    driverInfo.controls["lastName"].setValue(
-      temp[0].lastName
-    );
-    driverInfo.controls["displayName"].setValue(
-      temp[0].displayName
-    );
-    driverInfo.controls["persanalId"].setValue(
-      temp[0].persanalId
-    );
-    driverInfo.controls["driverId"].setValue(
-      temp[0].driverId
-    );
-    driverInfo.controls["mobileNo1"].setValue(
-      temp[0].mobileNo1
-    );
-    driverInfo.controls["mobileNo2"].setValue(
-      temp[0].mobileNo2
-    );
-    driverInfo.controls["mobileNo3"].setValue(
-      temp[0].mobileNo3
-    );
-    driverInfo.controls["addressLine1"].setValue(
-      temp[0].addressLine1
-    );
-    driverInfo.controls["addressStreet"].setValue(
-      temp[0].addressStreet
-    );
+    driverInfo.controls["title"].setValue(temp[0].title);
+    driverInfo.controls["firstName"].setValue(temp[0].firstName);
+    driverInfo.controls["lastName"].setValue(temp[0].lastName);
+    driverInfo.controls["displayName"].setValue(temp[0].displayName);
+    driverInfo.controls["persanalId"].setValue(temp[0].persanalId);
+    driverInfo.controls["driverId"].setValue(temp[0].driverId);
+    driverInfo.controls["mobileNo1"].setValue(temp[0].mobileNo1);
+    driverInfo.controls["mobileNo2"].setValue(temp[0].mobileNo2);
+    driverInfo.controls["mobileNo3"].setValue(temp[0].mobileNo3);
+    driverInfo.controls["addressLine1"].setValue(temp[0].addressLine1);
+    driverInfo.controls["addressStreet"].setValue(temp[0].addressStreet);
     driverInfo.controls["addressSubDistrict"].setValue(
       temp[0].addressSubDistrict
     );
-    driverInfo.controls["addressDistrict"].setValue(
-      temp[0].addressDistrict
-    );
-    driverInfo.controls["addressProvince"].setValue(
-      temp[0].addressProvince
-    );
-    driverInfo.controls["addressPostCode"].setValue(
-      temp[0].addressPostCode
-    );
-    driverInfo.controls["lineUserId"].setValue(
-      temp[0].lineUserId
-    );
-    driverInfo.controls["latitude"].setValue(
-      temp[0].latitude
-    );
-    driverInfo.controls["longitude"].setValue(
-      temp[0].longitude
-    );
+    driverInfo.controls["addressDistrict"].setValue(temp[0].addressDistrict);
+    driverInfo.controls["addressProvince"].setValue(temp[0].addressProvince);
+    driverInfo.controls["addressPostCode"].setValue(temp[0].addressPostCode);
+    driverInfo.controls["lineUserId"].setValue(temp[0].lineUserId);
+    driverInfo.controls["latitude"].setValue(temp[0].latitude);
+    driverInfo.controls["longitude"].setValue(temp[0].longitude);
   }
 
-  goBack(){
+  goBack() {
     this.spinner.show();
     this.location.back();
   }
 
   async onSave() {
     this.spinner.show();
-    
+
     if (this.vehicleData._id) {
       this.vehicleForm.value._id = this.vehicleData._id;
       this.vehicleService
         .updateVehicleData(this.vehicleForm.value)
-        .then(res => {
+        .then((res) => {
           // console.log(res);
           this.location.back();
         })
-        .catch(err => {
+        .catch((err) => {
           this.spinner.hide();
         });
     } else {
@@ -233,11 +238,9 @@ export class VehicleFormComponent implements OnInit {
         .then(() => {
           this.location.back();
         })
-        .catch(err => {
+        .catch((err) => {
           this.spinner.hide();
         });
     }
-
   }
-
 }

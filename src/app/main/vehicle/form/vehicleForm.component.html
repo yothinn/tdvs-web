@@ -87,9 +87,12 @@
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="40" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>วันสิ้นสุด</mat-label>
-                      <input matInput [matDatepicker]="picker1" formControlName="endDate" name="endDate">
+                      <input matInput [matDatepicker]="picker1" formControlName="endDate" name="endDate" >
                       <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                       <mat-datepicker #picker1></mat-datepicker>
+                      <mat-error *ngIf="vehicleForm.get('endDate').dirty">
+                        วันสิ้นสุด ต้องมากกว่าวันเริ่มตั้น
+                      </mat-error>
                     </mat-form-field>
                   </div>
                 </div>
