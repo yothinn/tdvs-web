@@ -77,7 +77,7 @@ export class VehicleListComponent implements OnInit {
 
   deleteData(item) {
     const body = {
-      title: "คุณกำลังลบรถทะเบียน:" + " " + item.lisenceID,
+      title: "คุณกำลังลบตารางเดินรถทะเบียน:" + " " + item.lisenceID,
       message: "คุณได้ตรวจสอบและยืนยันการลบนี้แล้วใช่หรือไม่?",
     };
 

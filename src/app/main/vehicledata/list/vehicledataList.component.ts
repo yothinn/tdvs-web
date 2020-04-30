@@ -8,6 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { VehicledataService } from '../services/vehicledata.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { DialogConfirmService } from 'app/dialog-confirm/service/dialog-confirm.service';
 
 @Component({
   selector: 'app-vehicledata-list',
@@ -27,6 +28,7 @@ export class VehicledataListComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private vehicledataService: VehicledataService,
+    private dialogConfirmService: DialogConfirmService,
     private spinner: NgxSpinnerService,
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
@@ -59,12 +61,28 @@ export class VehicledataListComponent implements OnInit {
   }
 
   deleteData(item) {
-    this.vehicledataService.deleteVehicledataData(item).then((res) => {
-      this.vehicledataService.getVehicledataDataList().subscribe((res: any) => {
-        this.rows = res.data;
-        this.checkList();
-      })
-    })
+    const body = {
+      title: "คุณกำลังลบรถทะเบียน:" + " " + item.lisenceID,
+      message: "คุณได้ตรวจสอบและยืนยันการลบนี้แล้วใช่หรือไม่?",
+    };
+
+    this.dialogConfirmService.show(body).then(async (result) => {
+      if (result) {
+        this.spinner.show();
+        this.vehicledataService.deleteVehicledataData(item).then((res) => {
+          this.vehicledataService.getVehicledataDataList().subscribe((res: any) => {
+            this.rows = res.data;
+            this.checkList();
+            this.spinner.hide();
+          },(err)=>{
+            this.spinner.hide();
+          })
+        }).catch(err => {
+          this.spinner.hide();
+        })
+      };
+    });
+    
   }
 
   updateFilter(event) {

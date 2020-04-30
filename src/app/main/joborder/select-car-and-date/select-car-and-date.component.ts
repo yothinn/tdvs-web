@@ -21,6 +21,11 @@ export class SelectCarAndDateComponent implements OnInit {
           lisenceID: el.lisenceID,
           startDate: el.startDate, 
           endDate: el.endDate,
+          vehicleType: el.vehicleType,
+          vehicleColor: el.vehicleColor,
+          vehicleBrand: el.vehicleBrand,
+          isOwner: el.isOwner,
+          ownerInfo: el.ownerInfo,
           driverInfo: el.driverInfo,
         });
       }
