@@ -342,7 +342,7 @@ export class JoborderFormComponent implements OnInit {
         messages: [
           {
             type: "template",
-            altText: "this is a confirm template",
+            altText: "รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน กรุณายืนยันการนัดหมายด้วยค่ะ",
             template: {
               type: "confirm",
               actions: [
