@@ -6,13 +6,27 @@
   <!-- CENTER -->
   <div class="center">
     <!-- HEADER -->
-    <div class="header accent" fxLayout="row wrap" fxLayoutAlign="space-between center">
+    <div
+      class="header accent"
+      fxLayout="row wrap"
+      fxLayoutAlign="space-between center"
+    >
       <!-- APP TITLE -->
-      <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
-        <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
+      <div
+        class="logo mb-24 mb-md-0"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+      >
+        <mat-icon
+          class="logo-icon s-32 mr-16"
+          [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }"
+        >
           format_list_numbered
         </mat-icon>
-        <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
+        <span
+          class="logo-text h1"
+          [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }"
+        >
           รายการใบสั่งงาน
         </span>
       </div>
@@ -35,8 +49,17 @@
       <div class="content">
         <div class="content-card">
           <div class="content">
-            <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64"
-              [footerHeight]="64" rowHeight="auto" [scrollbarH]="true" [limit]="10" [rows]="rows">
+            <ngx-datatable
+              #table
+              class="material fullscreen"
+              [columnMode]="'flex'"
+              [headerHeight]="64"
+              [footerHeight]="64"
+              rowHeight="auto"
+              [scrollbarH]="true"
+              [limit]="10"
+              [rows]="rows"
+            >
               <ngx-datatable-column name="เลขที่ใบสั่งงาน" [flexGrow]="1.9">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.docno }}
@@ -49,7 +72,15 @@
               </ngx-datatable-column>
               <ngx-datatable-column name="รถที่รับผิดชอบ" [flexGrow]="3.6">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  {{ row.carNo.lisenceID ? "(" + row.carNo.lisenceID + ")" + " " + row.carNo.driverInfo.displayName : "ยังไม่ระบุ" }}
+                  {{
+                    row.carNo.lisenceID
+                      ? "(" +
+                        row.carNo.lisenceID +
+                        ")" +
+                        " " +
+                        row.carNo.driverInfo.displayName
+                      : "ยังไม่ระบุ"
+                  }}
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column name="ทั้งหมด" [flexGrow]="1">
@@ -71,18 +102,30 @@
                 <ng-template ngx-datatable-cell-template let-row="row">
                   <div *ngIf="row.orderStatus === 'draft'">จัดเส้นทาง</div>
                   <div *ngIf="row.orderStatus === 'waitapprove'">รอยืนยัน</div>
-                  <div *ngIf="row.orderStatus === 'orderavailable'">ใบงานพร้อม</div>
-                  <div *ngIf="row.orderStatus === 'serviceprepared'">เตรียมการบริการ</div>
-                  <div *ngIf="row.orderStatus === 'ordercancel'">ยกเลิกใบงาน</div>
+                  <div *ngIf="row.orderStatus === 'orderavailable'">
+                    ใบงานพร้อม
+                  </div>
+                  <div *ngIf="row.orderStatus === 'serviceprepared'">
+                    เตรียมการบริการ
+                  </div>
+                  <div *ngIf="row.orderStatus === 'ordercancel'">
+                    ยกเลิกใบงาน
+                  </div>
                   <div *ngIf="row.orderStatus === 'golive'">กำลังให้บริการ</div>
                   <div *ngIf="row.orderStatus === 'close'">จบบริการ</div>
-                  <div *ngIf="row.orderStatus === 'closewithcondition'">จบบริการ(ยกเลิก)</div>
+                  <div *ngIf="row.orderStatus === 'closewithcondition'">
+                    จบบริการ(ยกเลิก)
+                  </div>
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column [flexGrow]="1">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  <button class="mat-icon-button" aria-label="More" [matMenuTriggerFor]="moreMenu"
-                    (click)="$event.stopPropagation()">
+                  <button
+                    class="mat-icon-button"
+                    aria-label="More"
+                    [matMenuTriggerFor]="moreMenu"
+                    (click)="$event.stopPropagation()"
+                  >
                     <mat-icon class="secondary-text">more_vert</mat-icon>
                   </button>
 
@@ -91,19 +134,42 @@
                       <mat-icon>edit</mat-icon>
                       <span>แก้ไข</span>
                     </button>
-                    <button mat-menu-item *ngIf="row.orderStatus === 'waitapprove'"
+                    <button
+                      mat-menu-item
+                      *ngIf="row.orderStatus === 'waitapprove'"
                       (click)="changeStatusData(row, 'orderavailable')"
-                      [disabled]="row.cusAmount !== (row.confirmCount + row.rejectCount)">
+                      [disabled]="
+                        row.cusAmount !== row.confirmCount + row.rejectCount
+                      "
+                    >
                       <mat-icon>send</mat-icon>
                       <span>สรุปใบงาน</span>
                     </button>
-                    <button mat-menu-item
-                      *ngIf="row.orderStatus === 'waitapprove' || row.orderStatus === 'orderavailable' || row.orderStatus === 'serviceprepared'"
-                      (click)="changeStatusData(row, 'ordercancel')">
+                    <button
+                      mat-menu-item
+                      *ngIf="row.orderStatus === 'orderavailable'"
+                      (click)="changeStatusData(row, 'serviceprepared')"
+                    >
+                      <mat-icon>print</mat-icon>
+                      <span>เตรียมการบริการ(พิมพ์ใบงาน)</span>
+                    </button>
+                    <button
+                      mat-menu-item
+                      *ngIf="
+                        row.orderStatus === 'waitapprove' ||
+                        row.orderStatus === 'orderavailable' ||
+                        row.orderStatus === 'serviceprepared'
+                      "
+                      (click)="changeStatusData(row, 'ordercancel')"
+                    >
                       <mat-icon>block</mat-icon>
                       <span>ยกเลิกใบงาน</span>
                     </button>
-                    <button mat-menu-item *ngIf="row.orderStatus === 'draft'" (click)="deleteData(row)">
+                    <button
+                      mat-menu-item
+                      *ngIf="row.orderStatus === 'draft'"
+                      (click)="deleteData(row)"
+                    >
                       <mat-icon>delete</mat-icon>
                       <span>ลบใบงาน</span>
                     </button>
@@ -120,7 +186,13 @@
   <!-- /CENTER -->
 </div>
 <!-- ADD CONTACT BUTTON -->
-<button fxLayoutAlign="center center" class="mat-fab warn" id="add-button" aria-label="add" (click)="addData()">
+<button
+  fxLayoutAlign="center center"
+  class="mat-fab warn"
+  id="add-button"
+  aria-label="add"
+  (click)="addData()"
+>
   <mat-icon>add</mat-icon>
 </button>
 <!-- / ADD CONTACT BUTTON -->
