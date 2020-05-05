@@ -79,10 +79,10 @@ export class JoborderListComponent implements OnInit {
         this.rows = res.data;
         this.formatMoment();
         this.sortRows();
-        if (status === "golive") {
-          console.log(resdoc);
-          this.downloadAsPDF(resdoc);
-        }
+        // if (status === "golive") {
+        //   console.log(resdoc);
+        //   this.downloadAsPDF(resdoc);
+        // }
       });
     });
   }
