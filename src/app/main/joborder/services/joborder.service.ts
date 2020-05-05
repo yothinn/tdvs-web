@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { ActivatedRouteSnapshot } from "@angular/router";
 import { Observable, BehaviorSubject } from "rxjs";
 import { environment } from "environments/environment";
@@ -32,15 +32,24 @@ export class JoborderService {
         return this.getJoborderData(this.routeParams.id);
       }
     } else {
-      return this.getJoborderDataList();
+      return this.getJoborderDataList(0, 10, '', 'docdate', 'desc');
     }
   }
 
-  getJoborderDataList(){
+  getJoborderDataList(pageNo, pageSize, keyword, orderBy, orderDir){
+    const params = new HttpParams()
+      .set("pageNo", `${pageNo + 1}`)
+      .set("size", `${pageSize}`)
+      .set("keyword", `${keyword}`)
+      .set("orderBy", `${orderBy}`)
+      .set("orderDir", `${orderDir}`);
+     
+
     return this.http
     .get(api_url, {
-      headers: this.authorizationHeader()
-    });
+      headers: this.authorizationHeader(),
+      params: params,
+    }).toPromise();
   }
 
   getJoborderData(id: any) {

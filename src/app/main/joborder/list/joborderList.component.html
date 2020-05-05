@@ -59,18 +59,27 @@
               [scrollbarH]="true"
               [limit]="10"
               [rows]="rows"
+              [externalPaging]="true"
+              [externalSorting]="true"
+              [reorderable]="true"
+              [count]="page.count"
+              [offset]="page.offset"
+              [limit]="page.limit"
+              [sortType]="'single'"
+              (page)="pageCallback($event)"
+              (sort)="sortCallback($event)"
             >
-              <ngx-datatable-column name="เลขที่ใบสั่งงาน" [flexGrow]="1.9">
+              <ngx-datatable-column prop="docno" name="เลขที่ใบสั่งงาน" [flexGrow]="1.9">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.docno }}
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="วันที่" [flexGrow]="1.5">
+              <ngx-datatable-column prop="docdate" name="วันที่" [flexGrow]="1.5">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.docdate }}
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="รถที่รับผิดชอบ" [flexGrow]="3.6">
+              <ngx-datatable-column prop="carNo" name="รถที่รับผิดชอบ" [flexGrow]="3.6">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{
                     row.carNo.lisenceID
@@ -83,22 +92,22 @@
                   }}
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="ทั้งหมด" [flexGrow]="1">
+              <ngx-datatable-column prop="cusAmount" name="ทั้งหมด" [flexGrow]="1">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   <div style="color: blue;">{{ row.cusAmount }}</div>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="ยืนยัน" [flexGrow]="1">
+              <ngx-datatable-column prop="confirmCount" name="ยืนยัน" [flexGrow]="1">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   <div style="color: green;">{{ row.confirmCount }}</div>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="ปฏิเสธ" [flexGrow]="1">
+              <ngx-datatable-column prop="rejectCount" name="ปฏิเสธ" [flexGrow]="1">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   <div style="color: red;">{{ row.rejectCount }}</div>
                 </ng-template>
               </ngx-datatable-column>
-              <ngx-datatable-column name="สถานะ" [flexGrow]="2.1">
+              <ngx-datatable-column prop="orderStatus" name="สถานะ" [flexGrow]="2.1">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   <div *ngIf="row.orderStatus === 'draft'">จัดเส้นทาง</div>
                   <div *ngIf="row.orderStatus === 'waitapprove'">รอยืนยัน</div>

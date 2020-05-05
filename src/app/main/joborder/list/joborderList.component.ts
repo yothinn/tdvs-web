@@ -1,31 +1,40 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.service';
-import { fuseAnimations } from '@fuse/animations';
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
+import { fuseAnimations } from "@fuse/animations";
 
-import { locale as english } from '../i18n/en';
-import { locale as thai } from '../i18n/th';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ColumnMode } from '@swimlane/ngx-datatable';
-import { JoborderService } from '../services/joborder.service';
-import { NgxSpinnerService } from 'ngx-spinner';
-import * as moment from 'moment';
+import { locale as english } from "../i18n/en";
+import { locale as thai } from "../i18n/th";
+import { Router, ActivatedRoute } from "@angular/router";
+import { ColumnMode } from "@swimlane/ngx-datatable";
+import { JoborderService } from "../services/joborder.service";
+import { NgxSpinnerService } from "ngx-spinner";
+import * as moment from "moment";
 // import { jsPDF } from 'jspdf';
-import * as jsPDF from 'jspdf';
-import { DialogConfirmService } from 'app/dialog-confirm/service/dialog-confirm.service';
-import { MatSnackBar } from '@angular/material';
+import * as jsPDF from "jspdf";
+import { DialogConfirmService } from "app/dialog-confirm/service/dialog-confirm.service";
+import { MatSnackBar } from "@angular/material";
 
 @Component({
-  selector: 'app-joborder-list',
-  templateUrl: './joborderList.component.html',
-  styleUrls: ['./joborderList.component.scss'],
+  selector: "app-joborder-list",
+  templateUrl: "./joborderList.component.html",
+  styleUrls: ["./joborderList.component.scss"],
   encapsulation: ViewEncapsulation.None,
-  animations: fuseAnimations
+  animations: fuseAnimations,
 })
 export class JoborderListComponent implements OnInit {
-
   rows: Array<any>;
   temp = [];
+  // columns = [{ prop: 'name' }, { name: 'Gender' }, { name: 'Company', sortable: false }];
   ColumnMode = ColumnMode;
+
+  page = {
+    limit: 10,
+    count: 0,
+    offset: 0,
+    orderBy: 'docdate',
+    orderDir: 'desc'
+  };
+  keyword = "";
 
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
@@ -34,19 +43,53 @@ export class JoborderListComponent implements OnInit {
     private joborderService: JoborderService,
     public dialogConfirmService: DialogConfirmService,
     private spinner: NgxSpinnerService,
-    private _snackBar: MatSnackBar,
+    private _snackBar: MatSnackBar
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
-
   ngOnInit(): void {
     this.spinner.hide();
+
     this.rows = this.route.snapshot.data.items.data;
     this.temp = this.route.snapshot.data.items.data;
+    this.page.count = this.route.snapshot.data.items.totalCount;
+
     console.log(this.rows);
     this.formatMoment();
-    this.sortRows();
+    // this.sortRows();
+  }
+
+  pageCallback(pageInfo: {
+    count?: number;
+    pageSize?: number;
+    limit?: number;
+    offset?: number;
+  }) {
+    this.page.offset = pageInfo.offset;
+    this.reloadData();
+  }
+
+  sortCallback(sortInfo: { sorts: { dir: string, prop: string }[], column: {}, prevValue: string, newValue: string }) {
+    // there will always be one "sort" object if "sortType" is set to "single"
+    console.log(sortInfo);
+    this.page.orderDir = sortInfo.sorts[0].dir;
+    this.page.orderBy = sortInfo.sorts[0].prop;
+    this.reloadData();
+  }
+
+  async reloadData() {
+    let res: any = await this.joborderService.getJoborderDataList(
+      this.page.offset,
+      this.page.limit,
+      this.keyword,
+      this.page.orderBy,
+      this.page.orderDir
+    );
+    this.rows = res.data;
+    this.temp = res.data;
+    this.page.count = res.totalCount;
+    this.formatMoment();
   }
 
   formatMoment() {
@@ -75,15 +118,22 @@ export class JoborderListComponent implements OnInit {
       orderStatus: status,
     };
     this.joborderService.updateJoborderData(item._id, body).then((resdoc) => {
-      this.joborderService.getJoborderDataList().subscribe((res: any) => {
-        this.rows = res.data;
-        this.formatMoment();
-        this.sortRows();
-        if (status === "serviceprepared") {
-          console.log(resdoc);
-          this.downloadAsPDF(resdoc);
-        }
-      });
+      // this.joborderService
+      //   .getJoborderDataList(this.page.offset, this.page.limit, this.keyword)
+      //   .then((res: any) => {
+      //     this.rows = res.data;
+      //     this.formatMoment();
+      //     this.sortRows();
+      //     if (status === "serviceprepared") {
+      //       console.log(resdoc);
+      //       this.downloadAsPDF(resdoc);
+      //     }
+      //   });
+      this.reloadData();
+      if (status === "serviceprepared") {
+        console.log(resdoc);
+        this.downloadAsPDF(resdoc);
+      }
     });
   }
 
@@ -96,43 +146,55 @@ export class JoborderListComponent implements OnInit {
     this.dialogConfirmService.show(body).then(async (result) => {
       if (result) {
         this.spinner.show();
-        this.joborderService.deleteJoborderData(item).then((res) => {
-          this._snackBar.open("ลบใบสั่งงานเสร็จสิ้น", "", {
-            duration: 5000,
+        this.joborderService
+          .deleteJoborderData(item)
+          .then((res) => {
+            this._snackBar.open("ลบใบสั่งงานเสร็จสิ้น", "", {
+              duration: 5000,
+            });
+            // this.joborderService
+            //   .getJoborderDataList(
+            //     this.page.offset,
+            //     this.page.limit,
+            //     this.keyword
+            //   )
+            //   .then((res: any) => {
+            //     this.rows = res.data;
+            //     this.formatMoment();
+            //     // this.sortRows();
+            //     this.spinner.hide();
+            //   });
+            this.reloadData();
+          })
+          .catch((res) => {
+            this._snackBar.open("การลบผิดพลาด กรุณาลองใหม่ภายหลัง", "", {
+              duration: 5000,
+            });
           });
-          this.joborderService.getJoborderDataList().subscribe((res: any) => {
-            this.rows = res.data;
-            this.formatMoment();
-            this.sortRows();
-            this.spinner.hide();
-          });
-        }).catch((res)=>{
-          this._snackBar.open("การลบผิดพลาด กรุณาลองใหม่ภายหลัง", "", {
-            duration: 5000,
-          });
-        });
-      };
+      }
     });
-
   }
 
   updateFilter(event) {
-    const val = event.target.value.toLowerCase();
+    this.keyword = event.target.value;
+    this.reloadData();
+    this.page.offset = 0;
+    // const val = event.target.value.toLowerCase();
 
-    console.log(val);
+    // console.log(val);
 
-    // filter our data
-    const temp = this.temp.filter(function (d) {
-      return (
-        d.docno.toLowerCase().indexOf(val) !== -1 ||
-        d.carNo.toLowerCase().indexOf(val) !== -1 ||
-        !val
-      );
-    });
+    // // filter our data
+    // const temp = this.temp.filter(function (d) {
+    //   return (
+    //     d.docno.toLowerCase().indexOf(val) !== -1 ||
+    //     d.carNo.toLowerCase().indexOf(val) !== -1 ||
+    //     !val
+    //   );
+    // });
 
-    console.log(temp)
-    // update the rows
-    this.rows = temp;
+    // console.log(temp);
+    // // update the rows
+    // this.rows = temp;
   }
 
   downloadAsPDF(data: any) {
@@ -169,13 +231,20 @@ export class JoborderListComponent implements OnInit {
         line,
         `คุณ ${contact.firstName} ${contact.lastName} [ ${mno}]`
       );
-      doc.text(45, line + 10, `${contact.addressLine1} ${contact.addressStreet}`);
-      doc.text(45, line + 20, `${contact.addressSubDistrict} ${contact.addressDistrict} ${contact.addressProvince} ${contact.addressPostCode}`);
+      doc.text(
+        45,
+        line + 10,
+        `${contact.addressLine1} ${contact.addressStreet}`
+      );
+      doc.text(
+        45,
+        line + 20,
+        `${contact.addressSubDistrict} ${contact.addressDistrict} ${contact.addressProvince} ${contact.addressPostCode}`
+      );
 
       line += 33;
     }
 
     doc.save(`${data.docno}.pdf`);
   }
-
 }
