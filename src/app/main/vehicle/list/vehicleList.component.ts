@@ -77,8 +77,8 @@ export class VehicleListComponent implements OnInit {
 
   deleteData(item) {
     const body = {
-      title: "คุณกำลังลบตารางเดินรถทะเบียน:" + " " + item.lisenceID,
-      message: "คุณได้ตรวจสอบและยืนยันการลบนี้แล้วใช่หรือไม่?",
+      title: "กรุณายืนยันการ ลบรายการ",
+      message: "ตารางเวลารถทะเบียน : " + item.lisenceID,
     };
 
     this.dialogConfirmService.show(body).then(async (result) => {

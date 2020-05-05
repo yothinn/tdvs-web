@@ -71,8 +71,8 @@ export class TvdscustomerListComponent implements OnInit {
 
   async deleteData(item) {
     const body = {
-      title: "คุณกำลังลบข้อมูล" + " " + item.displayName,
-      message: "คุณได้ตรวจสอบและยืนยันการลบนี้แล้วใช่หรือไม่?",
+      title: "กรุณายืนยันการ ลบรายการ",
+      message: "ข้อมูลของคุณ : " + item.displayName,
     };
     this.dialogConfirmService.show(body).then(async (result) => {
       if (result) {
