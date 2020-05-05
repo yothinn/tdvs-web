@@ -275,6 +275,7 @@ export class JoborderFormComponent implements OnInit {
   }
 
   onChangeStatus(status, i) {
+    console.log(this.joborderData);
     if (status === "sendLine") {
       this.joborderData.contactLists[i].contactStatus = "waitapprove";
       this.sendConFirm(this.joborderData.contactLists[i]);
@@ -290,7 +291,7 @@ export class JoborderFormComponent implements OnInit {
       const dialogRef = this.dialog.open(RejectReasonModalComponent, {
         width: "450px",
         disableClose: true,
-        data: { remark: this.joborderData.contactLists[i].remark }
+        data: { remark: this.joborderData.contactLists[i].remark, lineUserId: this.joborderData.contactLists[i].lineUserId }
       });
 
       dialogRef.afterClosed().subscribe(result => {
@@ -298,6 +299,7 @@ export class JoborderFormComponent implements OnInit {
           this.joborderData.contactLists[i].remark = result;
           this.joborderData.contactLists[i].contactStatus = "reject";
           this.onSaveStatus("r");
+          this.sendReject(this.joborderData.contactLists[i]);
           this.findOnMap(this.joborderData.contactLists[i], "R");
         }
       });
@@ -311,17 +313,54 @@ export class JoborderFormComponent implements OnInit {
       .then((res) => {
         this.joborderData = res;
 
-        if (txt === "c" || txt === "r") {
+        if (txt === "c") {
           this._snackBar.open("ปรับปรุงข้อมูลสถานะเรียบร้อย", "", {
             duration: 7000,
           });
         }
+        // if (txt === "r") {
+        //   this._snackBar.open("ปรับปรุงข้อมูลสถานะเรียบร้อย", "", {
+        //     duration: 7000,
+        //   });
+        // }
       })
       .catch((err) => {
         this._snackBar.open("เกิดข้อผิดพลาดในการปรับปรุงข้อมูลสถานะ", "", {
           duration: 7000,
         });
       });
+  }
+
+  sendReject(contactListData) {
+    console.log(contactListData)
+    if (contactListData.lineUserId) {
+      let body = {
+        to: contactListData.lineUserId,
+        messages: [
+          {
+            type: "text",
+            text: "สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: " + contactListData.remark
+          },
+        ],
+      };
+      // console.log(body)
+      this.joborderService
+        .sendConFirmData(body)
+        .then((res) => {
+          this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {
+            duration: 5000,
+          });
+        })
+        .catch((error) => {
+          this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
+            duration: 5000,
+          });
+        });
+    } else {
+      this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพย์ เพื่อแจ้งสถานะ", "", {
+        duration: 8000,
+      });
+    }
   }
 
   findOnMap(jobOrderDataItem, txt) {

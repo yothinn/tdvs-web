@@ -5,6 +5,8 @@
     <mat-label>ระบุเหตุผล</mat-label>
     <input matInput [(ngModel)]="remark">
   </mat-form-field>
+  <p *ngIf="data.lineUserId"><span style="color: red;">ตัวอย่าง. </span>สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: {{remark}}</p>
+  <p *ngIf="!data.lineUserId" style="color: red;">โปรดติดต่อทางเบอร์โทรศัพย์เพื่อแจ้งสถานะ เนื่องจากลูกค้าไม่ได้ลงทะเบียน Line ID ในระบบรถธรรมธุรกิจ</p>
 </div>
 <div mat-dialog-actions align="end">
   <button mat-raised-button color="warn" (click)="onCancel()">ยกเลิก</button>
