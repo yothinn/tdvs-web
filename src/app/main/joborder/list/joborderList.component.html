@@ -97,13 +97,15 @@
                       <mat-icon>send</mat-icon>
                       <span>สรุปใบงาน</span>
                     </button>
-                    <button mat-menu-item (click)="changeStatusData(row, 'close')">
+                    <button mat-menu-item
+                      *ngIf="row.orderStatus === 'waitapprove' || row.orderStatus === 'orderavailable' || row.orderStatus === 'serviceprepared'"
+                      (click)="changeStatusData(row, 'ordercancel')">
                       <mat-icon>block</mat-icon>
-                      <span>ปิดใบสั่งงาน</span>
+                      <span>ยกเลิกใบงาน</span>
                     </button>
-                    <button mat-menu-item (click)="deleteData(row)">
+                    <button mat-menu-item *ngIf="row.orderStatus === 'draft'" (click)="deleteData(row)">
                       <mat-icon>delete</mat-icon>
-                      <span>ลบ</span>
+                      <span>ลบใบงาน</span>
                     </button>
                   </mat-menu>
                 </ng-template>
