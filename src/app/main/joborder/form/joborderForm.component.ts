@@ -17,6 +17,7 @@ import { MatDialog } from "@angular/material/dialog";
 import * as moment from "moment";
 import { SelectCarAndDateComponent } from "../select-car-and-date/select-car-and-date.component";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
+import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason-modal.component';
 
 @Component({
   selector: "app-joborder-form",
@@ -286,9 +287,21 @@ export class JoborderFormComponent implements OnInit {
       this.findOnMap(this.joborderData.contactLists[i], "C");
     }
     if (status === "reject") {
-      this.joborderData.contactLists[i].contactStatus = "reject";
-      this.onSaveStatus("r");
-      this.findOnMap(this.joborderData.contactLists[i], "R");
+      const dialogRef = this.dialog.open(RejectReasonModalComponent, {
+        width: "450px",
+        disableClose: true,
+        data: { remark: this.joborderData.contactLists[i].remark }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.joborderData.contactLists[i].remark = result;
+          this.joborderData.contactLists[i].contactStatus = "reject";
+          this.onSaveStatus("r");
+          this.findOnMap(this.joborderData.contactLists[i], "R");
+        }
+      });
+
     }
   }
 

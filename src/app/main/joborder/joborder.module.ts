@@ -16,6 +16,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { SelectCarAndDateComponent } from './select-car-and-date/select-car-and-date.component';
 import { JoborderPdfComponent } from './joborder-pdf/joborder-pdf.component';
 import { ServiceDateFilterPipe } from './select-car-and-date/select-car-and-date.pipe';
+import { RejectReasonModalComponent } from './reject-reason-modal/reject-reason-modal.component';
 
 
 const routes = [
@@ -43,7 +44,7 @@ const routes = [
   declarations: [
     JoborderListComponent,
     JoborderFormComponent, SelectCarAndDateComponent, JoborderPdfComponent, 
-    ServiceDateFilterPipe
+    ServiceDateFilterPipe, RejectReasonModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -88,7 +89,8 @@ const routes = [
     JoborderFormComponent
   ],
   entryComponents: [
-    SelectCarAndDateComponent
+    SelectCarAndDateComponent,
+    RejectReasonModalComponent
   ]
 })
 export class JoborderModule { }

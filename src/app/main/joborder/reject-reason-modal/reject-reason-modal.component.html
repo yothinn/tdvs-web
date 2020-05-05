@@ -1,0 +1,12 @@
+<h5 mat-dialog-title>โปรดระบุเหตุผลที่ท่านต้องการปฏิเสธ</h5>
+<div mat-dialog-content>
+  <p>เหตุผลที่ท่านระบุ จะถูกส่งให้ลูกค้าได้รับทราบผ่าน Massage Line</p>
+  <mat-form-field style="width: 100%;">
+    <mat-label>ระบุเหตุผล</mat-label>
+    <input matInput [(ngModel)]="remark">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" (click)="onCancel()">ยกเลิก</button>
+  <button mat-raised-button color="primary" (click)="onOk()" [disabled]="!remark">ตกลง</button>
+</div>
