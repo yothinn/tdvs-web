@@ -61,13 +61,13 @@ export class JoborderFormComponent implements OnInit {
     this.joborderData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
-          docno: "",
-          docdate: "",
-          carNo: "",
-          cusAmount: null,
-          orderStatus: "draft",
-          contactLists: [],
-        };
+        docno: "",
+        docdate: "",
+        carNo: "",
+        cusAmount: null,
+        orderStatus: "draft",
+        contactLists: [],
+      };
     console.log(this.joborderData);
 
     if (this.joborderData.contactLists.length > 0) {
@@ -152,7 +152,7 @@ export class JoborderFormComponent implements OnInit {
         // console.log(docdate);
         if (!this.joborderData._id) {
           this.getMarkerData(docdate);
-        }else{
+        } else {
           // this.spinner.hide();
           this.onSave();
         }
@@ -253,7 +253,24 @@ export class JoborderFormComponent implements OnInit {
       this.sideNaveOpened = false;
     }
     // พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
-    this.onSave();
+    this.joborderService
+      .updateJoborderData(this.joborderData._id, this.joborderData)
+      .then((res) => {
+        // console.log(res);
+        this.joborderData = res;
+
+        this.spinner.hide();
+
+        this._snackBar.open("ลบจุดบริการเรียบร้อย", "", {
+          duration: 7000,
+        });
+      })
+      .catch((err) => {
+        this.spinner.hide();
+        this._snackBar.open("เกิดข้อผิดพลาดในการลบจุดบริการ", "", {
+          duration: 7000,
+        });
+      });
   }
 
   onChangeStatus(status, i) {
@@ -282,13 +299,13 @@ export class JoborderFormComponent implements OnInit {
         this.joborderData = res;
 
         if (txt === "c" || txt === "r") {
-          this._snackBar.open("อัพเดทสถานะเรียบร้อย", "", {
+          this._snackBar.open("ปรับปรุงข้อมูลสถานะเรียบร้อย", "", {
             duration: 7000,
           });
         }
       })
       .catch((err) => {
-        this._snackBar.open("อัพเดทสถานะไม่สำเร็จ โปรดลองใหม่", "", {
+        this._snackBar.open("เกิดข้อผิดพลาดในการปรับปรุงข้อมูลสถานะ", "", {
           duration: 7000,
         });
       });
@@ -388,7 +405,7 @@ export class JoborderFormComponent implements OnInit {
           });
         })
         .catch((error) => {
-          this._snackBar.open("ส่งข้อความไม่สำเร็จ โปรดส่งใหม่", "", {
+          this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
             duration: 5000,
           });
         });
@@ -413,13 +430,13 @@ export class JoborderFormComponent implements OnInit {
 
           this.spinner.hide();
 
-          this._snackBar.open("บันทึกแล้ว", "", {
+          this._snackBar.open("บันทึกจุดบริการเรียบร้อย", "", {
             duration: 7000,
           });
         })
         .catch((err) => {
           this.spinner.hide();
-          this._snackBar.open("บันทึกไม่สำเร็จ", "", {
+          this._snackBar.open("เกิดข้อผิดพลาดในการบันทึกจุดบริการ", "", {
             duration: 7000,
           });
         });
@@ -439,7 +456,7 @@ export class JoborderFormComponent implements OnInit {
             contactLists: res.contactLists,
           };
           this.joborderData = data;
-          this._snackBar.open("สร้างเอกสารสำเร็จ", "", {
+          this._snackBar.open("เริ่มจัดเส้นทาง และบันทึกจุดบริการ เรียบร้อย", "", {
             duration: 7000,
           });
           if (this.joborderData._id) {
@@ -450,7 +467,7 @@ export class JoborderFormComponent implements OnInit {
         })
         .catch((err) => {
           this.spinner.hide();
-          this._snackBar.open("สร้างเอกสารไม่สำเร็จ โปรดลองใหม่", "", {
+          this._snackBar.open("เกิดข้อผิดพลาดในการเริ่มจัดเส้นทาง และบันทึกจุดบริการ", "", {
             duration: 7000,
           });
         });
