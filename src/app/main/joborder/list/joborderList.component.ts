@@ -89,8 +89,8 @@ export class JoborderListComponent implements OnInit {
 
   deleteData(item) {
     const body = {
-      title: "คุณกำลังลบใบสั่งงาน: " + item.docno,
-      message: "คุณได้ตรวจสอบและยืนยันการลบนี้แล้วใช่หรือไม่?",
+      title: "กรุณายืนยันการ ลบรายการ",
+      message: "ใบงานเลขที่ : " + item.docno,
     };
 
     this.dialogConfirmService.show(body).then(async (result) => {

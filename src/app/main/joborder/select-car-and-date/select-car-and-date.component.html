@@ -1,18 +1,18 @@
 <p mat-dialog-title class="text-center">
-  กรุณาระบุรถและวันที่เดินทาง
+  กรุณาระบุวันที่ เเละ เลือกพาหนะที่ให้บริการ
 </p>
 
 <div mat-dialog-content>
 
   <mat-form-field class="full-wsize">
-    <mat-label>เลือกวันเดินทาง</mat-label>
+    <mat-label>วันที่ให้บริการ</mat-label>
     <input matInput [matDatepicker]="picker" [(ngModel)]="data.docdate" [disabled]="data.docno !== ''">
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 
   <mat-form-field class="full-wsize">
-    <mat-label>เลือกรถ</mat-label>
+    <mat-label>เลือกพาหนะ</mat-label>
     <mat-select [(value)]="data.carNo" >
       <mat-option *ngFor="let car of cars | servicedatefilter:data.docdate" [value]="car">
         ({{car.lisenceID}}) {{car.driverInfo.displayName}}

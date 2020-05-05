@@ -7,12 +7,11 @@
         </div>
 
         <div class="title" [@animate]="{value:'*',params:{delay:'50ms',y:'25px'}}">
-            Welcome to the tvds!
+           ยินดีต้อนรับเข้าสู่ระบบงานรถธรรมธุรกิจ
         </div>
 
         <div class="description" [@animate]="{value:'*',params:{delay:'100ms',y:'25px'}}">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ullamcorper nisl erat,
-            vel convallis elit fermentum pellentesque. Sed mollis velit facilisis facilisis viverra.
+           พัฒนาคนตามศาสตร์พระราชา ให้รู้จัก "พอ" ทั้งคนปลูก คนกินและคนกลาง แสวงหาความเป็นธรรมให้เกิดขึ้นกับทุกๆฝ่ายที่เกี่ยวข้อง
         </div>
 
     </div>
@@ -26,7 +25,7 @@
                 <img src="assets/images/logos/fuse.svg">
             </div>
 
-            <div class="title">LOGIN TO YOUR ACCOUNT</div>
+            <div class="title">เข้าสู่ระบบในบัญชีของคุณ</div>
 
             <form name="loginForm" [formGroup]="loginForm" novalidate>
 
@@ -35,12 +34,12 @@
                     <input matInput formControlName="username" >
                     <mat-icon matSuffix class="secondary-text">mail</mat-icon>
                     <mat-error *ngIf="loginForm.get('username').hasError('required')">
-                        Email is required
+                        กรุณากรอกอีเมลล์
                     </mat-error>
                     <mat-error
                         *ngIf="!loginForm.get('username').hasError('required') &&
                                 loginForm.get('username').hasError('email')">
-                        Please enter a valid email address
+                                กรุณากรอกอีเมลล์ให้ถูกต้อง
                     </mat-error>
                 </mat-form-field>
 
@@ -49,33 +48,27 @@
                     <input matInput type="password" formControlName="password" >
                     <mat-icon matSuffix class="secondary-text">vpn_key</mat-icon>
                     <mat-error>
-                        Password is required
+                        กรุณากรอกรหัสผ่าน
                     </mat-error>
                 </mat-form-field>
 
                 <div class="remember-forgot-password" fxLayout="row" fxLayout.xs="column"
                      fxLayoutAlign="space-between center">
                     <mat-checkbox class="remember-me" aria-label="Remember Me">
-                        Remember Me
+                        จดจำฉัน
                     </mat-checkbox>
 
-                    <a class="forgot-password" [routerLink]="'/auth/forgot-password'">
-                        Forgot Password?
-                    </a>
                 </div>
 
                 <button mat-raised-button color="accent" class="submit-button" aria-label="LOGIN"
                         [disabled]="loginForm.invalid" (click)="login()">
-                    LOGIN
+                    เข้าสู่ระบบ
                 </button>
 
             </form>
 
 
-            <div class="register" fxLayout="column" fxLayoutAlign="center center">
-                <span class="text">Don't have an account?</span>
-                <a class="link" [routerLink]="'/auth/register'">Create an account</a>
-            </div>
+  
         </div>
     </div>
 </div>
