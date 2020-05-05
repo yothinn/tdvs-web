@@ -275,7 +275,10 @@ export class JoborderFormComponent implements OnInit {
   }
 
   onChangeStatus(status, i) {
-    console.log(this.joborderData);
+    if (this.joborderData.orderStatus === "draft") {
+      this.joborderData.orderStatus = "waitapprove";
+    }
+
     if (status === "sendLine") {
       this.joborderData.contactLists[i].contactStatus = "waitapprove";
       this.sendConFirm(this.joborderData.contactLists[i]);
