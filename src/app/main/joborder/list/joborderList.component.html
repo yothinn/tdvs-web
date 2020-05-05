@@ -6,27 +6,13 @@
   <!-- CENTER -->
   <div class="center">
     <!-- HEADER -->
-    <div
-      class="header accent"
-      fxLayout="row wrap"
-      fxLayoutAlign="space-between center"
-    >
+    <div class="header accent" fxLayout="row wrap" fxLayoutAlign="space-between center">
       <!-- APP TITLE -->
-      <div
-        class="logo mb-24 mb-md-0"
-        fxLayout="row"
-        fxLayoutAlign="start center"
-      >
-        <mat-icon
-          class="logo-icon s-32 mr-16"
-          [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }"
-        >
+      <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
           format_list_numbered
         </mat-icon>
-        <span
-          class="logo-text h1"
-          [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }"
-        >
+        <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
           รายการใบสั่งงาน
         </span>
       </div>
@@ -49,18 +35,9 @@
       <div class="content">
         <div class="content-card">
           <div class="content">
-            <ngx-datatable 
-              #table
-              class="material fullscreen"
-              [columnMode]="'flex'"
-              [headerHeight]="64"
-              [footerHeight]="64"
-              rowHeight="auto"
-              [scrollbarH]="true"
-              [limit]="10"
-              [rows]="rows"
-            >
-              <ngx-datatable-column name="เลขที่ใบสั่งงาน" [flexGrow]="2.2" >
+            <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64"
+              [footerHeight]="64" rowHeight="auto" [scrollbarH]="true" [limit]="10" [rows]="rows">
+              <ngx-datatable-column name="เลขที่ใบสั่งงาน" [flexGrow]="2.2">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.docno }}
                 </ng-template>
@@ -92,50 +69,37 @@
               </ngx-datatable-column>
               <ngx-datatable-column name="สถานะ" [flexGrow]="1.3">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  {{ row.orderStatus }}
+                  <div ngif="row.orderStatus === 'draft'">จัดเส้นทาง</div>
+                  <div ngif="row.orderStatus === 'waitapprove'">รอยืนยัน</div>
+                  <div ngif="row.orderStatus === 'orderavailable'">ใบงานพร้อม</div>
+                  <div ngif="row.orderStatus === 'serviceprepared'">เตรียมการบริการ</div>
+                  <div ngif="row.orderStatus === 'ordercancel'">ยกเลิกใบงาน</div>
+                  <div ngif="row.orderStatus === 'golive'">กำลังให้บริการ</div>
+                  <div ngif="row.orderStatus === 'close'">จบบริการ</div>
+                  <div ngif="row.orderStatus === 'closewithcondition'">จบบริการ(ยกเลิก)</div>
                 </ng-template>
               </ngx-datatable-column>
               <ngx-datatable-column [flexGrow]="1">
                 <ng-template ngx-datatable-cell-template let-row="row">
-                  <button
-                    class="mat-icon-button"
-                    aria-label="More"
-                    [matMenuTriggerFor]="moreMenu"
-                    (click)="$event.stopPropagation()"
-                  >
+                  <button class="mat-icon-button" aria-label="More" [matMenuTriggerFor]="moreMenu"
+                    (click)="$event.stopPropagation()">
                     <mat-icon class="secondary-text">more_vert</mat-icon>
                   </button>
 
                   <mat-menu #moreMenu>
-                    <button
-                      mat-menu-item
-                      aria-label="edit"
-                      (click)="editData(row)"
-                    >
+                    <button mat-menu-item aria-label="edit" (click)="editData(row)">
                       <mat-icon>edit</mat-icon>
                       <span>แก้ไข</span>
                     </button>
-                    <button
-                      mat-menu-item
-                      aria-label="send"
-                      (click)="changeStatusData(row, 'golive')"
-                    >
+                    <button mat-menu-item aria-label="send" (click)="changeStatusData(row, 'golive')">
                       <mat-icon>send</mat-icon>
-                      <span>ส่งใบสั่งงาน</span>
+                      <span>สรุปใบงาน</span>
                     </button>
-                    <button
-                      mat-menu-item
-                      aria-label="block"
-                      (click)="changeStatusData(row, 'close')"
-                    >
+                    <button mat-menu-item aria-label="block" (click)="changeStatusData(row, 'close')">
                       <mat-icon>block</mat-icon>
                       <span>ปิดใบสั่งงาน</span>
                     </button>
-                    <button
-                      mat-menu-item
-                      aria-label="delete"
-                      (click)="deleteData(row)"
-                    >
+                    <button mat-menu-item aria-label="delete" (click)="deleteData(row)">
                       <mat-icon>delete</mat-icon>
                       <span>ลบ</span>
                     </button>
@@ -152,13 +116,7 @@
   <!-- /CENTER -->
 </div>
 <!-- ADD CONTACT BUTTON -->
-<button
-  fxLayoutAlign="center center"
-  class="mat-fab warn"
-  id="add-button"
-  aria-label="add"
-  (click)="addData()"
->
+<button fxLayoutAlign="center center" class="mat-fab warn" id="add-button" aria-label="add" (click)="addData()">
   <mat-icon>add</mat-icon>
 </button>
 <!-- / ADD CONTACT BUTTON -->
