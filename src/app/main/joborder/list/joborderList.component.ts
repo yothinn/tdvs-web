@@ -79,10 +79,10 @@ export class JoborderListComponent implements OnInit {
         this.rows = res.data;
         this.formatMoment();
         this.sortRows();
-        // if (status === "golive") {
-        //   console.log(resdoc);
-        //   this.downloadAsPDF(resdoc);
-        // }
+        if (status === "serviceprepared") {
+          console.log(resdoc);
+          this.downloadAsPDF(resdoc);
+        }
       });
     });
   }
@@ -119,6 +119,8 @@ export class JoborderListComponent implements OnInit {
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
 
+    console.log(val);
+
     // filter our data
     const temp = this.temp.filter(function (d) {
       return (
@@ -128,6 +130,7 @@ export class JoborderListComponent implements OnInit {
       );
     });
 
+    console.log(temp)
     // update the rows
     this.rows = temp;
   }

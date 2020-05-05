@@ -89,7 +89,7 @@
                                     เหตุผล: {{item.remark}}
                                 </div>
                             </div>
-                            <div class="mt-8" fxLayout="row wrap" fxLayoutAlign="start center">
+                            <div class="mt-8" fxLayout="row wrap" fxLayoutAlign="start center" *ngIf="joborderData.orderStatus !== 'close'">
                                 <div fxFlex="25" *ngIf="item.lineUserId">
                                     <button mat-flat-button class="btn-list-status"
                                         [ngClass]="{ 'color-s-btn':joborderData._id && item.contactStatus === 'select' }"
