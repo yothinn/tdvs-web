@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, AfterViewChecked } from '@angular/core';
 import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.service';
 import { fuseAnimations } from '@fuse/animations';
 
 import { locale as english } from '../i18n/en';
 import { locale as thai } from '../i18n/th';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ColumnMode } from '@swimlane/ngx-datatable';
+import { ColumnMode, DatatableComponent } from '@swimlane/ngx-datatable';
 import { VehicledataService } from '../services/vehicledata.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DialogConfirmService } from 'app/dialog-confirm/service/dialog-confirm.service';
@@ -17,7 +17,11 @@ import { DialogConfirmService } from 'app/dialog-confirm/service/dialog-confirm.
   encapsulation: ViewEncapsulation.None,
   animations: fuseAnimations
 })
-export class VehicledataListComponent implements OnInit {
+export class VehicledataListComponent implements OnInit, AfterViewChecked {
+
+  @ViewChild('tableWrapper') tableWrapper;
+  @ViewChild(DatatableComponent) table: DatatableComponent;
+  private currentComponentWidth;
 
   rows: Array<any>;
   temp = [];
@@ -39,6 +43,15 @@ export class VehicledataListComponent implements OnInit {
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
     this.checkList();
+  }
+
+  ngAfterViewChecked(): void {
+    // Check if the table size has changed,
+    if (this.table && this.table.recalculate && (this.tableWrapper.nativeElement.clientWidth !== this.currentComponentWidth)) {
+
+      this.currentComponentWidth = this.tableWrapper.nativeElement.clientWidth;
+      this.table.recalculate();
+    }
   }
 
   checkList() {
@@ -74,7 +87,7 @@ export class VehicledataListComponent implements OnInit {
             this.rows = res.data;
             this.checkList();
             this.spinner.hide();
-          },(err)=>{
+          }, (err) => {
             this.spinner.hide();
           })
         }).catch(err => {
@@ -82,7 +95,7 @@ export class VehicledataListComponent implements OnInit {
         })
       };
     });
-    
+
   }
 
   updateFilter(event) {

@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation, ViewChild, AfterViewChecked } from "@angular/core";
 import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
 import { fuseAnimations } from "@fuse/animations";
 
 import { locale as english } from "../i18n/en";
 import { locale as thai } from "../i18n/th";
 import { Router, ActivatedRoute } from "@angular/router";
-import { ColumnMode } from "@swimlane/ngx-datatable";
+import { ColumnMode, DatatableComponent } from "@swimlane/ngx-datatable";
 import { JoborderService } from "../services/joborder.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import * as moment from "moment";
@@ -21,7 +21,11 @@ import { MatSnackBar } from "@angular/material";
   encapsulation: ViewEncapsulation.None,
   animations: fuseAnimations,
 })
-export class JoborderListComponent implements OnInit {
+export class JoborderListComponent implements OnInit,AfterViewChecked {
+  @ViewChild('tableWrapper') tableWrapper;
+  @ViewChild(DatatableComponent) table: DatatableComponent;
+  private currentComponentWidth;
+
   rows: Array<any>;
   temp = [];
   // columns = [{ prop: 'name' }, { name: 'Gender' }, { name: 'Company', sortable: false }];
@@ -58,6 +62,14 @@ export class JoborderListComponent implements OnInit {
     console.log(this.rows);
     this.formatMoment();
     // this.sortRows();
+  }
+
+  ngAfterViewChecked() {
+    // Check if the table size has changed,
+    if (this.table && this.table.recalculate && (this.tableWrapper.nativeElement.clientWidth !== this.currentComponentWidth)) {
+      this.currentComponentWidth = this.tableWrapper.nativeElement.clientWidth;
+      this.table.recalculate();
+    }
   }
 
   pageCallback(pageInfo: {
