@@ -44,14 +44,11 @@
     <!-- / HEADER -->
 
     <!-- CONTENT CARD -->
-    <div class="content-card">
+    <div class="content-card" #tableWrapper>
       <!-- CONTENT -->
-      <div class="content">
-        <div class="content-card">
-          <div class="content">
             <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64" [footerHeight]="64"
               rowHeight="auto" scrollbarH="true" [externalPaging]="true" [count]="page.count"
-              [offset]="page.offset" [limit]="page.limit" [rows]="rows" (page)="pageCallback($event)">
+              [offset]="page.offset" [limit]="page.limit" [rows]="rows" (page)="pageCallback($event)" [scrollbarV]="true" [virtualization]="false">
               <ngx-datatable-column name="ทะเบียนรถ" [flexGrow]="2.5">
                 <ng-template ngx-datatable-cell-template let-row="row">
                   {{ row.lisenceID }}
@@ -87,9 +84,6 @@
                 </ng-template>
               </ngx-datatable-column>
             </ngx-datatable>
-          </div>
-        </div>
-      </div>
     </div>
     <!-- /CONTENT CARD -->
   </div>
