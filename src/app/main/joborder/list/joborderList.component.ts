@@ -226,7 +226,7 @@ export class JoborderListComponent implements OnInit,AfterViewChecked {
     doc.text(150, 25, `วันที่ : ${moment(data.docdate).format("DD/MM/YYYY")}`);
 
     doc.text(15, 35, `รถธรรมธุรกิจ ทะเบียนรถ : ${data.carNo.lisenceID}`);
-    doc.text(15, 45, `ผู้ให้บริการ : ${data.carNo.driverInfo.displayName} [${data.carNo.driverInfo.MobileNo1}]`);
+    doc.text(15, 45, `ผู้ให้บริการ : ${data.carNo.driverInfo.displayName} [${data.carNo.driverInfo.mobileNo1}]`);
 
     doc.rect(15, 50, 180, 10);
 
