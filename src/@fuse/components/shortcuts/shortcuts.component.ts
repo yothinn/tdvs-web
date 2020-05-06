@@ -221,6 +221,6 @@ export class FuseShortcutsComponent implements OnInit, OnDestroy
     hideMobileShortcutsPanel(): void
     {
         this.mobileShortcutsPanelActive = false;
-        this._renderer.removeClass(this.shortcutsEl.nativeElement, 'show-mobile-panel');
+        // this._renderer.removeClass(this.shortcutsEl.nativeElement, 'show-mobile-panel');
     }
 }
