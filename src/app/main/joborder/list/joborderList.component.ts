@@ -219,17 +219,21 @@ export class JoborderListComponent implements OnInit,AfterViewChecked {
     // doc.setFontType("bold");
     doc.setFontSize(18);
 
+    console.log(data);
+
     doc.text(150, 15, `เลขที่ : ${data.docno}`);
 
     doc.text(150, 25, `วันที่ : ${moment(data.docdate).format("DD/MM/YYYY")}`);
 
-    doc.text(15, 35, `รถธรรมธุรกิจ : ${data.carNo}`);
+    doc.text(15, 35, `รถธรรมธุรกิจ ทะเบียนรถ : ${data.carNo.lisenceID}`);
+    doc.text(15, 45, `ผู้ให้บริการ : ${data.carNo.driverInfo.displayName} [${data.carNo.driverInfo.MobileNo1}]`);
 
-    doc.rect(15, 40, 180, 10);
+    doc.rect(15, 50, 180, 10);
 
-    doc.text(25, 47, "ลำดับที่");
-    doc.text(55, 47, "รายละเอียด");
-    let line = 57;
+    doc.text(25, 57, "ลำดับที่");
+    doc.text(55, 57, "รายละเอียด");
+    doc.text(145, 57, "ยอดขาย");
+    let line = 67;
     for (let index = 0; index < data.contactLists.length; index++) {
       let contact: any = data.contactLists[index];
       let mno = `${contact.mobileNo1}`;
@@ -253,8 +257,14 @@ export class JoborderListComponent implements OnInit,AfterViewChecked {
         line + 20,
         `${contact.addressSubDistrict} ${contact.addressDistrict} ${contact.addressProvince} ${contact.addressPostCode}`
       );
+      let txtStatus = contact.contactStatus === "confirm" ? "ยืนยัน" : "ปฏิเสธ";
+      doc.text(
+        45, 
+        line + 30,
+        `สถานะ : ${txtStatus}`   
+      );
 
-      line += 33;
+      line += 43;
     }
 
     doc.save(`${data.docno}.pdf`);
