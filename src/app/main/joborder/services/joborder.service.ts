@@ -10,16 +10,18 @@ const api_url_markers = environment.apiUrl + "/api/jobordersupdatemap/";
 const api_url_line = environment.apiUrl + "/api/lineconnects/members/push";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class JoborderService {
   routeParams: any;
-  
+
   constructor(private http: HttpClient) {}
 
   private authorizationHeader() {
-    let token = environment.production ? window.localStorage.getItem(`token@${environment.appName}`) : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTcyNDIyNTE2Mzg5NzAwMWEyNzdlM2UiLCJmaXJzdG5hbWUiOiJ0aGVlcmFzYWsiLCJsYXN0bmFtZSI6InR1YnJpdCIsImRpc3BsYXluYW1lIjoidGhlZXJhc2FrIHR1YnJpdCIsInByb2ZpbGVJbWFnZVVSTCI6Imh0dHA6Ly9yZXMuY2xvdWRpbmFyeS5jb20vaGZsdmxhdjA0L2ltYWdlL3VwbG9hZC92MTQ4NzgzNDE4Ny9nM2h3eWllYjdkbDd1Z2RnajN0Yi5wbmciLCJyb2xlcyI6WyJ1c2VyIl0sInVzZXJuYW1lIjoiMDg5NDQ0NzIwOCIsInByb3ZpZGVyIjoibG9jYWwiLCJpYXQiOjE1ODQ1NDYzNDIsImV4cCI6MTU5MTc0NjM0Mn0.zjKgz4zjfHLnB_F0WRsctN8mpygZfpmaxk2e0P2fP4o";
-    
+    let token = environment.production
+      ? window.localStorage.getItem(`token@${environment.appName}`)
+      : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTcyNDIyNTE2Mzg5NzAwMWEyNzdlM2UiLCJmaXJzdG5hbWUiOiJ0aGVlcmFzYWsiLCJsYXN0bmFtZSI6InR1YnJpdCIsImRpc3BsYXluYW1lIjoidGhlZXJhc2FrIHR1YnJpdCIsInByb2ZpbGVJbWFnZVVSTCI6Imh0dHA6Ly9yZXMuY2xvdWRpbmFyeS5jb20vaGZsdmxhdjA0L2ltYWdlL3VwbG9hZC92MTQ4NzgzNDE4Ny9nM2h3eWllYjdkbDd1Z2RnajN0Yi5wbmciLCJyb2xlcyI6WyJ1c2VyIl0sInVzZXJuYW1lIjoiMDg5NDQ0NzIwOCIsInByb3ZpZGVyIjoibG9jYWwiLCJpYXQiOjE1ODQ1NDYzNDIsImV4cCI6MTU5MTc0NjM0Mn0.zjKgz4zjfHLnB_F0WRsctN8mpygZfpmaxk2e0P2fP4o";
+
     const headers = new HttpHeaders().set("Authorization", "Bearer " + token);
     return headers;
   }
@@ -32,29 +34,29 @@ export class JoborderService {
         return this.getJoborderData(this.routeParams.id);
       }
     } else {
-      return this.getJoborderDataList(0, 10, '', 'docdate', 'desc');
+      return this.getJoborderDataList(0, 10, "", "docdate", "desc");
     }
   }
 
-  getJoborderDataList(pageNo, pageSize, keyword, orderBy, orderDir){
+  getJoborderDataList(pageNo, pageSize, keyword, orderBy, orderDir) {
     const params = new HttpParams()
       .set("pageNo", `${pageNo + 1}`)
       .set("size", `${pageSize}`)
       .set("keyword", `${keyword}`)
       .set("orderBy", `${orderBy}`)
       .set("orderDir", `${orderDir}`);
-     
 
     return this.http
-    .get(api_url, {
-      headers: this.authorizationHeader(),
-      params: params,
-    }).toPromise();
+      .get(api_url, {
+        headers: this.authorizationHeader(),
+        params: params,
+      })
+      .toPromise();
   }
 
   getJoborderData(id: any) {
     return this.http.get(api_url + id, {
-      headers: this.authorizationHeader()
+      headers: this.authorizationHeader(),
     });
   }
 
@@ -116,5 +118,13 @@ export class JoborderService {
           resolve(res.data);
         }, reject);
     });
+  }
+
+  checkValidJobOrder(body) {
+    return this.http
+      .post(environment.apiUrl + "/api/checkvalidjob", body, {
+        headers: this.authorizationHeader(),
+      })
+      .toPromise();
   }
 }
