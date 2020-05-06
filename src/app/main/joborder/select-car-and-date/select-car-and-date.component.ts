@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from "@angular/core";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from "@angular/material";
+import { JoborderService } from "../services/joborder.service";
 
 @Component({
   selector: "app-select-car-and-date",
@@ -9,7 +10,12 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
 export class SelectCarAndDateComponent implements OnInit {
   cars: Array<any> = [];
 
+  body: any = {};
+
+  canCreateJob:boolean = true;
   constructor(
+    private joborderService: JoborderService,
+    private snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<SelectCarAndDateComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
@@ -19,7 +25,7 @@ export class SelectCarAndDateComponent implements OnInit {
       if (el.lisenceID && el.driverInfo && el.driverInfo.displayName) {
         this.cars.push({
           lisenceID: el.lisenceID,
-          startDate: el.startDate, 
+          startDate: el.startDate,
           endDate: el.endDate,
           vehicleType: el.vehicleType,
           vehicleColor: el.vehicleColor,
@@ -39,5 +45,26 @@ export class SelectCarAndDateComponent implements OnInit {
   onConfirm() {
     console.log(this.data);
     this.dialogRef.close(this.data);
+  }
+
+  async checkValid() {
+    if (this.data.docdate && this.data.carNo) {
+      let body = {
+        docdate: this.data.docdate,
+        lisenceID: this.data.carNo.lisenceID,
+      };
+     
+      let res: any = await this.joborderService.checkValidJobOrder(body);
+      console.log(res);
+      if(res.data.length > 0){
+        this.snackBar.open(`รถหมายเลขทะเบียน ${this.data.carNo.lisenceID} มีใบสั่งงานในวันนี้แล้ว...`, "", {
+          duration: 2000,
+        });
+        this.canCreateJob=false;
+      }else{
+        this.canCreateJob=true;
+      }
+    }
+
   }
 }
