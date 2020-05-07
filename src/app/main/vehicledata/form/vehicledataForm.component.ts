@@ -128,8 +128,8 @@ export class VehicledataFormComponent implements OnInit {
         Validators.required,
       ]);
       this.ownerDataForm.controls["displayName"].setValidators(null);
-    }
-    
+    };
+
     let res: any = await this.vehicledataService.getPostcodesList();
     this.postcodesList = res.data;
     this.temp = res.data;
