@@ -43,8 +43,8 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     limit: 10,
     count: 0,
     offset: 0,
-    orderBy: "docdate",
-    orderDir: "desc",
+    orderBy: 'created',
+    orderDir: 'desc'
   };
   keyword = "";
 
