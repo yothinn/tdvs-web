@@ -28,10 +28,7 @@ export class TvdscustomerListComponent implements OnInit, AfterViewChecked {
 
   rows: Array<any>;
   temp = [];
-
-  selected = [];
   ColumnMode = ColumnMode;
-  SelectionType = SelectionType;
 
   page = {
     limit: 10,

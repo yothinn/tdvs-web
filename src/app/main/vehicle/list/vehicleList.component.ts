@@ -27,10 +27,7 @@ export class VehicleListComponent implements OnInit {
 
   rows: Array<any>;
   temp = [];
-  
-  selected = [];
   ColumnMode = ColumnMode;
-  SelectionType = SelectionType;
 
   page = {
     limit: 10,

@@ -25,10 +25,7 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
 
   rows: Array<any>;
   temp = [];
-
-  selected = [];
   ColumnMode = ColumnMode;
-  SelectionType = SelectionType;
 
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,

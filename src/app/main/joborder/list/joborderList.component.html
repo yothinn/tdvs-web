@@ -32,8 +32,7 @@
     <!-- CONTENT CARD -->
     <div class="content-card" #tableWrapper>
       <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64" [footerHeight]="64"
-        rowHeight="auto" [scrollbarV]="true" [virtualization]="false" [scrollbarH]="true" [selected]="selected"
-        [selectionType]="'single'" [limit]="10" [rows]="rows" [externalPaging]="true" [externalSorting]="true"
+        rowHeight="auto" [scrollbarV]="true" [virtualization]="false" [scrollbarH]="true" [limit]="10" [rows]="rows" [externalPaging]="true" [externalSorting]="true"
         [reorderable]="true" [count]="page.count" [offset]="page.offset" [limit]="page.limit" [sortType]="'single'"
         (page)="pageCallback($event)" (sort)="sortCallback($event)">
         <ngx-datatable-column prop="docno" name="เลขที่ใบสั่งงาน" [flexGrow]="1.9">

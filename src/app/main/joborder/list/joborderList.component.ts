@@ -35,9 +35,9 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
   rows: Array<any>;
   temp = [];
   // columns = [{ prop: 'name' }, { name: 'Gender' }, { name: 'Company', sortable: false }];
-  selected = [];
+
   ColumnMode = ColumnMode;
-  SelectionType = SelectionType;
+
 
   page = {
     limit: 10,
@@ -227,6 +227,10 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     // console.log(temp);
     // // update the rows
     // this.rows = temp;
+  }
+
+  onSelect(event) {
+    console.log(event);
   }
 
   downloadAsPDF(data: any) {
