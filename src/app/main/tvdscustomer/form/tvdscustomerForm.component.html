@@ -101,7 +101,7 @@
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>เบอร์บ้าน</mat-label>
-                      <input matInput maxlength="10" minlength="9" formControlName="mobileNo2" name="mobileNo2">
+                      <input matInput formControlName="mobileNo2" name="mobileNo2">
                       <mat-error *ngIf="tvdscustomerForm.get('mobileNo2').hasError('required')">
                         กรุณาระบุ เบอร์โทรศัพท์มือถือของท่าน
                       </mat-error>
@@ -113,7 +113,7 @@
                   <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="50" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>เบอร์อื่น ๆ</mat-label>
-                      <input matInput maxlength="10" minlength="9" formControlName="mobileNo3" name="mobileNo3">
+                      <input matInput formControlName="mobileNo3" name="mobileNo3">
                       <mat-error *ngIf="tvdscustomerForm.get('mobileNo3').hasError('required')">
                         กรุณาระบุ เบอร์โทรศัพท์มือถือของท่าน
                       </mat-error>
