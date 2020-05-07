@@ -221,6 +221,7 @@ export class JoborderListComponent implements OnInit,AfterViewChecked {
 
     console.log(data);
 
+    doc.text(15, 15, `วันที่พิมพ์ : ${moment(Date.now()).format("DD/MM/YYYY HH:MM:SS")}`);
     doc.text(150, 15, `เลขที่ : ${data.docno}`);
 
     doc.text(150, 25, `วันที่ : ${moment(data.docdate).format("DD/MM/YYYY")}`);
@@ -236,6 +237,12 @@ export class JoborderListComponent implements OnInit,AfterViewChecked {
     let line = 67;
     for (let index = 0; index < data.contactLists.length; index++) {
       let contact: any = data.contactLists[index];
+
+      // Donot print customer that reject
+      if (contact.contactStatus !== "confirm") {
+        continue;
+      }
+
       let mno = `${contact.mobileNo1}`;
       if (line >= 257) {
         doc.addPage();
