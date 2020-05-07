@@ -6,27 +6,13 @@
   <!-- CENTER -->
   <div class="center">
     <!-- HEADER -->
-    <div
-      class="header accent"
-      fxLayout="row wrap"
-      fxLayoutAlign="space-between center"
-    >
+    <div class="header accent" fxLayout="row wrap" fxLayoutAlign="space-between center">
       <!-- APP TITLE -->
-      <div
-        class="logo mb-24 mb-md-0"
-        fxLayout="row"
-        fxLayoutAlign="start center"
-      >
-        <mat-icon
-          class="logo-icon s-32 mr-16"
-          [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }"
-        >
+      <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
           format_list_numbered
         </mat-icon>
-        <span
-          class="logo-text h1"
-          [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }"
-        >
+        <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
           รายการใบสั่งงาน
         </span>
       </div>
@@ -45,33 +31,12 @@
 
     <!-- CONTENT CARD -->
     <div class="content-card" #tableWrapper>
-      <ngx-datatable
-        #table
-        class="material fullscreen"
-        [columnMode]="'flex'"
-        [headerHeight]="64"
-        [footerHeight]="64"
-        rowHeight="auto"
-        [scrollbarV]="true"
-        [virtualization]="false"
-        [scrollbarH]="true"
-        [limit]="10"
-        [rows]="rows"
-        [externalPaging]="true"
-        [externalSorting]="true"
-        [reorderable]="true"
-        [count]="page.count"
-        [offset]="page.offset"
-        [limit]="page.limit"
-        [sortType]="'single'"
-        (page)="pageCallback($event)"
-        (sort)="sortCallback($event)"
-      >
-        <ngx-datatable-column
-          prop="docno"
-          name="เลขที่ใบสั่งงาน"
-          [flexGrow]="1.9"
-        >
+      <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64" [footerHeight]="64"
+        rowHeight="auto" [scrollbarV]="true" [virtualization]="false" [scrollbarH]="true" [limit]="10" [rows]="rows"
+        [externalPaging]="true" [externalSorting]="true" [reorderable]="true" [count]="page.count"
+        [offset]="page.offset" [limit]="page.limit" [sortType]="'single'" (page)="pageCallback($event)"
+        (sort)="sortCallback($event)">
+        <ngx-datatable-column prop="docno" name="เลขที่ใบสั่งงาน" [flexGrow]="1.9">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{ row.docno }}
           </ng-template>
@@ -81,11 +46,7 @@
             {{ row.docdate }}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column
-          prop="carNo"
-          name="รถที่รับผิดชอบ"
-          [flexGrow]="3.6"
-        >
+        <ngx-datatable-column prop="carNo" name="รถที่รับผิดชอบ" [flexGrow]="3.6">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{
               row.carNo.lisenceID
@@ -135,85 +96,56 @@
         </ngx-datatable-column>
         <ngx-datatable-column [flexGrow]="1">
           <ng-template ngx-datatable-cell-template let-row="row">
-            <button
-              class="mat-icon-button"
-              aria-label="More"
-              [matMenuTriggerFor]="moreMenu"
-              (click)="$event.stopPropagation()"
-            >
+            <button class="mat-icon-button" aria-label="More" [matMenuTriggerFor]="moreMenu"
+              (click)="$event.stopPropagation()">
               <mat-icon class="secondary-text">more_vert</mat-icon>
             </button>
 
             <mat-menu #moreMenu>
-              <button
-                mat-menu-item
-                (click)="editData(row)"
-                *ngIf="
+              <button mat-menu-item (click)="editData(row)" *ngIf="
                   row.orderStatus === 'draft' ||
                   row.orderStatus === 'waitapprove' ||
                   row.orderStatus === 'orderavailable' ||
                   row.orderStatus === 'serviceprepared'
-                "
-              >
+                ">
                 <mat-icon>edit</mat-icon>
                 <span>แก้ไข</span>
               </button>
-              <button
-                mat-menu-item
-                (click)="editData(row)"
-                *ngIf="
+              <button mat-menu-item (click)="editData(row)" *ngIf="
                   row.orderStatus === 'golive' ||
                   row.orderStatus === 'close' ||
                   row.orderStatus === 'closewithcondition' ||
                   row.orderStatus === 'ordercancel'
-                "
-              >
+                ">
                 <mat-icon>edit</mat-icon>
                 <span>ดูรายละเอียด</span>
               </button>
-              <button
-                mat-menu-item
-                *ngIf="row.orderStatus === 'waitapprove'"
+              <button mat-menu-item *ngIf="row.orderStatus === 'waitapprove'"
                 (click)="changeStatusData(row, 'orderavailable')"
-                [disabled]="
-                  row.cusAmount !== row.confirmCount + row.rejectCount
-                "
-              >
+                [disabled]="row.cusAmount !== row.confirmCount + row.rejectCount || row.confirmCount === 0">
                 <mat-icon>send</mat-icon>
                 <span>สรุปใบงาน</span>
               </button>
-              <button
-                mat-menu-item
-                *ngIf="
+              <button mat-menu-item *ngIf="
                   row.orderStatus === 'orderavailable' ||
                   row.orderStatus === 'serviceprepared' ||
                   row.orderStatus === 'golive' ||
                   row.orderStatus === 'close' ||
                   row.orderStatus === 'closewithcondition' ||
                   row.orderStatus === 'ordercancel'
-                "
-                (click)="changeStatusData(row, 'serviceprepared')"
-              >
+                " (click)="changeStatusData(row, 'serviceprepared')">
                 <mat-icon>print</mat-icon>
                 <span>พิมพ์ใบสั่งงาน</span>
               </button>
-              <button
-                mat-menu-item
-                *ngIf="
+              <button mat-menu-item *ngIf="
                   row.orderStatus === 'waitapprove' ||
                   row.orderStatus === 'orderavailable' ||
                   row.orderStatus === 'serviceprepared'
-                "
-                (click)="changeStatusData(row, 'ordercancel')"
-              >
+                " (click)="changeStatusData(row, 'ordercancel')">
                 <mat-icon>block</mat-icon>
                 <span>ยกเลิกใบงาน</span>
               </button>
-              <button
-                mat-menu-item
-                *ngIf="row.orderStatus === 'draft'"
-                (click)="deleteData(row)"
-              >
+              <button mat-menu-item *ngIf="row.orderStatus === 'draft'" (click)="deleteData(row)">
                 <mat-icon>delete</mat-icon>
                 <span>ลบใบงาน</span>
               </button>
@@ -227,13 +159,7 @@
   <!-- /CENTER -->
 </div>
 <!-- ADD CONTACT BUTTON -->
-<button
-  fxLayoutAlign="center center"
-  class="mat-fab warn"
-  id="add-button"
-  aria-label="add"
-  (click)="addData()"
->
+<button fxLayoutAlign="center center" class="mat-fab warn" id="add-button" aria-label="add" (click)="addData()">
   <mat-icon>add</mat-icon>
 </button>
 <!-- / ADD CONTACT BUTTON -->
