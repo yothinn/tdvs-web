@@ -1,11 +1,17 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, AfterViewChecked } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  ViewChild,
+  AfterViewChecked,
+} from "@angular/core";
 import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
 import { fuseAnimations } from "@fuse/animations";
 
 import { locale as english } from "../i18n/en";
 import { locale as thai } from "../i18n/th";
 import { Router, ActivatedRoute } from "@angular/router";
-import { ColumnMode, DatatableComponent } from "@swimlane/ngx-datatable";
+import { SelectionType, ColumnMode, DatatableComponent } from "@swimlane/ngx-datatable";
 import { JoborderService } from "../services/joborder.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import * as moment from "moment";
@@ -21,15 +27,17 @@ import { MatSnackBar } from "@angular/material";
   encapsulation: ViewEncapsulation.None,
   animations: fuseAnimations,
 })
-export class JoborderListComponent implements OnInit,AfterViewChecked {
-  @ViewChild('tableWrapper') tableWrapper;
+export class JoborderListComponent implements OnInit, AfterViewChecked {
+  @ViewChild("tableWrapper") tableWrapper;
   @ViewChild(DatatableComponent) table: DatatableComponent;
   private currentComponentWidth;
 
   rows: Array<any>;
   temp = [];
   // columns = [{ prop: 'name' }, { name: 'Gender' }, { name: 'Company', sortable: false }];
+  selected = [];
   ColumnMode = ColumnMode;
+  SelectionType = SelectionType;
 
   page = {
     limit: 10,
@@ -66,7 +74,11 @@ export class JoborderListComponent implements OnInit,AfterViewChecked {
 
   ngAfterViewChecked() {
     // Check if the table size has changed,
-    if (this.table && this.table.recalculate && (this.tableWrapper.nativeElement.clientWidth !== this.currentComponentWidth)) {
+    if (
+      this.table &&
+      this.table.recalculate &&
+      this.tableWrapper.nativeElement.clientWidth !== this.currentComponentWidth
+    ) {
       this.currentComponentWidth = this.tableWrapper.nativeElement.clientWidth;
       this.table.recalculate();
     }
@@ -82,7 +94,12 @@ export class JoborderListComponent implements OnInit,AfterViewChecked {
     this.reloadData();
   }
 
-  sortCallback(sortInfo: { sorts: { dir: string, prop: string }[], column: {}, prevValue: string, newValue: string }) {
+  sortCallback(sortInfo: {
+    sorts: { dir: string; prop: string }[];
+    column: {};
+    prevValue: string;
+    newValue: string;
+  }) {
     // there will always be one "sort" object if "sortType" is set to "single"
     console.log(sortInfo);
     this.page.orderDir = sortInfo.sorts[0].dir;
@@ -129,24 +146,27 @@ export class JoborderListComponent implements OnInit,AfterViewChecked {
     let body = {
       orderStatus: status,
     };
-    this.joborderService.updateJoborderData(item._id, body).then((resdoc) => {
-      // this.joborderService
-      //   .getJoborderDataList(this.page.offset, this.page.limit, this.keyword)
-      //   .then((res: any) => {
-      //     this.rows = res.data;
-      //     this.formatMoment();
-      //     this.sortRows();
-      //     if (status === "serviceprepared") {
-      //       console.log(resdoc);
-      //       this.downloadAsPDF(resdoc);
-      //     }
-      //   });
-      this.reloadData();
-      if (status === "serviceprepared") {
-        console.log(resdoc);
-        this.downloadAsPDF(resdoc);
+    if (status === "serviceprepared") {
+      if(item.orderStatus === "orderavailable"){
+        this.joborderService.updateJoborderData(item._id, body).then((resdoc) => {
+          this.reloadData();
+          this.downloadAsPDF(resdoc);
+        });
+      }else{
+        body = {
+          orderStatus: item.orderStatus
+        }
+        this.joborderService.updateJoborderData(item._id, body).then((resdoc) => {
+          this.reloadData();
+          this.downloadAsPDF(resdoc);
+        });
       }
-    });
+    } else {
+      this.joborderService.updateJoborderData(item._id, body).then((resdoc) => {
+        this.reloadData();
+      });
+    }
+    
   }
 
   deleteData(item) {
@@ -221,13 +241,21 @@ export class JoborderListComponent implements OnInit,AfterViewChecked {
 
     console.log(data);
 
-    doc.text(15, 15, `วันที่พิมพ์ : ${moment(Date.now()).format("DD/MM/YYYY HH:MM:SS")}`);
+    doc.text(
+      15,
+      15,
+      `วันที่พิมพ์ : ${moment(Date.now()).format("DD/MM/YYYY HH:MM:SS")}`
+    );
     doc.text(150, 15, `เลขที่ : ${data.docno}`);
 
     doc.text(150, 25, `วันที่ : ${moment(data.docdate).format("DD/MM/YYYY")}`);
 
     doc.text(15, 35, `รถธรรมธุรกิจ ทะเบียนรถ : ${data.carNo.lisenceID}`);
-    doc.text(15, 45, `ผู้ให้บริการ : ${data.carNo.driverInfo.displayName} [${data.carNo.driverInfo.mobileNo1}]`);
+    doc.text(
+      15,
+      45,
+      `ผู้ให้บริการ : ${data.carNo.driverInfo.displayName} [${data.carNo.driverInfo.mobileNo1}]`
+    );
 
     doc.rect(15, 50, 180, 10);
 
@@ -265,11 +293,7 @@ export class JoborderListComponent implements OnInit,AfterViewChecked {
         `${contact.addressSubDistrict} ${contact.addressDistrict} ${contact.addressProvince} ${contact.addressPostCode}`
       );
       let txtStatus = contact.contactStatus === "confirm" ? "ยืนยัน" : "ปฏิเสธ";
-      doc.text(
-        45, 
-        line + 30,
-        `สถานะ : ${txtStatus}`   
-      );
+      doc.text(45, line + 30, `สถานะ : ${txtStatus}`);
 
       line += 43;
     }

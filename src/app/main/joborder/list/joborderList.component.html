@@ -48,7 +48,15 @@
         </ngx-datatable-column>
         <ngx-datatable-column prop="carNo" name="รถที่รับผิดชอบ" [flexGrow]="3.6">
           <ng-template ngx-datatable-cell-template let-row="row">
-            {{row.carNo.lisenceID?"("+row.carNo.lisenceID+")"+" "+row.carNo.driverInfo.displayName:"ยังไม่ระบุ"}}
+            {{
+              row.carNo.lisenceID
+                ? "(" +
+                  row.carNo.lisenceID +
+                  ")" +
+                  " " +
+                  row.carNo.driverInfo.displayName
+                : "ยังไม่ระบุ"
+            }}
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column prop="cusAmount" name="ทั้งหมด" [flexGrow]="1">
@@ -94,27 +102,46 @@
             </button>
 
             <mat-menu #moreMenu>
-              <button mat-menu-item (click)="editData(row)">
+              <button mat-menu-item (click)="editData(row)" *ngIf="
+                  row.orderStatus === 'draft' ||
+                  row.orderStatus === 'waitapprove' ||
+                  row.orderStatus === 'orderavailable' ||
+                  row.orderStatus === 'serviceprepared'
+                ">
                 <mat-icon>edit</mat-icon>
                 <span>แก้ไข</span>
               </button>
+              <button mat-menu-item (click)="editData(row)" *ngIf="
+                  row.orderStatus === 'golive' ||
+                  row.orderStatus === 'close' ||
+                  row.orderStatus === 'closewithcondition' ||
+                  row.orderStatus === 'ordercancel'
+                ">
+                <mat-icon>edit</mat-icon>
+                <span>ดูรายละเอียด</span>
+              </button>
               <button mat-menu-item *ngIf="row.orderStatus === 'waitapprove'"
-                (click)="changeStatusData(row, 'orderavailable')" [disabled]="
-                        row.cusAmount !== row.confirmCount + row.rejectCount
-                      ">
+                (click)="changeStatusData(row, 'orderavailable')"
+                [disabled]="row.cusAmount !== row.confirmCount + row.rejectCount || row.confirmCount === 0">
                 <mat-icon>send</mat-icon>
                 <span>สรุปใบงาน</span>
               </button>
-              <button mat-menu-item *ngIf="row.orderStatus === 'orderavailable'"
-                (click)="changeStatusData(row, 'serviceprepared')">
+              <button mat-menu-item *ngIf="
+                  row.orderStatus === 'orderavailable' ||
+                  row.orderStatus === 'serviceprepared' ||
+                  row.orderStatus === 'golive' ||
+                  row.orderStatus === 'close' ||
+                  row.orderStatus === 'closewithcondition' ||
+                  row.orderStatus === 'ordercancel'
+                " (click)="changeStatusData(row, 'serviceprepared')">
                 <mat-icon>print</mat-icon>
-                <span>เตรียมการบริการ(พิมพ์ใบงาน)</span>
+                <span>พิมพ์ใบสั่งงาน</span>
               </button>
               <button mat-menu-item *ngIf="
-                        row.orderStatus === 'waitapprove' ||
-                        row.orderStatus === 'orderavailable' ||
-                        row.orderStatus === 'serviceprepared'
-                      " (click)="changeStatusData(row, 'ordercancel')">
+                  row.orderStatus === 'waitapprove' ||
+                  row.orderStatus === 'orderavailable' ||
+                  row.orderStatus === 'serviceprepared'
+                " (click)="changeStatusData(row, 'ordercancel')">
                 <mat-icon>block</mat-icon>
                 <span>ยกเลิกใบงาน</span>
               </button>

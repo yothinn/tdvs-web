@@ -10,6 +10,7 @@
       [matDatepicker]="picker"
       [(ngModel)]="data.docdate"
       [disabled]="data.docno !== ''"
+      (dateChange)="checkValid()"
     />
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
