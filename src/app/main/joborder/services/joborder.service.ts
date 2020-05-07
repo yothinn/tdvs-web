@@ -34,7 +34,7 @@ export class JoborderService {
         return this.getJoborderData(this.routeParams.id);
       }
     } else {
-      return this.getJoborderDataList(0, 10, "", "docdate", "desc");
+      return this.getJoborderDataList(0, 10, "", "created", "desc");
     }
   }
 
