@@ -5,7 +5,7 @@ import { fuseAnimations } from "@fuse/animations";
 import { locale as english } from "../i18n/en";
 import { locale as thai } from "../i18n/th";
 import { Router, ActivatedRoute } from "@angular/router";
-import { ColumnMode, DatatableComponent } from "@swimlane/ngx-datatable";
+import { SelectionType, ColumnMode, DatatableComponent } from "@swimlane/ngx-datatable";
 import { TvdscustomerService } from "../services/tvdscustomer.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DialogConfirmService } from "app/dialog-confirm/service/dialog-confirm.service";
@@ -28,7 +28,10 @@ export class TvdscustomerListComponent implements OnInit, AfterViewChecked {
 
   rows: Array<any>;
   temp = [];
+
+  selected = [];
   ColumnMode = ColumnMode;
+  SelectionType = SelectionType;
 
   page = {
     limit: 10,

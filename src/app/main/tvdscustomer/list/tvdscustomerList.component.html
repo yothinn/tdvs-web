@@ -32,9 +32,24 @@
     <!-- CONTENT CARD -->
     <div class="content-card" #tableWrapper>
       <!-- CONTENT -->
-      <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64" [footerHeight]="64"
-        rowHeight="auto" scrollbarH="true" [externalPaging]="true" [count]="page.count" [offset]="page.offset"
-        [limit]="page.limit" [rows]="rows" (page)="pageCallback($event)" [scrollbarV]="true" [virtualization]="false">
+      <ngx-datatable #table 
+        class="material fullscreen" 
+        [columnMode]="'flex'" 
+        [headerHeight]="64" 
+        [footerHeight]="64"
+        rowHeight="auto" 
+        [scrollbarV]="true"
+        [scrollbarH]="true" 
+        [virtualization]="false"
+        [selected]="selected" 
+        [selectionType]="'single'"
+        [externalPaging]="true" 
+        [count]="page.count" 
+        [offset]="page.offset"
+        [limit]="page.limit" 
+        [rows]="rows" 
+        (page)="pageCallback($event)"  
+      >
 
         <ngx-datatable-column name="ชื่อ-นามสกุล" [flexGrow]="3">
           <ng-template ngx-datatable-cell-template let-row="row">

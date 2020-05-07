@@ -32,8 +32,20 @@
     <!-- CONTENT CARD -->
     <div class="content-card" #tableWrapper>
       <!-- CONTENT -->
-      <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64" [footerHeight]="64"
-        rowHeight="auto" scrollbarH="true" [limit]="10" [rows]="rows" [scrollbarV]="true" [virtualization]="false">
+      <ngx-datatable #table 
+        class="material fullscreen" 
+        [columnMode]="'flex'" 
+        [headerHeight]="64" 
+        [footerHeight]="64"
+        rowHeight="auto" 
+        [scrollbarH]="true" 
+        [scrollbarV]="true" 
+        [virtualization]="false"
+        [selected]="selected" 
+        [selectionType]="'single'"
+        [limit]="10" 
+        [rows]="rows" 
+      >
         <ngx-datatable-column name="ทะเบียนรถ" [flexGrow]="5">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{ row.lisenceID ? row.lisenceID : "" }}

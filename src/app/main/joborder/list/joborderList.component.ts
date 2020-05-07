@@ -233,22 +233,23 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     const doc = new jsPDF();
 
     let a = doc.getFontList();
-    console.log(a);
+    // console.log(a);
     doc.setFont("THSarabun");
     doc.setFontType("normal");
     // doc.setFontType("bold");
     doc.setFontSize(18);
 
-    console.log(data);
+    // console.log(data);
 
     doc.text(
       15,
       15,
       `วันที่พิมพ์ : ${moment(Date.now()).format("DD/MM/YYYY HH:MM:SS")}`
     );
-    doc.text(150, 15, `เลขที่ : ${data.docno}`);
+    doc.text(140, 15, `เลขที่ : ${data.docno}`);
 
-    doc.text(150, 25, `วันที่ : ${moment(data.docdate).format("DD/MM/YYYY")}`);
+    doc.text(140, 25, `วันที่ : ${moment(data.docdate).format("DD/MM/YYYY")}`);
+    doc.text(140, 35, `สถานะใบงาน: ${this.strOrderStatus(data.orderStatus)}`);
 
     doc.text(15, 35, `รถธรรมธุรกิจ ทะเบียนรถ : ${data.carNo.lisenceID}`);
     doc.text(
@@ -299,5 +300,23 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     }
 
     doc.save(`${data.docno}.pdf`);
+  }
+
+  /**
+   * convert order status to thai text
+   */
+  strOrderStatus(status): String {
+    switch (status) {
+      case "draft": return "จัดเส้นทาง";
+      case "waitapprove": return "รอยืนยัน";
+      case "orderavailable": return "ใบงานพร้อม";
+      case "serviceprepared": return "เตรียมการบริการ";
+      case "ordercancel": return "ยกเลิกใบงาน";
+      case "golive": return "กำลังให้บริการ";
+      case "close": return "จบบริการ";
+      case "closewithcondition": return "จบบริการ(ยกเลิก)";
+      default:
+        return "ไม่มี";
+    }
   }
 }
