@@ -115,6 +115,7 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
       this.page.orderBy,
       this.page.orderDir
     );
+
     this.rows = res.data;
     this.temp = res.data;
     this.page.count = res.totalCount;
