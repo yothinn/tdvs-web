@@ -87,29 +87,29 @@ export class VehicledataFormComponent implements OnInit {
     this.vehicledataData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
-          lisenceID: "",
-          vehicleType: "",
-          vehicleColor: "",
-          vehicleBrand: "",
-          isOwner: true,
-          ownerInfo: {
-            title: "",
-            firstName: "",
-            lastName: "",
-            displayName: "",
-            isCompany: false,
-            refId: "",
-            mobileNo1: "",
-            mobileNo2: "",
-            mobileNo3: "",
-            addressLine1: "",
-            addressStreet: "",
-            addressSubDistrict: "",
-            addressDistrict: "",
-            addressProvince: "",
-            addressPostCode: "",
-          },
-        };
+        lisenceID: "",
+        vehicleType: "",
+        vehicleColor: "",
+        vehicleBrand: "",
+        isOwner: true,
+        ownerInfo: {
+          title: "",
+          firstName: "",
+          lastName: "",
+          displayName: "",
+          isCompany: false,
+          refId: "",
+          mobileNo1: "",
+          mobileNo2: "",
+          mobileNo3: "",
+          addressLine1: "",
+          addressStreet: "",
+          addressSubDistrict: "",
+          addressDistrict: "",
+          addressProvince: "",
+          addressPostCode: "",
+        },
+      };
 
     this.vehicleDataForm = this.createVehicleForm();
     this.ownerDataForm = this.createOwnerDataForm(this.vehicledataData.isOwner);
@@ -291,6 +291,10 @@ export class VehicledataFormComponent implements OnInit {
   isOwnerChanged(e) {
     console.log(e);
     this.ownerDataForm = this.createOwnerDataForm(e.value);
+    this.ownerDataForm.controls["addressPostCode"].setValidators([
+      Validators.required,
+      this.validatePostCode(this.postcodesList),
+    ]);
   }
   isCompanyChanged(e) {
     console.log(e);
