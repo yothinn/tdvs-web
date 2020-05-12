@@ -185,7 +185,7 @@ export class VehicleFormComponent implements OnInit {
     // filter our data
     const temp: any = this.temp.filter(function (d) {
       return (
-        d.displayName.toLowerCase().indexOf(option.value) !== -1 ||
+        d.displayName.toLowerCase().indexOf(option.value.toLowerCase()) !== -1 ||
         !option.value
       );
     });

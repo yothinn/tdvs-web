@@ -134,6 +134,7 @@ export class VehicledataFormComponent implements OnInit {
     this.postcodesList = res.data;
     this.temp = res.data;
 
+    // console.log(this.postcodesList);
     this.ownerDataForm.controls["addressPostCode"].setValidators([
       Validators.required,
       this.validatePostCode(this.postcodesList),
@@ -290,6 +291,7 @@ export class VehicledataFormComponent implements OnInit {
 
   isOwnerChanged(e) {
     console.log(e);
+    console.log("is owner change");
     this.ownerDataForm = this.createOwnerDataForm(e.value);
     this.ownerDataForm.controls["addressPostCode"].setValidators([
       Validators.required,
