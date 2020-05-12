@@ -293,6 +293,7 @@ export class VehicledataFormComponent implements OnInit {
     console.log(e);
     console.log("is owner change");
     this.ownerDataForm = this.createOwnerDataForm(e.value);
+    
     this.ownerDataForm.controls["addressPostCode"].setValidators([
       Validators.required,
       this.validatePostCode(this.postcodesList),
