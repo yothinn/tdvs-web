@@ -73,7 +73,7 @@ const routes = [
     DragDropModule,
 
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyD2aNk7BXJ13EyVfPZXWRVqEcnfzfRVVIA'
+      apiKey: 'AIzaSyDnjHI8F5TKYn8Vu8nUtqOn1sVOq2UInQE'
     }),
 
     MatTreeModule,
