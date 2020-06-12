@@ -12,7 +12,7 @@ export class AuthenService {
   token: any;
   user: any;
   onUserDataChanged: BehaviorSubject<any>;
-  apiUrl: string = "https://casan-sevice.lamunphan.com"
+  apiUrl: string = "https://authen-service-7lgq2xsobq-de.a.run.app"
 
   constructor(
     private http: HttpClient
