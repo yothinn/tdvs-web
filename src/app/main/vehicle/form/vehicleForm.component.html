@@ -109,9 +109,9 @@
                       <input matInput formControlName="displayName" name="displayName" (keyup)="updateFilter($event)"
                         [matAutocomplete]="auto">
                       <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getVehicleStaff($event.option)'>
-                        <mat-option *ngFor="let customer of vehicleStaffData.slice(0,10)"
-                          [value]="customer.displayName">
-                          <span>{{customer.displayName}}</span>
+                        <mat-option *ngFor="let staff of vehicleStaffData"
+                          [value]="staff.displayName">
+                          <span>{{staff.displayName}}</span>
                         </mat-option>
                       </mat-autocomplete>
                       <mat-error *ngIf="vehicleForm.get('driverInfo').get('displayName').hasError('required')">
