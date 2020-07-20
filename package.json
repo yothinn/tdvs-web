@@ -1,6 +1,6 @@
 {
-  "name": "tvds",
-  "version": "7.1.0",
+  "name": "Thamturakit's vehicles delivery system",
+  "version": "1.0.0",
   "license": "https://themeforest.net/licenses/terms/regular",
   "scripts": {
     "ng": "ng",
