@@ -50,7 +50,7 @@ export class TvdscustomerListComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit(): void {
-    console.log(environment.apiUrl);
+    // console.log(environment.apiUrl);
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
     this.temp = this.route.snapshot.data.items.data;

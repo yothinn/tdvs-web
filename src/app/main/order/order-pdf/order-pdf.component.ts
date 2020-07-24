@@ -16,7 +16,7 @@ export class OrderPdfComponent implements OnInit {
     const doc = new jsPDF();
 
     let a = doc.getFontList();
-    console.log(a);
+    // console.log(a);
     doc.setFont("THSarabun");
     doc.setFontType("normal");
     // doc.setFontType("bold");

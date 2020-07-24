@@ -100,7 +100,8 @@ export class RegisterComponent implements OnInit, OnDestroy
                 this.router.navigate(['']);
             })
             .catch((error) => {
-                console.log(error);
+                // TODO : throw error
+                // console.log(error);
             });
     }
 }

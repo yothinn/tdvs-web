@@ -67,7 +67,7 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     this.temp = this.route.snapshot.data.items.data;
     this.page.count = this.route.snapshot.data.items.totalCount;
 
-    console.log(this.rows);
+    // console.log(this.rows);
     this.formatMoment();
     // this.sortRows();
   }
@@ -101,7 +101,7 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     newValue: string;
   }) {
     // there will always be one "sort" object if "sortType" is set to "single"
-    console.log(sortInfo);
+    // console.log(sortInfo);
     this.page.orderDir = sortInfo.sorts[0].dir;
     this.page.orderBy = sortInfo.sorts[0].prop;
     this.reloadData();
@@ -231,7 +231,7 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
   }
 
   onSelect(event) {
-    console.log(event);
+    // console.log(event);
   }
 
   downloadAsPDF(data: any) {

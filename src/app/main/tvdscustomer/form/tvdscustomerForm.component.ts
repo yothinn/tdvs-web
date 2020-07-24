@@ -228,12 +228,12 @@ export class TvdscustomerFormComponent implements OnInit {
     if (myArray.length === 0) return null;
     return (c: AbstractControl): { [key: string]: boolean } | null => {
       let selectboxValue = c.value;
-      console.log(myArray);
-      console.log(selectboxValue);
+      // console.log(myArray);
+      // console.log(selectboxValue);
       let pickedOrNot = myArray.filter((alias) => {
         return alias.postcode === selectboxValue;
       });
-      console.log(pickedOrNot.length);
+      // console.log(pickedOrNot.length);
       if (pickedOrNot.length > 0) {
         // everything's fine. return no error. therefore it's null.
         return null;

@@ -161,7 +161,7 @@ export class VehicledataFormComponent implements OnInit {
     let MOBILE_PATTERN = /^[0-9]{10,10}$/;
 
     if (isOwner) {
-      console.log("owner");
+      // console.log("owner");
       return this.formBuilder.group({
         title: [this.vehicledataData.ownerInfo.title],
         firstName: [this.vehicledataData.ownerInfo.firstName],
@@ -180,7 +180,7 @@ export class VehicledataFormComponent implements OnInit {
         addressPostCode: [this.vehicledataData.ownerInfo.addressPostCode],
       });
     } else {
-      console.log("supplier");
+      // console.log("supplier");
       return this.formBuilder.group({
         title: [this.vehicledataData.ownerInfo.title],
         firstName: [this.vehicledataData.ownerInfo.firstName],
@@ -290,8 +290,8 @@ export class VehicledataFormComponent implements OnInit {
   }
 
   isOwnerChanged(e) {
-    console.log(e);
-    console.log("is owner change");
+    // console.log(e);
+    // console.log("is owner change");
     this.ownerDataForm = this.createOwnerDataForm(e.value);
     
     this.ownerDataForm.controls["addressPostCode"].setValidators([
@@ -300,7 +300,7 @@ export class VehicledataFormComponent implements OnInit {
     ]);
   }
   isCompanyChanged(e) {
-    console.log(e);
+    // console.log(e);
     if (e.value) {
       this.ownerDataForm.controls["firstName"].setValidators(null);
       this.ownerDataForm.controls["lastName"].setValidators(null);
@@ -327,12 +327,12 @@ export class VehicledataFormComponent implements OnInit {
     if (myArray.length === 0) return null;
     return (c: AbstractControl): { [key: string]: boolean } | null => {
       let selectboxValue = c.value;
-      console.log(myArray);
-      console.log(selectboxValue);
+      // console.log(myArray);
+      // console.log(selectboxValue);
       let pickedOrNot = myArray.filter((alias) => {
         return alias.postcode === selectboxValue;
       });
-      console.log(pickedOrNot.length);
+      // console.log(pickedOrNot.length);
       if (pickedOrNot.length > 0) {
         // everything's fine. return no error. therefore it's null.
         return null;

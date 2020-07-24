@@ -65,13 +65,13 @@ export class InvolvedpartyListComponent implements OnInit {
   }
 
   async reloadData() {
-    console.log(this.keyword);
+    // console.log(this.keyword);
     let res: any = await this.involvedpartyService.getInvolvedpartyDataList(
       this.page.offset,
       this.page.limit,
       this.keyword
     );
-    console.log(res.data);
+    // console.log(res.data);
     this.rows = res.data;
     this.temp = res.data;
     this.page.count = res.totalCount;

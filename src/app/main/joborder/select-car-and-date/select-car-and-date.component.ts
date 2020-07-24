@@ -43,7 +43,7 @@ export class SelectCarAndDateComponent implements OnInit {
   }
 
   onConfirm() {
-    console.log(this.data);
+    // console.log(this.data);
     this.dialogRef.close(this.data);
   }
 
@@ -55,7 +55,7 @@ export class SelectCarAndDateComponent implements OnInit {
       };
      
       let res: any = await this.joborderService.checkValidJobOrder(body);
-      console.log(res);
+      // console.log(res);
       if(res.data.length > 0){
         this.snackBar.open(`รถหมายเลขทะเบียน ${this.data.carNo.lisenceID} มีใบสั่งงานในวันนี้แล้ว...`, "", {
           duration: 2000,

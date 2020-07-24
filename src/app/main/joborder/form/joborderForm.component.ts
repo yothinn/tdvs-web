@@ -69,7 +69,7 @@ export class JoborderFormComponent implements OnInit {
         orderStatus: "draft",
         contactLists: [],
       };
-    console.log(this.joborderData);
+    // console.log(this.joborderData);
 
     if (this.joborderData.contactLists.length > 0) {
       this.formatMoment(this.joborderData.docdate);
@@ -82,7 +82,7 @@ export class JoborderFormComponent implements OnInit {
     this.getVehicleData();
 
     this.socket.on("user-confirm-reject", (message: any) => {
-      console.log(message);
+      // console.log(message);
       if (message.docno === this.joborderData.docno) {
         this.joborderData = message;
         this.socketUpdateMarkerOnMap();
@@ -122,7 +122,8 @@ export class JoborderFormComponent implements OnInit {
         this.spinner.hide();
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
+        // TODO : throw error
         this.spinner.hide();
       });
   }
@@ -172,7 +173,7 @@ export class JoborderFormComponent implements OnInit {
 
   async getMarkerData(docdate) {
     this.markersData = await this.joborderService.getMarkerDataList(docdate);
-    console.log(this.markersData);
+    // console.log(this.markersData);
     this.spinner.hide();
   }
 
@@ -335,7 +336,7 @@ export class JoborderFormComponent implements OnInit {
   }
 
   sendReject(contactListData) {
-    console.log(contactListData)
+    // console.log(contactListData)
     if (contactListData.lineUserId) {
       let body = {
         to: contactListData.lineUserId,
@@ -532,7 +533,7 @@ export class JoborderFormComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<any[]>) {
-    console.log(`${event.previousIndex} to ${event.currentIndex}`);
+    // console.log(`${event.previousIndex} to ${event.currentIndex}`);
     moveItemInArray(
       this.joborderData.contactLists,
       event.previousIndex,

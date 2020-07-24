@@ -66,13 +66,14 @@ export class LoginComponent implements OnInit {
      */
     login(): void {
         const data = this.loginForm.getRawValue();
-        console.log(data);
+        // console.log(data);
         this.auth.login(data)
             .then((result) => {
                 this.router.navigate(['']);
             })
             .catch((error) => {
-                console.log(error);
+                // TODO : throw error
+                // console.log(error);
             });
     }
 }

@@ -24,7 +24,7 @@ export class TvdscustomerService {
 
   resolve(route: ActivatedRouteSnapshot): Observable<any> | Promise<any> | any {
     this.routeParams = route.params;
-    console.log("resolve with params : " + JSON.stringify(this.routeParams));
+    // console.log("resolve with params : " + JSON.stringify(this.routeParams));
     if (this.routeParams.id) {
       if (this.routeParams.id !== "new") {
         return this.getTvdscustomerData(this.routeParams.id);
