@@ -236,75 +236,126 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
 
   downloadAsPDF(data: any) {
     const doc = new jsPDF();
+    // Line position
+    const lineSpace = 8;
+    let line = 15;
 
-    let a = doc.getFontList();
+    // Format Number
+    const nFormat = Intl.NumberFormat("en-GB", {minimumFractionDigits: 2});
+
+    // total sales
+    let salesAmount = 0;
+
+    // let a = doc.getFontList();
     // console.log(a);
     doc.setFont("THSarabun");
     doc.setFontType("normal");
     // doc.setFontType("bold");
-    doc.setFontSize(18);
+    doc.setFontSize(16);
 
-    // console.log(data);
-
+    // console.log(data);  
+    
+    // Header
     doc.text(
       15,
-      15,
+      line,
       `วันที่พิมพ์ : ${moment(Date.now()).format("DD/MM/YYYY HH:MM:SS")}`
     );
-    doc.text(140, 15, `เลขที่ : ${data.docno}`);
+    doc.text(140, line, `เลขที่ : ${data.docno}`);
 
-    doc.text(140, 25, `วันที่ : ${moment(data.docdate).format("DD/MM/YYYY")}`);
-    doc.text(140, 35, `สถานะใบงาน: ${this.strOrderStatus(data.orderStatus)}`);
+    line += lineSpace;
+    doc.text(15, line, `รถธรรมธุรกิจ ทะเบียนรถ : ${data.carNo.lisenceID}`);
+    doc.text(140, line, `วันที่ : ${moment(data.docdate).format("DD/MM/YYYY")}`);
 
-    doc.text(15, 35, `รถธรรมธุรกิจ ทะเบียนรถ : ${data.carNo.lisenceID}`);
+    line += lineSpace;
     doc.text(
       15,
-      45,
+      line,
       `ผู้ให้บริการ : ${data.carNo.driverInfo.displayName} [${data.carNo.driverInfo.mobileNo1}]`
     );
+    doc.text(140, line, `สถานะใบงาน: ${this.strOrderStatus(data.orderStatus)}`);
 
-    doc.rect(15, 50, 180, 10);
+    // Table Header
+    line += 10;
+    doc.rect(15, line, 180, 10);
+    line += 7;
+    doc.text(20, line, "ลำดับที่");
+    doc.text(55, line, "รายละเอียด");
+    doc.text(155, line, "ยอดขาย");
 
-    doc.text(25, 57, "ลำดับที่");
-    doc.text(55, 57, "รายละเอียด");
-    doc.text(145, 57, "ยอดขาย");
-    let line = 67;
+    // Description contact
+    line += lineSpace + 2;
     for (let index = 0; index < data.contactLists.length; index++) {
-      let contact: any = data.contactLists[index];
+      const contact: any = data.contactLists[index];
 
-      // Donot print customer that reject
-      if (contact.contactStatus !== "confirm") {
+      // Do not print customer that reject
+      if (contact.contactStatus === "reject") {
         continue;
       }
 
-      let mno = `${contact.mobileNo1}`;
+      // let mno = `${contact.mobileNo1}`;
+      // Add new Page
       if (line >= 257) {
         doc.addPage();
         line = 15;
       }
-      doc.text(25, line, `${index + 1}.`);
+
+      doc.text(23, line, `${index + 1}.`);
+      doc.text(40, line, `คุณ ${contact.firstName} ${contact.lastName} [ ${contact.mobileNo1}]`);
+
+      // print only sales is not equal zero
+      const sales: number = contact.sales ? contact.sales : 0;
+      if (sales !== 0) {
+        salesAmount += sales;
+        doc.text(155, line, nFormat.format(sales));
+      }
+
+      line += lineSpace;
+      doc.text(40, line, `${contact.addressLine1} ${contact.addressStreet}`);
+      line += lineSpace;
       doc.text(
-        45,
+        40,
         line,
-        `คุณ ${contact.firstName} ${contact.lastName} [ ${mno}]`
-      );
-      doc.text(
-        45,
-        line + 10,
-        `${contact.addressLine1} ${contact.addressStreet}`
-      );
-      doc.text(
-        45,
-        line + 20,
         `${contact.addressSubDistrict} ${contact.addressDistrict} ${contact.addressProvince} ${contact.addressPostCode}`
       );
-      let txtStatus = contact.contactStatus === "confirm" ? "ยืนยัน" : "ปฏิเสธ";
-      doc.text(45, line + 30, `สถานะ : ${txtStatus}`);
 
-      line += 43;
+      line += lineSpace;
+      doc.text(40, line, `สถานะ : ${this.strContactStatus(contact.contactStatus)}`);
+
+      line += lineSpace + 2;
     }
 
+    // Sales Amount
+    if (salesAmount !== 0) {
+      line += lineSpace;
+      doc.line(140, line - 7, 190, line - 7);
+
+      doc.text(100, line, "ยอดขายรวม");
+      doc.text(155, line, nFormat.format(salesAmount));
+
+      doc.line(140, line + 5, 190, line + 5);
+      doc.line(140, line + 6, 190, line + 6);
+    }
+    
     doc.save(`${data.docno}.pdf`);
+  }
+
+  /**
+   * convert contact status to thai string status
+   * @param {string} status : contact status
+   * @returns {string} thai contact status
+   */
+  strContactStatus(status): string {
+    switch (status) {
+      case "select": return "เลือก";
+      case "waitapprove": return "รอยืนยัน";
+      case "waitcontact": return "รอยืนยัน";
+      case "confirm": return "ยืนยัน";
+      case "reject": return "ลูกค้ายกเลิก";
+      case "arrival": return "ถึงจุดบริการ";
+      case "departure": return "ออกเดินทาง";
+      case "driver-reject": return "คนขับรถยกเลิก";
+    }
   }
 
   /**

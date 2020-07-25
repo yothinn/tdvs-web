@@ -203,6 +203,8 @@ export class TvdscustomerFormComponent implements OnInit {
     const val = event.target.value.toLowerCase();
 
     // filter our data
+    // TODO : clear toLowerCase and change indexof to startsWith
+    // and clear tmp -> move to service
     const temp = this.temp.filter(function (d) {
       return d.postcode.toLowerCase().indexOf(val) !== -1 || !val;
     });

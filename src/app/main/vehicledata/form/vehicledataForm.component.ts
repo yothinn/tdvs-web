@@ -34,6 +34,7 @@ export class VehicledataFormComponent implements OnInit {
   postcodesList: any = [];
   temp = [];
 
+  // TODO: Move to seperate file
   isOwner: any[] = [
     { name: "รถบริษัท ธรรมธุรกิจ วิสาหกิจเพื่อสังคม จำกัด", value: true },
     { name: "รถร่วมบริการ", value: false },
@@ -268,6 +269,7 @@ export class VehicledataFormComponent implements OnInit {
     const val = event.target.value.toLowerCase();
 
     // filter our data
+    // TODO: clean lowercase and change indexof to startsWith
     const temp = this.temp.filter(function (d) {
       return d.postcode.toLowerCase().indexOf(val) !== -1 || !val;
     });
