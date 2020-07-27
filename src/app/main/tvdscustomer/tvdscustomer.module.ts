@@ -16,13 +16,13 @@ const routes = [
     path: "tvdscustomerForm/:id",
     component: TvdscustomerFormComponent,
     resolve: { items: TvdscustomerService },
-    // canActivate: [AuthenGuardService]
+    canActivate: [AuthenGuardService]
   },
   {
     path: '**',
     component: TvdscustomerListComponent,
     resolve: { items: TvdscustomerService },
-    // canActivate: [AuthenGuardService]
+    canActivate: [AuthenGuardService]
   }
 ];
 

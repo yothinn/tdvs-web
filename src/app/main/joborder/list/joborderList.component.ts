@@ -68,7 +68,7 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     this.page.count = this.route.snapshot.data.items.totalCount;
 
     // console.log(this.rows);
-    this.formatMoment();
+    // this.formatMoment();
     // this.sortRows();
   }
 
@@ -119,16 +119,16 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     this.rows = res.data;
     this.temp = res.data;
     this.page.count = res.totalCount;
-    this.formatMoment();
+    // this.formatMoment();
   }
 
-  formatMoment() {
-    for (let i = 0; i < this.rows.length; i++) {
-      const row = this.rows[i];
-      row.docdate = moment(row.docdate).format("DD/MM/YYYY");
-      // row.docdate = moment(row.docdate).format();
-    }
-  }
+  // formatMoment() {
+  //   for (let i = 0; i < this.rows.length; i++) {
+  //     const row = this.rows[i];
+  //     row.docdate = moment(row.docdate).format("DD/MM/YYYY");
+  //     // row.docdate = moment(row.docdate).format();
+  //   }
+  // }
 
   sortRows() {
     this.rows.reverse();
@@ -234,6 +234,10 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     // console.log(event);
   }
 
+  onJoborderReport(row): void {
+    this.router.navigate(['report/joborder', row._id]);
+  }
+
   downloadAsPDF(data: any) {
     const doc = new jsPDF();
     // Line position
@@ -241,15 +245,15 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     let line = 15;
 
     // Format Number
-    const nFormat = Intl.NumberFormat("en-GB", {minimumFractionDigits: 2});
+    const nFormat = Intl.NumberFormat('en-GB', {minimumFractionDigits: 2});
 
     // total sales
     let salesAmount = 0;
 
     // let a = doc.getFontList();
     // console.log(a);
-    doc.setFont("THSarabun");
-    doc.setFontType("normal");
+    doc.setFont('THSarabun');
+    doc.setFontType('normal');
     // doc.setFontType("bold");
     doc.setFontSize(16);
 
@@ -259,13 +263,13 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     doc.text(
       15,
       line,
-      `วันที่พิมพ์ : ${moment(Date.now()).format("DD/MM/YYYY HH:MM:SS")}`
+      `วันที่พิมพ์ : ${moment(Date.now()).format('DD/MM/YYYY HH:MM:SS')}`
     );
     doc.text(140, line, `เลขที่ : ${data.docno}`);
 
     line += lineSpace;
     doc.text(15, line, `รถธรรมธุรกิจ ทะเบียนรถ : ${data.carNo.lisenceID}`);
-    doc.text(140, line, `วันที่ : ${moment(data.docdate).format("DD/MM/YYYY")}`);
+    doc.text(140, line, `วันที่ : ${moment(data.docdate).format('DD/MM/YYYY')}`);
 
     line += lineSpace;
     doc.text(
@@ -279,9 +283,9 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     line += 10;
     doc.rect(15, line, 180, 10);
     line += 7;
-    doc.text(20, line, "ลำดับที่");
-    doc.text(55, line, "รายละเอียด");
-    doc.text(155, line, "ยอดขาย");
+    doc.text(20, line, 'ลำดับที่');
+    doc.text(55, line, 'รายละเอียด');
+    doc.text(155, line, 'ยอดขาย');
 
     // Description contact
     line += lineSpace + 2;
@@ -289,7 +293,7 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
       const contact: any = data.contactLists[index];
 
       // Do not print customer that reject
-      if (contact.contactStatus === "reject") {
+      if (contact.contactStatus === 'reject') {
         continue;
       }
 
@@ -330,7 +334,7 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
       line += lineSpace;
       doc.line(140, line - 7, 190, line - 7);
 
-      doc.text(100, line, "ยอดขายรวม");
+      doc.text(100, line, 'ยอดขายรวม');
       doc.text(155, line, nFormat.format(salesAmount));
 
       doc.line(140, line + 5, 190, line + 5);

@@ -90,15 +90,15 @@
         <ngx-datatable-column name="วันที่สร้างข้อมูล" [flexGrow]="2.5">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{
-            row.created ? row.created : ""
-          }}
+              (row.created ? row.created : "") | date:"dd/MM/yyyy"
+            }}
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column name="วันที่แก้ไขข้อมูล" [flexGrow]="2.5">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{
-            row.updated ? row.updated : ""
-          }}
+              (row.updated ? row.updated : "") | date: "dd/MM/yyyy"
+            }}
           </ng-template>
         </ngx-datatable-column>
 

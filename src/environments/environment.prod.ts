@@ -4,5 +4,6 @@ export const environment = {
   staging: false,
   appName: "tvds-prod",
   apiUrl: "https://tvds-service-prod-7lgq2xsobq-de.a.run.app",
+  authApiUrl: "https://authen-service-7lgq2xsobq-de.a.run.app",
 };
 

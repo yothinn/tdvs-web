@@ -1,0 +1,80 @@
+<div class="page-layout carded fullwidth inner-scroll">
+  <!-- Header Block -->
+  <div>
+    <div fxLayout="row">
+      <div fxFlex="50%"> 
+        <h3>
+          <strong>เลขที่ใบสั่งงาน:   </strong>
+          <span>{{  joborderData.docno }}  </span>
+        </h3>
+      </div>
+      <div fxFlex="50%"> 
+        <h3>
+          <strong>วันที่ใบสั่งงาน:   </strong>
+          <span>{{ joborderData.docdate | date:"dd/MM/yyyy" }}</span>
+        </h3>
+      </div>
+    </div>
+    <div fxLayout="row">
+      <div fxFlex="50%">
+          <h3>
+            <strong>รถรับผิดชอบ:  </strong>
+            <span>
+              {{ 
+                joborderData.carNo.lisenceID + " " +
+                joborderData.carNo.driverInfo.displayName
+              }}
+            </span>
+          </h3>
+        </div>
+      <div fxFlex="50%"> 
+        <h3>
+          <strong>สถานะ:   </strong>
+          <span>{{ joborderData.orderStatus}} </span>
+        </h3>
+      </div>
+    </div>
+  </div>
+  <div class="content" fxLayout="column">
+    <!-- Header table-->
+    <div fxLayout="row">
+      <div fxFlex="10%">No.</div>
+      <div fxFlex="35%">ชื่อ-นามสกุล</div>
+      <div fxFlex="35%">เขต/แขวง/จังหวัด</div>
+      <div fxFlex="15%">ยอดขาย</div>
+    </div>
+    <!-- contactList data table -->
+    <div 
+      fxLayout="row" 
+      *ngFor="let contact of joborderData.contactLists;let i = index"
+    >
+      <div fxFlex="10%">
+        {{ i + 1 }}
+      </div>
+      <div fxFlex="35%">
+        {{ contact.displayName}}
+      </div>
+      <div fxFlex="35%">
+        {{ 
+          contact.addressSubDistrict + " " +
+          contact.addressDistrict + " " +
+          contact.addressProvince
+        }}
+      </div>
+      <div fxFlex="15%" style="text-align: right;">
+        {{ contact.sales | number:"1.2-2" }}
+      </div>
+    </div>
+    <!-- สรุป-->
+    <div>
+      <div fxFlex="10%"></div>
+      <div fxFlex="35%"></div>
+      <div fxFlex="35%">
+        <strong>ยอดขาย</strong>
+      </div>
+      <div fxFlex="15%">
+        <strong> {{ salesAmount | number:"1.2-2"}}</strong>
+      </div>
+    </div>
+  </div>
+</div>

@@ -72,6 +72,10 @@ const appRoutes: Routes = [
     loadChildren: './authentication/register/register.module#RegisterModule'
   },
   {
+    path: 'report',
+    loadChildren: './main/report/report.module#ReportModule'
+  },
+  {
     path: '**',
     redirectTo: 'joborder'
   }

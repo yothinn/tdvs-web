@@ -21,12 +21,12 @@ const routes = [
     resolve: { items: InvolvedpartyService },
     canActivate: [AuthenGuardService]
   },
-  {
-    path: '**',
-    component: InvolvedpartyListComponent,
-    resolve: { items: InvolvedpartyService },
-    canActivate: [AuthenGuardService]
-  }
+  // {
+  //   path: '**',
+  //   component: InvolvedpartyListComponent,
+  //   resolve: { items: InvolvedpartyService },
+  //   canActivate: [AuthenGuardService]
+  // }
 ];
 
 @NgModule({

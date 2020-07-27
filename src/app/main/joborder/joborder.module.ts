@@ -5,7 +5,23 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { FuseSharedModule } from '@fuse/shared.module';
 import { AuthenGuardService } from 'app/authentication/authen-guard.service';
-import { MatIconModule, MatMenuModule, MatSelectModule, MatDatepickerModule, MatFormFieldModule, MatTableModule, MatRadioModule, MatInputModule, MatListModule, MatButtonModule, MatTabsModule, MatExpansionModule, MatProgressSpinnerModule, MatTreeModule, MatSliderModule, MatToolbarModule, MatDialogModule } from "@angular/material";
+import {  MatIconModule, 
+          MatMenuModule, 
+          MatSelectModule, 
+          MatDatepickerModule, 
+          MatFormFieldModule, 
+          MatTableModule, 
+          MatRadioModule, 
+          MatInputModule, 
+          MatListModule, 
+          MatButtonModule, 
+          MatTabsModule, 
+          MatExpansionModule, 
+          MatProgressSpinnerModule, 
+          MatTreeModule, 
+          MatSliderModule, 
+          MatToolbarModule, 
+          MatDialogModule } from "@angular/material";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { JoborderService } from './services/joborder.service';
@@ -43,8 +59,11 @@ const routes = [
 @NgModule({
   declarations: [
     JoborderListComponent,
-    JoborderFormComponent, SelectCarAndDateComponent, JoborderPdfComponent, 
-    ServiceDateFilterPipe, RejectReasonModalComponent
+    JoborderFormComponent, 
+    SelectCarAndDateComponent, 
+    JoborderPdfComponent, 
+    ServiceDateFilterPipe, 
+    RejectReasonModalComponent,
   ],
   imports: [
     RouterModule.forChild(routes),
