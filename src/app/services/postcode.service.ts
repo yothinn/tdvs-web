@@ -20,7 +20,8 @@ export class PostcodeService {
   ) {
     this.getPostcodesList().subscribe(
       res => {
-      this.postcodeList = res.data;
+        this.postcodeList = res.data;
+        console.log(this.postcodeList);
       },
       err => {
         // TODO : throw error,

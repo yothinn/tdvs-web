@@ -57,7 +57,7 @@ export class VehicleListComponent implements OnInit {
     this.formatMoment();
   }
 
-  
+  // For resize data table
   ngAfterViewChecked(): void {
     // Check if the table size has changed,
     if (this.table && this.table.recalculate && (this.tableWrapper.nativeElement.clientWidth !== this.currentComponentWidth)) {

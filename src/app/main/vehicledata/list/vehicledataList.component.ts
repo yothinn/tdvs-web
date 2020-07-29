@@ -41,10 +41,13 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
 
   ngOnInit(): void {
     this.spinner.hide();
+    // TODO: if null 
     this.rows = this.route.snapshot.data.items.data;
+    console.log(this.rows);
     this.checkList();
   }
 
+  // For resize data table
   ngAfterViewChecked(): void {
     // Check if the table size has changed,
     if (this.table && this.table.recalculate && (this.tableWrapper.nativeElement.clientWidth !== this.currentComponentWidth)) {
@@ -54,6 +57,7 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  // TODO: ?? why !!!
   checkList() {
     for (let i = 0; i < this.rows.length; i++) {
       const row = this.rows[i];
@@ -65,15 +69,15 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  addData() {
-    this.router.navigateByUrl("/vehicledata/vehicledataForm/new");
+  addData(): void {
+    this.router.navigate(['/vehicledata/vehicledataForm/new']);
   }
 
-  editData(item) {
-    this.router.navigateByUrl("/vehicledata/vehicledataForm/" + item._id);
+  editData(item): void {
+    this.router.navigate(['/vehicledata/vehicledataForm', item._id]);
   }
 
-  deleteData(item) {
+  deleteData(item): void {
     const body = {
       title: "กรุณายืนยันการ ลบรายการ",
       message: "ข้อมูลรถทะเบียน : " + item.lisenceID,
@@ -103,7 +107,6 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
     // const val = event.target.value.toLowerCase();
 
     // filter our data
-
   }
 
 }

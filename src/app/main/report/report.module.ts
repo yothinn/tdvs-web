@@ -5,7 +5,10 @@ import { JoborderReportComponent } from './joborder-report/joborder-report.compo
 import { AuthenGuardService } from 'app/authentication/authen-guard.service';
 import { ReportService } from './report.service';
 import { FlexLayoutModule } from '@angular/flex-layout';
-
+import {  MatButtonModule,
+          MatIconModule,
+       } from "@angular/material";
+import { ShareModule } from 'app/share/share.module';
 
 // 
 const routes = [
@@ -25,14 +28,17 @@ const routes = [
 
 @NgModule({
   declarations: [
-    JoborderReportComponent
+    JoborderReportComponent,
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
 
-    FlexLayoutModule,
+    ShareModule,
 
+    MatButtonModule,
+    MatIconModule,
+    FlexLayoutModule,
   ],
   exports: [
     JoborderReportComponent,

@@ -13,6 +13,8 @@ import { ActivatedRoute } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ValidatePID } from "./pid.validate";
 import { MatSnackBar } from "@angular/material";
+import { PostcodeService } from 'app/services/postcode.service';
+import { validatePostCode } from 'app/share/validates/postcode.validate';
 
 @Component({
   selector: "app-tvdscustomer-form",
@@ -39,6 +41,7 @@ export class TvdscustomerFormComponent implements OnInit {
     private location: Location,
     private formBuilder: FormBuilder,
     private tvdscustomerService: TvdscustomerService,
+    private postcode: PostcodeService,
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     private snackBar: MatSnackBar
@@ -47,6 +50,7 @@ export class TvdscustomerFormComponent implements OnInit {
   }
 
   async ngOnInit() {
+
     this.tvdscustomerData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
@@ -81,7 +85,7 @@ export class TvdscustomerFormComponent implements OnInit {
 
     this.tvdscustomerForm.controls["addressPostCode"].setValidators([
       Validators.required,
-      this.validatePostCode(this.postcodesList),
+      validatePostCode(this.postcodesList),
     ]);
 
     this.spinner.hide();
@@ -226,23 +230,23 @@ export class TvdscustomerFormComponent implements OnInit {
     this.tvdscustomerForm.controls["addressSubDistrict"].setValue(subdistrict);
   }
 
-  validatePostCode(myArray: any[]): ValidatorFn {
-    if (myArray.length === 0) return null;
-    return (c: AbstractControl): { [key: string]: boolean } | null => {
-      let selectboxValue = c.value;
-      // console.log(myArray);
-      // console.log(selectboxValue);
-      let pickedOrNot = myArray.filter((alias) => {
-        return alias.postcode === selectboxValue;
-      });
-      // console.log(pickedOrNot.length);
-      if (pickedOrNot.length > 0) {
-        // everything's fine. return no error. therefore it's null.
-        return null;
-      } else {
-        //there's no matching selectboxvalue selected. so return match error.
-        return { match: true };
-      }
-    };
-  }
+  // validatePostCode(myArray: any[]): ValidatorFn {
+  //   if (myArray.length === 0) return null;
+  //   return (c: AbstractControl): { [key: string]: boolean } | null => {
+  //     let selectboxValue = c.value;
+  //     // console.log(myArray);
+  //     // console.log(selectboxValue);
+  //     let pickedOrNot = myArray.filter((alias) => {
+  //       return alias.postcode === selectboxValue;
+  //     });
+  //     // console.log(pickedOrNot.length);
+  //     if (pickedOrNot.length > 0) {
+  //       // everything's fine. return no error. therefore it's null.
+  //       return null;
+  //     } else {
+  //       //there's no matching selectboxvalue selected. so return match error.
+  //       return { match: true };
+  //     }
+  //   };
+  // }
 }

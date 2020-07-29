@@ -12,13 +12,16 @@ import { locale as english } from "../i18n/en";
 import { locale as thai } from "../i18n/th";
 import { Router, ActivatedRoute } from "@angular/router";
 import { SelectionType, ColumnMode, DatatableComponent } from "@swimlane/ngx-datatable";
+import { MatSnackBar } from "@angular/material";
 import { JoborderService } from "../services/joborder.service";
 import { NgxSpinnerService } from "ngx-spinner";
-import * as moment from "moment";
-// import { jsPDF } from 'jspdf';
-import * as jsPDF from "jspdf";
 import { DialogConfirmService } from "app/dialog-confirm/service/dialog-confirm.service";
-import { MatSnackBar } from "@angular/material";
+import { TH_ORDERSTATUS, TH_CONTACTSTATUS } from 'app/types/tvds-status'
+
+import * as moment from "moment";
+import * as jsPDF from "jspdf";
+
+
 
 @Component({
   selector: "app-joborder-list",
@@ -46,7 +49,7 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     orderBy: 'created',
     orderDir: 'desc'
   };
-  keyword = "";
+  keyword = '';
 
   constructor(
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
@@ -134,12 +137,12 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     this.rows.reverse();
   }
 
-  addData() {
-    this.router.navigateByUrl("/joborder/joborderForm/new");
+  addData(): void {
+    this.router.navigate(['/joborder/joborderForm/new']);
   }
 
-  editData(item) {
-    this.router.navigateByUrl("/joborder/joborderForm/" + item._id);
+  editData(item): void {
+    this.router.navigate(['/joborder/joborderForm', item._id]);
   }
 
   changeStatusData(item, status) {
@@ -151,7 +154,7 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
       if(item.orderStatus === "orderavailable"){
         this.joborderService.updateJoborderData(item._id, body).then((resdoc) => {
           this.reloadData();
-          this.downloadAsPDF(resdoc);
+          this.joborderService.downloadAsPDF(resdoc, `${resdoc.docno}.pdf`);
         });
       }else{
         body = {
@@ -159,7 +162,7 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
         }
         this.joborderService.updateJoborderData(item._id, body).then((resdoc) => {
           this.reloadData();
-          this.downloadAsPDF(resdoc);
+          this.joborderService.downloadAsPDF(resdoc, `${resdoc.docno}.pdf`);
         });
       }
     } else {
@@ -238,145 +241,148 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     this.router.navigate(['report/joborder', row._id]);
   }
 
-  downloadAsPDF(data: any) {
-    const doc = new jsPDF();
-    // Line position
-    const lineSpace = 8;
-    let line = 15;
+  // Move to service
+  // downloadAsPDF(data: any) {
+  //   const doc = new jsPDF();
+  //   // Line position
+  //   const lineSpace = 8;
+  //   let line = 15;
 
-    // Format Number
-    const nFormat = Intl.NumberFormat('en-GB', {minimumFractionDigits: 2});
+  //   // Format Number
+  //   const nFormat = Intl.NumberFormat('en-GB', {minimumFractionDigits: 2});
 
-    // total sales
-    let salesAmount = 0;
+  //   // total sales
+  //   let salesAmount = 0;
 
-    // let a = doc.getFontList();
-    // console.log(a);
-    doc.setFont('THSarabun');
-    doc.setFontType('normal');
-    // doc.setFontType("bold");
-    doc.setFontSize(16);
+  //   // let a = doc.getFontList();
+  //   // console.log(a);
+  //   doc.setFont('THSarabun');
+  //   doc.setFontType('normal');
+  //   // doc.setFontType("bold");
+  //   doc.setFontSize(16);
 
-    // console.log(data);  
+  //   // console.log(data);  
     
-    // Header
-    doc.text(
-      15,
-      line,
-      `วันที่พิมพ์ : ${moment(Date.now()).format('DD/MM/YYYY HH:MM:SS')}`
-    );
-    doc.text(140, line, `เลขที่ : ${data.docno}`);
+  //   // Header
+  //   doc.text(
+  //     15,
+  //     line,
+  //     `วันที่พิมพ์ : ${moment(Date.now()).format('DD/MM/YYYY HH:MM:SS')}`
+  //   );
+  //   doc.text(140, line, `เลขที่ : ${data.docno}`);
 
-    line += lineSpace;
-    doc.text(15, line, `รถธรรมธุรกิจ ทะเบียนรถ : ${data.carNo.lisenceID}`);
-    doc.text(140, line, `วันที่ : ${moment(data.docdate).format('DD/MM/YYYY')}`);
+  //   line += lineSpace;
+  //   doc.text(15, line, `รถธรรมธุรกิจ ทะเบียนรถ : ${data.carNo.lisenceID}`);
+  //   doc.text(140, line, `วันที่ : ${moment(data.docdate).format('DD/MM/YYYY')}`);
 
-    line += lineSpace;
-    doc.text(
-      15,
-      line,
-      `ผู้ให้บริการ : ${data.carNo.driverInfo.displayName} [${data.carNo.driverInfo.mobileNo1}]`
-    );
-    doc.text(140, line, `สถานะใบงาน: ${this.strOrderStatus(data.orderStatus)}`);
+  //   line += lineSpace;
+  //   doc.text(
+  //     15,
+  //     line,
+  //     `ผู้ให้บริการ : ${data.carNo.driverInfo.displayName} [${data.carNo.driverInfo.mobileNo1}]`
+  //   );
+  //   doc.text(140, line, `สถานะใบงาน: ${TH_ORDERSTATUS[data.orderStatus]}`);
 
-    // Table Header
-    line += 10;
-    doc.rect(15, line, 180, 10);
-    line += 7;
-    doc.text(20, line, 'ลำดับที่');
-    doc.text(55, line, 'รายละเอียด');
-    doc.text(155, line, 'ยอดขาย');
+  //   // Table Header
+  //   line += 10;
+  //   doc.rect(15, line, 180, 10);
+  //   line += 7;
+  //   doc.text(20, line, 'ลำดับที่');
+  //   doc.text(55, line, 'รายละเอียด');
+  //   doc.text(155, line, 'ยอดขาย');
 
-    // Description contact
-    line += lineSpace + 2;
-    for (let index = 0; index < data.contactLists.length; index++) {
-      const contact: any = data.contactLists[index];
+  //   // Description contact
+  //   line += lineSpace + 2;
+  //   for (let index = 0; index < data.contactLists.length; index++) {
+  //     const contact: any = data.contactLists[index];
 
-      // Do not print customer that reject
-      if (contact.contactStatus === 'reject') {
-        continue;
-      }
+  //     // Do not print customer that reject
+  //     if (contact.contactStatus === 'reject') {
+  //       continue;
+  //     }
 
-      // let mno = `${contact.mobileNo1}`;
-      // Add new Page
-      if (line >= 257) {
-        doc.addPage();
-        line = 15;
-      }
+  //     // let mno = `${contact.mobileNo1}`;
+  //     // Add new Page
+  //     if (line >= 257) {
+  //       doc.addPage();
+  //       line = 15;
+  //     }
 
-      doc.text(23, line, `${index + 1}.`);
-      doc.text(40, line, `คุณ ${contact.firstName} ${contact.lastName} [ ${contact.mobileNo1}]`);
+  //     doc.text(23, line, `${index + 1}.`);
+  //     doc.text(40, line, `คุณ ${contact.firstName} ${contact.lastName} [ ${contact.mobileNo1}]`);
 
-      // print only sales is not equal zero
-      const sales: number = contact.sales ? contact.sales : 0;
-      if (sales !== 0) {
-        salesAmount += sales;
-        doc.text(155, line, nFormat.format(sales));
-      }
+  //     // print only sales is not equal zero
+  //     const sales: number = contact.sales ? contact.sales : 0;
+  //     if (sales !== 0) {
+  //       salesAmount += sales;
+  //       doc.text(155, line, nFormat.format(sales));
+  //     }
 
-      line += lineSpace;
-      doc.text(40, line, `${contact.addressLine1} ${contact.addressStreet}`);
-      line += lineSpace;
-      doc.text(
-        40,
-        line,
-        `${contact.addressSubDistrict} ${contact.addressDistrict} ${contact.addressProvince} ${contact.addressPostCode}`
-      );
+  //     line += lineSpace;
+  //     doc.text(40, line, `${contact.addressLine1} ${contact.addressStreet}`);
+  //     line += lineSpace;
+  //     doc.text(
+  //       40,
+  //       line,
+  //       `${contact.addressSubDistrict} ${contact.addressDistrict} ${contact.addressProvince} ${contact.addressPostCode}`
+  //     );
 
-      line += lineSpace;
-      doc.text(40, line, `สถานะ : ${this.strContactStatus(contact.contactStatus)}`);
+  //     line += lineSpace;
+  //     doc.text(40, line, `สถานะ : ${TH_CONTACTSTATUS[contact.contactStatus]}`);
 
-      line += lineSpace + 2;
-    }
+  //     line += lineSpace + 2;
+  //   }
 
-    // Sales Amount
-    if (salesAmount !== 0) {
-      line += lineSpace;
-      doc.line(140, line - 7, 190, line - 7);
+  //   // Sales Amount
+  //   if (salesAmount !== 0) {
+  //     line += lineSpace;
+  //     doc.line(140, line - 7, 190, line - 7);
 
-      doc.text(100, line, 'ยอดขายรวม');
-      doc.text(155, line, nFormat.format(salesAmount));
+  //     doc.text(100, line, 'ยอดขายรวม');
+  //     doc.text(155, line, nFormat.format(salesAmount));
 
-      doc.line(140, line + 5, 190, line + 5);
-      doc.line(140, line + 6, 190, line + 6);
-    }
+  //     doc.line(140, line + 5, 190, line + 5);
+  //     doc.line(140, line + 6, 190, line + 6);
+  //   }
     
-    doc.save(`${data.docno}.pdf`);
-  }
+  //   doc.save(`${data.docno}.pdf`);
+  // }
 
-  /**
-   * convert contact status to thai string status
-   * @param {string} status : contact status
-   * @returns {string} thai contact status
-   */
-  strContactStatus(status): string {
-    switch (status) {
-      case "select": return "เลือก";
-      case "waitapprove": return "รอยืนยัน";
-      case "waitcontact": return "รอยืนยัน";
-      case "confirm": return "ยืนยัน";
-      case "reject": return "ลูกค้ายกเลิก";
-      case "arrival": return "ถึงจุดบริการ";
-      case "departure": return "ออกเดินทาง";
-      case "driver-reject": return "คนขับรถยกเลิก";
-    }
-  }
+  // Move to json type in tvds-status
+  // /**
+  //  * convert contact status to thai string status
+  //  * @param {string} status : contact status
+  //  * @returns {string} thai contact status
+  //  */
+  // strContactStatus(status): string {
+  //   switch (status) {
+  //     case "select": return "เลือก";
+  //     case "waitapprove": return "รอยืนยัน";
+  //     case "waitcontact": return "รอยืนยัน";
+  //     case "confirm": return "ยืนยัน";
+  //     case "reject": return "ลูกค้ายกเลิก";
+  //     case "arrival": return "ถึงจุดบริการ";
+  //     case "departure": return "ออกเดินทาง";
+  //     case "driver-reject": return "คนขับรถยกเลิก";
+  //   }
+  // }
 
-  /**
-   * convert order status to thai text
-   */
-  strOrderStatus(status): String {
-    switch (status) {
-      case "draft": return "จัดเส้นทาง";
-      case "waitapprove": return "รอยืนยัน";
-      case "orderavailable": return "ใบงานพร้อม";
-      case "serviceprepared": return "เตรียมการบริการ";
-      case "ordercancel": return "ยกเลิกใบงาน";
-      case "golive": return "กำลังให้บริการ";
-      case "close": return "จบบริการ";
-      case "closewithcondition": return "จบบริการ(ยกเลิก)";
-      default:
-        return "ไม่มี";
-    }
-  }
+  // Move to json type in tvds-status
+  // /**
+  //  * convert order status to thai text
+  //  */
+  // strOrderStatus(status): String {
+  //   switch (status) {
+  //     case "draft": return "จัดเส้นทาง";
+  //     case "waitapprove": return "รอยืนยัน";
+  //     case "orderavailable": return "ใบงานพร้อม";
+  //     case "serviceprepared": return "เตรียมการบริการ";
+  //     case "ordercancel": return "ยกเลิกใบงาน";
+  //     case "golive": return "กำลังให้บริการ";
+  //     case "close": return "จบบริการ";
+  //     case "closewithcondition": return "จบบริการ(ยกเลิก)";
+  //     default:
+  //       return "ไม่มี";
+  //   }
+  // }
 }

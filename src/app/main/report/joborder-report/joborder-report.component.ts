@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { JoborderService } from 'app/main/joborder/services/joborder.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
+
+
 @Component({
   selector: 'app-joborder-report',
   templateUrl: './joborder-report.component.html',
@@ -13,12 +15,14 @@ export class JoborderReportComponent implements OnInit {
   joborderData: any;
   salesAmount = 0.0;
 
+  // contactStatus = TH_CONTACTSTATUS;
+  // orderStatus = TH_ORDERSTATUS;
+
   constructor(
     private joborder: JoborderService,
     private route: ActivatedRoute,
     private router: Router,
   ) { 
-
   }
 
   ngOnInit() {
@@ -30,7 +34,7 @@ export class JoborderReportComponent implements OnInit {
       this.salesAmount = this.calSalesAmount(this.joborderData.contactLists);
     }
 
-    console.log(this.joborderData);
+    // console.log(this.joborderData);
   }
 
   /**
@@ -43,5 +47,14 @@ export class JoborderReportComponent implements OnInit {
         return value.sales ? (total + value.sales) : total;
     }, 0);
   }
+
+  onDownloadXlsx(): void {
+    this.joborder.downloadAsXLSX(this.joborderData, `${this.joborderData.docno}.xlsx`);
+  }
+
+  onDownloadPdf(): void {
+    this.joborder.downloadAsPDF(this.joborderData, `${this.joborderData.docno}.pdf`);
+  }
+  
 
 }

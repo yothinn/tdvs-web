@@ -10,17 +10,12 @@ import {  MatIconModule,
           MatSelectModule, 
           MatDatepickerModule, 
           MatFormFieldModule, 
-          MatTableModule, 
-          MatRadioModule, 
           MatInputModule, 
           MatListModule, 
           MatButtonModule, 
           MatTabsModule, 
-          MatExpansionModule, 
           MatProgressSpinnerModule, 
-          MatTreeModule, 
           MatSliderModule, 
-          MatToolbarModule, 
           MatDialogModule } from "@angular/material";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
@@ -33,6 +28,7 @@ import { SelectCarAndDateComponent } from './select-car-and-date/select-car-and-
 import { JoborderPdfComponent } from './joborder-pdf/joborder-pdf.component';
 import { ServiceDateFilterPipe } from './select-car-and-date/select-car-and-date.pipe';
 import { RejectReasonModalComponent } from './reject-reason-modal/reject-reason-modal.component';
+import { ShareModule } from 'app/share/share.module';
 
 
 const routes = [
@@ -76,15 +72,12 @@ const routes = [
     MatSelectModule,
     MatDatepickerModule,
     MatFormFieldModule,
-    MatTableModule,
-    MatRadioModule,
     MatTabsModule,
     MatIconModule,
     MatInputModule,
     MatListModule,
     MatMenuModule,
     MatButtonModule,
-    MatExpansionModule,
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSnackBarModule,
@@ -95,13 +88,13 @@ const routes = [
       apiKey: 'AIzaSyDnjHI8F5TKYn8Vu8nUtqOn1sVOq2UInQE'
     }),
 
-    MatTreeModule,
     MatSliderModule,
-    MatToolbarModule,
 
     TranslateModule,
     FuseSharedModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+
+    ShareModule,
   ],
   exports: [
     JoborderListComponent,

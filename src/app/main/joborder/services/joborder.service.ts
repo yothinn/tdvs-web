@@ -4,11 +4,17 @@ import { ActivatedRouteSnapshot } from "@angular/router";
 import { Observable, BehaviorSubject } from "rxjs";
 import { environment } from "environments/environment";
 import { AuthenService } from 'app/authentication/authen.service';
+import { TH_CONTACTSTATUS,  TH_ORDERSTATUS } from 'app/types/tvds-status';
+import * as XLSX from 'xlsx';
+import * as moment from "moment";
+import * as jsPDF from "jspdf";
+
 
 const api_url = environment.apiUrl + "/api/joborders/";
 const api_url_vehicle = environment.apiUrl + "/api/vehicles/";
 const api_url_markers = environment.apiUrl + "/api/jobordersupdatemap/";
 const api_url_line = environment.apiUrl + "/api/lineconnects/members/push";
+
 
 @Injectable({
   providedIn: "root",
@@ -133,5 +139,148 @@ export class JoborderService {
         headers: this.auth.getAuthorizationHeader(),
       })
       .toPromise();
+  }
+
+  /**
+   * download joborder xlsx
+   * @param joborderData 
+   * @param filename 
+   */
+  downloadAsXLSX(joborderData: any, filename: string): void {
+    const data: any[] = [];
+
+    // create each row
+    for (const contact of joborderData.contactLists) {
+        data.push({
+          datadate: `${moment(joborderData.docdate).format('DD/MM/YYYY')}`,
+          docno: joborderData.docno,
+          orderstatus: TH_ORDERSTATUS[joborderData.orderStatus],
+          carno: joborderData.carNo.lisenceID,
+          driver: joborderData.carNo.driverInfo.displayName,
+          displayName: contact.displayName,
+          district: contact.addressDistrict,
+          subdistrict: contact.addressSubDistrict,
+          province: contact.addressProvince,
+          status: TH_CONTACTSTATUS[contact.contactStatus],
+          sales: contact.sales,
+        });
+    }
+
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+
+    XLSX.utils.book_append_sheet(wb, ws, joborderData.docno);
+    XLSX.writeFile(wb, filename);
+  }
+
+  /**
+   * download joborder pdf
+   * @param data 
+   * @param filename 
+   */
+  downloadAsPDF(data, filename): void {
+    const doc = new jsPDF();
+    // Line position
+    const lineSpace = 8;
+    let line = 15;
+
+    // Format Number
+    const nFormat = Intl.NumberFormat('en-GB', {minimumFractionDigits: 2});
+
+    // total sales
+    let salesAmount = 0;
+
+    // let a = doc.getFontList();
+    // console.log(a);
+    doc.setFont('THSarabun');
+    doc.setFontType('normal');
+    // doc.setFontType("bold");
+    doc.setFontSize(16);
+
+    // console.log(data);  
+    
+    // Header
+    doc.text(
+      15,
+      line,
+      `วันที่พิมพ์ : ${moment(Date.now()).format('DD/MM/YYYY HH:MM:SS')}`
+    );
+    doc.text(140, line, `เลขที่ : ${data.docno}`);
+
+    line += lineSpace;
+    doc.text(15, line, `รถธรรมธุรกิจ ทะเบียนรถ : ${data.carNo.lisenceID}`);
+    doc.text(140, line, `วันที่ : ${moment(data.docdate).format('DD/MM/YYYY')}`);
+
+    line += lineSpace;
+    doc.text(
+      15,
+      line,
+      `ผู้ให้บริการ : ${data.carNo.driverInfo.displayName} [${data.carNo.driverInfo.mobileNo1}]`
+    );
+    doc.text(140, line, `สถานะใบงาน: ${TH_ORDERSTATUS[data.orderStatus]}`);
+
+    // Table Header
+    line += 10;
+    doc.rect(15, line, 180, 10);
+    line += 7;
+    doc.text(20, line, 'ลำดับที่');
+    doc.text(55, line, 'รายละเอียด');
+    doc.text(155, line, 'ยอดขาย');
+
+    // Description contact
+    line += lineSpace + 2;
+    for (let index = 0; index < data.contactLists.length; index++) {
+      const contact: any = data.contactLists[index];
+
+      // Do not print customer that reject
+      if (contact.contactStatus === 'reject') {
+        continue;
+      }
+
+      // let mno = `${contact.mobileNo1}`;
+      // Add new Page
+      if (line >= 257) {
+        doc.addPage();
+        line = 15;
+      }
+
+      doc.text(23, line, `${index + 1}.`);
+      doc.text(40, line, `คุณ ${contact.firstName} ${contact.lastName} [ ${contact.mobileNo1}]`);
+
+      // print only sales is not equal zero
+      const sales: number = contact.sales ? contact.sales : 0;
+      if (sales !== 0) {
+        salesAmount += sales;
+        doc.text(155, line, nFormat.format(sales));
+      }
+
+      line += lineSpace;
+      doc.text(40, line, `${contact.addressLine1} ${contact.addressStreet}`);
+      line += lineSpace;
+      doc.text(
+        40,
+        line,
+        `${contact.addressSubDistrict} ${contact.addressDistrict} ${contact.addressProvince} ${contact.addressPostCode}`
+      );
+
+      line += lineSpace;
+      doc.text(40, line, `สถานะ : ${TH_CONTACTSTATUS[contact.contactStatus]}`);
+
+      line += lineSpace + 2;
+    }
+
+    // Sales Amount
+    if (salesAmount !== 0) {
+      line += lineSpace;
+      doc.line(140, line - 7, 190, line - 7);
+
+      doc.text(100, line, 'ยอดขายรวม');
+      doc.text(155, line, nFormat.format(salesAmount));
+
+      doc.line(140, line + 5, 190, line + 5);
+      doc.line(140, line + 6, 190, line + 6);
+    }
+    
+    doc.save(filename);
   }
 }

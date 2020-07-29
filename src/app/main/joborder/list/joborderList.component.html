@@ -31,10 +31,26 @@
 
     <!-- CONTENT CARD -->
     <div class="content-card" #tableWrapper>
-      <ngx-datatable #table class="material fullscreen" [columnMode]="'flex'" [headerHeight]="64" [footerHeight]="64"
-        rowHeight="auto" [scrollbarV]="true" [virtualization]="false" [scrollbarH]="true" [limit]="10" [rows]="rows" [externalPaging]="true" [externalSorting]="true"
-        [reorderable]="true" [count]="page.count" [offset]="page.offset" [limit]="page.limit" [sortType]="'single'"
-        (page)="pageCallback($event)" (sort)="sortCallback($event)">
+      <ngx-datatable #table 
+        class="material fullscreen" 
+        [columnMode]="'flex'" 
+        [headerHeight]="64" 
+        [footerHeight]="64"
+        rowHeight="auto" 
+        [scrollbarV]="true" 
+        [virtualization]="false" 
+        [scrollbarH]="true" 
+        [limit]="10" 
+        [rows]="rows" 
+        [externalPaging]="true" 
+        [externalSorting]="true"
+        [reorderable]="true" 
+        [count]="page.count" 
+        [offset]="page.offset" 
+        [limit]="page.limit" 
+        [sortType]="'single'"
+        (page)="pageCallback($event)" 
+        (sort)="sortCallback($event)">
         <ngx-datatable-column prop="docno" name="เลขที่ใบสั่งงาน" [flexGrow]="1.9">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{ row.docno }}
@@ -75,7 +91,8 @@
         </ngx-datatable-column>
         <ngx-datatable-column prop="orderStatus" name="สถานะ" [flexGrow]="2.1">
           <ng-template ngx-datatable-cell-template let-row="row">
-            <div *ngIf="row.orderStatus === 'draft'">จัดเส้นทาง</div>
+            {{ row.orderStatus | thaiorderstatus }}
+            <!-- <div *ngIf="row.orderStatus === 'draft'">จัดเส้นทาง</div>
             <div *ngIf="row.orderStatus === 'waitapprove'">รอยืนยัน</div>
             <div *ngIf="row.orderStatus === 'orderavailable'">
               ใบงานพร้อม
@@ -90,7 +107,7 @@
             <div *ngIf="row.orderStatus === 'close'">จบบริการ</div>
             <div *ngIf="row.orderStatus === 'closewithcondition'">
               จบบริการ(ยกเลิก)
-            </div>
+            </div> -->
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column [flexGrow]="1">
