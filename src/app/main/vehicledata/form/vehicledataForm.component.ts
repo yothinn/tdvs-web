@@ -7,8 +7,6 @@ import {
   FormGroup,
   Validators,
   FormBuilder,
-  ValidatorFn,
-  AbstractControl,
 } from "@angular/forms";
 
 import { locale as english } from "../i18n/en";
@@ -17,8 +15,10 @@ import { locale as thai } from "../i18n/th";
 import { VehicledataService } from "../services/vehicledata.service";
 import { ActivatedRoute } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
-import { ValidatePID } from "./pid.validate";
+import { ValidatePID } from "app/share/validates/pid.validate";
 import { MatSnackBar } from "@angular/material";
+import { PostcodeService } from 'app/services/postcode.service';
+import { validatePostCode } from 'app/share/validates/postcode.validate';
 
 @Component({
   selector: "app-vehicledata-form",
@@ -31,8 +31,9 @@ export class VehicledataFormComponent implements OnInit {
   vehicleDataForm: FormGroup;
   ownerDataForm: FormGroup;
   vehicledataData: any = {};
-  postcodesList: any = [];
-  temp = [];
+   
+  postcodeList: any = [];
+  // temp = [];
 
   // TODO: Move to seperate file
   isOwner: any[] = [
@@ -68,7 +69,7 @@ export class VehicledataFormComponent implements OnInit {
     { value: "สีขาว", viewValue: "สีขาว" },
     { value: "สีแดง", viewValue: "สีแดง" },
     { value: "สีน้ำเงิน", viewValue: "สีน้ำเงิน" },
-    { value: "สีบอลเงิน", viewValue: "สีบอลเงิน" },
+    { value: "สีบรอนซ์เงิน", viewValue: "สีบรอนซ์เงิน" },
     { value: "สีอื่น ๆ", viewValue: "สีอื่น ๆ" },
   ];
 
@@ -77,14 +78,18 @@ export class VehicledataFormComponent implements OnInit {
     private location: Location,
     private formBuilder: FormBuilder,
     private vehicledataService: VehicledataService,
+    private postcodeService: PostcodeService,
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     private snackBar: MatSnackBar
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
+    
   }
 
   async ngOnInit() {
+    this.postcodeList = this.route.snapshot.data.postcode;
+
     this.vehicledataData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
@@ -131,15 +136,16 @@ export class VehicledataFormComponent implements OnInit {
       this.ownerDataForm.controls["displayName"].setValidators(null);
     };
 
-    let res: any = await this.vehicledataService.getPostcodesList();
-    this.postcodesList = res.data;
-    this.temp = res.data;
-
+    //let res: any = await this.postcodeService.getPostcodesList();
+    // this.postcodeList = res.data;
+    // this.temp = res.data;
     // console.log(this.postcodesList);
-    this.ownerDataForm.controls["addressPostCode"].setValidators([
-      Validators.required,
-      this.validatePostCode(this.postcodesList),
-    ]);
+
+    // Move to createOwnerDataForm
+    // this.ownerDataForm.controls["addressPostCode"].setValidators([
+    //   Validators.required,
+    //   validatePostCode(this.postcodeService.postcodeList),
+    // ]);
 
     this.spinner.hide();
   }
@@ -217,7 +223,10 @@ export class VehicledataFormComponent implements OnInit {
         ],
         addressPostCode: [
           this.vehicledataData.ownerInfo.addressPostCode,
-          [Validators.required, Validators.pattern(POSTCODE_PATTERN)],
+          [ Validators.required, 
+            Validators.pattern(POSTCODE_PATTERN),
+            validatePostCode(this.postcodeService.postcodeList)
+          ],
         ],
       });
     }
@@ -264,42 +273,46 @@ export class VehicledataFormComponent implements OnInit {
     }
   }
 
-  updateFilter(event) {
-    //change search keyword to lower case
-    const val = event.target.value.toLowerCase();
+  // updateFilter(event) {
+  //   //change search keyword to lower case
+  //   const val = event.target.value.toLowerCase();
 
-    // filter our data
-    // TODO: clean lowercase and change indexof to startsWith
-    const temp = this.temp.filter(function (d) {
-      return d.postcode.toLowerCase().indexOf(val) !== -1 || !val;
-    });
+  //   // filter our data
+  //   const temp = this.temp.filter(function (d) {
+  //     return d.postcode.toLowerCase().indexOf(val) !== -1 || !val;
+  //   });
 
-    // update the rows
-    this.postcodesList = temp;
+  //   // update the rows
+  //   this.postcodesList = temp;
+  // }
+
+  filterPostcode(event): void {
+    this.postcodeList = this.postcodeService.filter(event.target.value);
   }
 
-  getPosts(val) {
+  setPostcode(val) {
     //12150 | บึงคำพร้อย | อำเภอลำลูกกา | ปทุมธานี
-    let viewValue = val.viewValue;
-    let arrValue = val.viewValue.split("|");
-    let subdistrict = arrValue[1].trim();
-    let district = arrValue[2].trim();
-    let province = arrValue[3].trim();
+    // let viewValue = val.viewValue;
+    const arrValue = val.viewValue.split('|');
+    const subdistrict = arrValue[1].trim();
+    const district = arrValue[2].trim();
+    const province = arrValue[3].trim();
 
-    this.ownerDataForm.controls["addressProvince"].setValue(province);
-    this.ownerDataForm.controls["addressDistrict"].setValue(district);
-    this.ownerDataForm.controls["addressSubDistrict"].setValue(subdistrict);
+    this.ownerDataForm.controls['addressProvince'].setValue(province);
+    this.ownerDataForm.controls['addressDistrict'].setValue(district);
+    this.ownerDataForm.controls['addressSubDistrict'].setValue(subdistrict);
   }
 
   isOwnerChanged(e) {
     // console.log(e);
     // console.log("is owner change");
     this.ownerDataForm = this.createOwnerDataForm(e.value);
-    
-    this.ownerDataForm.controls["addressPostCode"].setValidators([
-      Validators.required,
-      this.validatePostCode(this.postcodesList),
-    ]);
+
+    // Move to createOwnerDataForm
+    // this.ownerDataForm.controls["addressPostCode"].setValidators([
+    //   Validators.required,
+    //   validatePostCode(this.postcodeService.postcodeList),
+    // ]);
   }
   isCompanyChanged(e) {
     // console.log(e);
@@ -325,23 +338,23 @@ export class VehicledataFormComponent implements OnInit {
     }
   }
 
-  validatePostCode(myArray: any[]): ValidatorFn {
-    if (myArray.length === 0) return null;
-    return (c: AbstractControl): { [key: string]: boolean } | null => {
-      let selectboxValue = c.value;
-      // console.log(myArray);
-      // console.log(selectboxValue);
-      let pickedOrNot = myArray.filter((alias) => {
-        return alias.postcode === selectboxValue;
-      });
-      // console.log(pickedOrNot.length);
-      if (pickedOrNot.length > 0) {
-        // everything's fine. return no error. therefore it's null.
-        return null;
-      } else {
-        //there's no matching selectboxvalue selected. so return match error.
-        return { match: true };
-      }
-    };
-  }
+  // validatePostCode(myArray: any[]): ValidatorFn {
+  //   if (myArray.length === 0) return null;
+  //   return (c: AbstractControl): { [key: string]: boolean } | null => {
+  //     let selectboxValue = c.value;
+  //     // console.log(myArray);
+  //     // console.log(selectboxValue);
+  //     let pickedOrNot = myArray.filter((alias) => {
+  //       return alias.postcode === selectboxValue;
+  //     });
+  //     // console.log(pickedOrNot.length);
+  //     if (pickedOrNot.length > 0) {
+  //       // everything's fine. return no error. therefore it's null.
+  //       return null;
+  //     } else {
+  //       //there's no matching selectboxvalue selected. so return match error.
+  //       return { match: true };
+  //     }
+  //   };
+  // }
 }

@@ -147,17 +147,20 @@
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
                       <mat-label>รหัสไปรษณีย์</mat-label>
                       <input matInput maxlength="5" minlength="5" formControlName="addressPostCode" name="addressPostCode"
-                        (keyup)="updateFilter($event)" [matAutocomplete]="auto">
-                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getPosts($event.option)'>
-                        <mat-option *ngFor="let postcode of postcodesList.slice(0,10)" [value]="postcode.postcode">
+                        (keyup)="filterPostcode($event)" [matAutocomplete]="auto">
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)='setPostcode($event.option)'>
+                        <mat-option *ngFor="let postcode of postcodeList.slice(0,20)" [value]="postcode.postcode">
                           <span>{{ postcode.postcode }}</span> |
                           <small>{{ postcode.subdistrict }}</small> |
                           <small>{{ postcode.district }}</small> |
                           <small>{{ postcode.province }}</small>
                         </mat-option>
                       </mat-autocomplete>
-                      <mat-error *ngIf="tvdscustomerForm.get('addressPostCode').hasError('required')">
+                      <!-- <mat-error *ngIf="tvdscustomerForm.get('addressPostCode').hasError('required')">
                         กรุณาระบุ รหัสไปรษณีย์
+                      </mat-error> -->
+                      <mat-error *ngIf="tvdscustomerForm.get('addressPostCode').dirty">
+                        กรุณาระบุ รหัสไปรษณีย์ให้ถูกต้อง
                       </mat-error>
                     </mat-form-field>
                   </div>

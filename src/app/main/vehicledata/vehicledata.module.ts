@@ -9,12 +9,16 @@ import { MatIconModule, MatMenuModule, MatSelectModule, MatDatepickerModule, Mat
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { VehicledataService } from './services/vehicledata.service';
+import { PostcodeService } from 'app/services/postcode.service';
 
 const routes = [
   {
     path: "vehicledataForm/:id",
     component: VehicledataFormComponent,
-    resolve: { items: VehicledataService },
+    resolve: { 
+      items: VehicledataService, 
+      postcode: PostcodeService,
+    },
     canActivate: [AuthenGuardService]
   },
   {

@@ -41,9 +41,8 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
 
   ngOnInit(): void {
     this.spinner.hide();
-    // TODO: if null 
     this.rows = this.route.snapshot.data.items.data;
-    console.log(this.rows);
+    // console.log(this.rows);
     this.checkList();
   }
 
@@ -57,14 +56,12 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  // TODO: ?? why !!!
+  // Checklist to add data to displayName field
+  // TODO: ไปทำข้อมูลให้พร้อมตั้งแต่ก่อนเชฟ ไม่ใช้มาแก้ไขตรงนี้
   checkList() {
-    for (let i = 0; i < this.rows.length; i++) {
-      const row = this.rows[i];
-      if (row.ownerInfo.displayName) {
-        row.ownerInfo.displayName;
-      } else {
-        row.ownerInfo.displayName = row.ownerInfo.firstName + " " + row.ownerInfo.lastName
+    for (let row of this.rows) {
+      if (!row.ownerInfo.displayName || row.ownerInfo.displayName === '') {
+        row.ownerInfo.displayName = row.ownerInfo.firstName + ' ' + row.ownerInfo.lastName;
       }
     }
   }
@@ -79,34 +76,34 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
 
   deleteData(item): void {
     const body = {
-      title: "กรุณายืนยันการ ลบรายการ",
-      message: "ข้อมูลรถทะเบียน : " + item.lisenceID,
+      title: 'กรุณายืนยันการ ลบรายการ',
+      message: 'ข้อมูลรถทะเบียน : ' + item.lisenceID,
     };
 
     this.dialogConfirmService.show(body).then(async (result) => {
       if (result) {
         this.spinner.show();
-        this.vehicledataService.deleteVehicledataData(item).then((res) => {
-          this.vehicledataService.getVehicledataDataList().subscribe((res: any) => {
-            this.rows = res.data;
-            this.checkList();
-            this.spinner.hide();
-          }, (err) => {
-            this.spinner.hide();
-          })
-        }).catch(err => {
-          this.spinner.hide();
-        })
-      };
+        this.vehicledataService.deleteVehicledataData(item)
+            .then((res) => {
+              this.vehicledataService.getVehicledataDataList().subscribe((res: any) => {
+                this.rows = res.data;
+                this.checkList();
+                this.spinner.hide();
+              }, (err) => {
+                this.spinner.hide();
+              });
+            }).catch(err => {
+              this.spinner.hide();
+            });
+      }
     });
-
   }
 
-  updateFilter(event) {
-    //change search keyword to lower case
-    // const val = event.target.value.toLowerCase();
+  // updateFilter(event) {
+  //   //change search keyword to lower case
+  //   // const val = event.target.value.toLowerCase();
 
-    // filter our data
-  }
+  //   // filter our data
+  // }
 
 }

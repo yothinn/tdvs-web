@@ -9,13 +9,17 @@ import { MatIconModule, MatMenuModule, MatSelectModule, MatDatepickerModule, Mat
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { TvdscustomerService } from './services/tvdscustomer.service';
+import { PostcodeService } from 'app/services/postcode.service';
 
 
 const routes = [
   {
     path: "tvdscustomerForm/:id",
     component: TvdscustomerFormComponent,
-    resolve: { items: TvdscustomerService },
+    resolve: { 
+      items: TvdscustomerService,
+      postcode: PostcodeService
+    },
     canActivate: [AuthenGuardService]
   },
   {

@@ -3,6 +3,8 @@ import { AuthenService } from 'app/authentication/authen.service';
 import { environment } from 'environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ActivatedRouteSnapshot } from '@angular/router';
+import { map } from 'rxjs/operators';
 
 const API_POSTCODE_URI = environment.apiUrl + "/api/postcodes";
 
@@ -12,20 +14,23 @@ const API_POSTCODE_URI = environment.apiUrl + "/api/postcodes";
 })
 export class PostcodeService {
 
-  postcodeList: any[];
+  postcodeList: any[] = [];
 
   constructor(
     private auth: AuthenService,
     private http: HttpClient,
   ) {
-    this.getPostcodesList().subscribe(
-      res => {
+ 
+  }
+
+  resolve(route: ActivatedRouteSnapshot): Observable<any> | Promise<any> | any {
+    // this.routeParams = route.params;
+    // console.log("resolve with params : " + JSON.stringify(this.routeParams));
+    return this.getPostcodeList().pipe(
+      map(res => {
         this.postcodeList = res.data;
-        console.log(this.postcodeList);
-      },
-      err => {
-        // TODO : throw error,
-      }
+        return res.data;
+      })
     );
   }
 
@@ -33,7 +38,7 @@ export class PostcodeService {
    * get postcode list from service
    * @returns {Observable} data receive from service
    */
-  getPostcodesList(): Observable<any> {
+  getPostcodeList(): Observable<any> {
     return this.http.get(API_POSTCODE_URI, {headers: this.auth.getAuthorizationHeader()});
   }
 

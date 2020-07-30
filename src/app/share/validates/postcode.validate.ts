@@ -7,15 +7,15 @@ export function validatePostCode(myArray: any[]): ValidatorFn {
         //console.log(myArray);
         //console.log(selectboxValue);
         let pickedOrNot = myArray.filter((alias) => {
-        return alias.postcode === selectboxValue;
+            return alias.postcode === selectboxValue;
         });
-        //console.log(pickedOrNot.length);
+            //console.log(pickedOrNot.length);
         if (pickedOrNot.length > 0) {
-        // everything's fine. return no error. therefore it's null.
-        return null;
+            // everything's fine. return no error. therefore it's null.
+            return null;
         } else {
-        //there's no matching selectboxvalue selected. so return match error.
-        return { match: true };
+            //there's no matching selectboxvalue selected. so return match error.
+            return { match: true };
         }
 };
 }

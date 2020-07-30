@@ -32,8 +32,8 @@ export class JoborderReportComponent implements OnInit {
 
       // calculate sales amount
       this.salesAmount = this.calSalesAmount(this.joborderData.contactLists);
-    }
-
+    } 
+    
     // console.log(this.joborderData);
   }
 
@@ -49,11 +49,15 @@ export class JoborderReportComponent implements OnInit {
   }
 
   onDownloadXlsx(): void {
-    this.joborder.downloadAsXLSX(this.joborderData, `${this.joborderData.docno}.xlsx`);
+    if (this.joborderData) {
+      this.joborder.downloadAsXLSX(this.joborderData, `${this.joborderData.docno}.xlsx`);
+    }
   }
 
   onDownloadPdf(): void {
-    this.joborder.downloadAsPDF(this.joborderData, `${this.joborderData.docno}.pdf`);
+    if (this.joborderData) {
+      this.joborder.downloadAsPDF(this.joborderData, `${this.joborderData.docno}.pdf`);
+    }
   }
   
 

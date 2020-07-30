@@ -177,10 +177,15 @@ export class JoborderFormComponent implements OnInit {
     this.spinner.hide();
   }
 
+  /**
+   * when click marker, show customer info in map page  
+   */
   clickedInfoWindow(infoWindow) {
     if (this.previous_info_window == null)
+      // Open info
       this.previous_info_window = infoWindow;
     else {
+      // Close info
       this.infoWindowOpened = infoWindow;
       this.previous_info_window.close();
     }
@@ -275,6 +280,11 @@ export class JoborderFormComponent implements OnInit {
       });
   }
 
+  /**
+   * change status joborder and show mark in map
+   * @param { string } status : status that want to change
+   * @param { number } i : customer index
+   */
   onChangeStatus(status, i) {
     if (this.joborderData.orderStatus === "draft") {
       this.joborderData.orderStatus = "waitapprove";
@@ -532,6 +542,10 @@ export class JoborderFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Drag and drop for rearrage index  in joborder map
+   * @param event 
+   */
   drop(event: CdkDragDrop<any[]>) {
     // console.log(`${event.previousIndex} to ${event.currentIndex}`);
     moveItemInArray(

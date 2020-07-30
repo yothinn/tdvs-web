@@ -9,13 +9,13 @@
       <div fxFlex="50%"> 
         <h3>
           <strong>เลขที่ใบสั่งงาน:   </strong>
-          <span>{{  joborderData.docno }}  </span>
+          <span>{{  joborderData?.docno }}  </span>
         </h3>
       </div>
       <div fxFlex="50%"> 
         <h3>
           <strong>วันที่ใบสั่งงาน:   </strong>
-          <span>{{ joborderData.docdate | date:"dd/MM/yyyy" }}</span>
+          <span>{{ joborderData?.docdate | date:"dd/MM/yyyy" }}</span>
         </h3>
       </div>
     </div>
@@ -25,8 +25,8 @@
             <strong>รถรับผิดชอบ:  </strong>
             <span>
               {{ 
-                joborderData.carNo.lisenceID + " " +
-                joborderData.carNo.driverInfo.displayName
+                joborderData?.carNo.lisenceID + " " +
+                joborderData?.carNo.driverInfo.displayName
               }}
             </span>
           </h3>
@@ -34,7 +34,7 @@
       <div fxFlex="50%"> 
         <h3>
           <strong>สถานะ:   </strong>
-          <span>{{ joborderData.orderStatus | thaiorderstatus }} </span>
+          <span>{{ joborderData?.orderStatus | thaiorderstatus }} </span>
         </h3>
       </div>
     </div>
@@ -91,7 +91,7 @@
       <!-- contactList data table -->
       <div 
         fxLayout="row" 
-        *ngFor="let contact of joborderData.contactLists;let i = index"
+        *ngFor="let contact of joborderData?.contactLists;let i = index"
         class="content-table"
       >
         <div fxFlex="5%" style="padding-left: 15px;">
@@ -123,7 +123,7 @@
         <div fxFlex="5%"></div>
         <div fxFlex="70%"></div>
         <div fxFlex="15%" style="text-align: center;">
-          <h3><strong>ยอดขาย</strong></h3>
+          <h3><strong>รวมยอดขาย</strong></h3>
         </div>
         <div fxFlex="10%" class="display-sales">
           <h3><strong> {{ salesAmount | number:"1.2-2"}}</strong></h3>

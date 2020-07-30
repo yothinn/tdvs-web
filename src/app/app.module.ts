@@ -133,12 +133,12 @@ export const MY_FORMATS = {
     AppComponent
   ],
   providers: [
-    //{ provide: ErrorHandler, useClass: GlobalErrorHandler },
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: ServerErrorInterceptor,
-    //   multi: true
-    // },
+    // { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ServerErrorInterceptor,
+      multi: true
+    },
     { provide: MAT_DATE_LOCALE, useValue: "th-TH" },
     {
       provide: DateAdapter,
