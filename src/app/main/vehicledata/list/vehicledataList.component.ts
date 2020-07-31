@@ -23,7 +23,7 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
   @ViewChild(DatatableComponent) table: DatatableComponent;
   private currentComponentWidth;
 
-  rows: Array<any>;
+  rows: Array<any> = null;
   temp = [];
   ColumnMode = ColumnMode;
 
@@ -43,7 +43,9 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
     // console.log(this.rows);
-    this.checkList();
+    if (this.rows) {
+      this.checkList();
+    }
   }
 
   // For resize data table

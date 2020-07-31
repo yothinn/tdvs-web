@@ -12,7 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class JoborderReportComponent implements OnInit {
 
   joborderId: any;
-  joborderData: any;
+  joborderData: any = null;
   salesAmount = 0.0;
 
   // contactStatus = TH_CONTACTSTATUS;

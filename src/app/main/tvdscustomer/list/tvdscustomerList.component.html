@@ -30,7 +30,14 @@
     <!-- / HEADER -->
 
     <!-- CONTENT CARD -->
-    <div class="content-card" #tableWrapper>
+    <div class="content-card"
+      *ngIf="!rows"
+    >
+    </div>
+    <div class="content-card" 
+      *ngIf="rows"
+      #tableWrapper
+    >
       <!-- CONTENT -->
       <ngx-datatable #table 
         class="material fullscreen" 

@@ -26,8 +26,8 @@ export class TvdscustomerListComponent implements OnInit, AfterViewChecked {
   @ViewChild(DatatableComponent) table: DatatableComponent;
   private currentComponentWidth;
 
-  rows: Array<any>;
-  temp = [];
+  rows: Array<any> = null;
+  temp = null;
   ColumnMode = ColumnMode;
 
   page = {
@@ -53,9 +53,11 @@ export class TvdscustomerListComponent implements OnInit, AfterViewChecked {
     // console.log(environment.apiUrl);
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
-    this.temp = this.route.snapshot.data.items.data;
-    this.page.count = this.route.snapshot.data.items.totalCount;
-    // this.formatMoment();
+    if (this.rows) {
+      this.temp = this.route.snapshot.data.items.data;
+      this.page.count = this.route.snapshot.data.items.totalCount;
+      // this.formatMoment();
+    }
   }
 
   ngAfterViewChecked(): void {

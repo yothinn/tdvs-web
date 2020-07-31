@@ -35,8 +35,8 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
   @ViewChild(DatatableComponent) table: DatatableComponent;
   private currentComponentWidth;
 
-  rows: Array<any>;
-  temp = [];
+  rows: Array<any> = null;
+  temp = null;
   // columns = [{ prop: 'name' }, { name: 'Gender' }, { name: 'Company', sortable: false }];
 
   ColumnMode = ColumnMode;
@@ -67,8 +67,10 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     this.spinner.hide();
 
     this.rows = this.route.snapshot.data.items.data;
-    this.temp = this.route.snapshot.data.items.data;
-    this.page.count = this.route.snapshot.data.items.totalCount;
+    if (this.rows) {
+      this.temp = this.route.snapshot.data.items.data;
+      this.page.count = this.route.snapshot.data.items.totalCount;
+    }
 
     // console.log(this.rows);
     // this.formatMoment();

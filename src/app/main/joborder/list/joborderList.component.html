@@ -30,7 +30,15 @@
     <!-- / HEADER -->
 
     <!-- CONTENT CARD -->
-    <div class="content-card" #tableWrapper>
+    <div class="content-card" 
+      *ngIf="!rows"
+    >
+        เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้
+    </div>
+    <div class="content-card" 
+      *ngIf="rows"
+      #tableWrapper
+    >
       <ngx-datatable #table 
         class="material fullscreen" 
         [columnMode]="'flex'" 
