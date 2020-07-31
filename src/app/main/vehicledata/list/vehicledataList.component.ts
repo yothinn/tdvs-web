@@ -101,11 +101,11 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  // updateFilter(event) {
-  //   //change search keyword to lower case
-  //   // const val = event.target.value.toLowerCase();
+  updateFilter(event) {
+    //change search keyword to lower case
+    // const val = event.target.value.toLowerCase();
 
-  //   // filter our data
-  // }
+    // filter our data
+  }
 
 }
