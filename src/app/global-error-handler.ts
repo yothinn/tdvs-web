@@ -3,11 +3,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { LoggingService } from './services/logging.service';
 import { ErrorService } from './services/error.service';
 import { NotificationService } from './services/notification.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
 
-    constructor(private injector: Injector) { }
+    constructor(
+        private injector: Injector,
+    ) { }
 
     // tslint:disable-next-line: typedef
     handleError(error) {
@@ -32,6 +35,7 @@ export class GlobalErrorHandler implements ErrorHandler {
             // Client Error
             message = errorService.getClientErrorMessage(error);
             notifier.showError(message);
+
         }
         // Always log errors
         logger.logError(message, stackTrace);

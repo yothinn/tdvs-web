@@ -23,7 +23,7 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
   @ViewChild(DatatableComponent) table: DatatableComponent;
   private currentComponentWidth;
 
-  rows: Array<any>;
+  rows: Array<any> = null;
   temp = [];
   ColumnMode = ColumnMode;
 
@@ -42,9 +42,13 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
-    this.checkList();
+    // console.log(this.rows);
+    if (this.rows) {
+      this.checkList();
+    }
   }
 
+  // For resize data table
   ngAfterViewChecked(): void {
     // Check if the table size has changed,
     if (this.table && this.table.recalculate && (this.tableWrapper.nativeElement.clientWidth !== this.currentComponentWidth)) {
@@ -54,56 +58,54 @@ export class VehicledataListComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  // Checklist to add data to displayName field
+  // TODO: ไปทำข้อมูลให้พร้อมตั้งแต่ก่อนเชฟ ไม่ใช้มาแก้ไขตรงนี้
   checkList() {
-    for (let i = 0; i < this.rows.length; i++) {
-      const row = this.rows[i];
-      if (row.ownerInfo.displayName) {
-        row.ownerInfo.displayName;
-      } else {
-        row.ownerInfo.displayName = row.ownerInfo.firstName + " " + row.ownerInfo.lastName
+    for (let row of this.rows) {
+      if (!row.ownerInfo.displayName || row.ownerInfo.displayName === '') {
+        row.ownerInfo.displayName = row.ownerInfo.firstName + ' ' + row.ownerInfo.lastName;
       }
     }
   }
 
-  addData() {
-    this.router.navigateByUrl("/vehicledata/vehicledataForm/new");
+  addData(): void {
+    this.router.navigate(['/vehicledata/vehicledataForm/new']);
   }
 
-  editData(item) {
-    this.router.navigateByUrl("/vehicledata/vehicledataForm/" + item._id);
+  editData(item): void {
+    this.router.navigate(['/vehicledata/vehicledataForm', item._id]);
   }
 
-  deleteData(item) {
+  deleteData(item): void {
     const body = {
-      title: "กรุณายืนยันการ ลบรายการ",
-      message: "ข้อมูลรถทะเบียน : " + item.lisenceID,
+      title: 'กรุณายืนยันการ ลบรายการ',
+      message: 'ข้อมูลรถทะเบียน : ' + item.lisenceID,
     };
 
     this.dialogConfirmService.show(body).then(async (result) => {
       if (result) {
         this.spinner.show();
-        this.vehicledataService.deleteVehicledataData(item).then((res) => {
-          this.vehicledataService.getVehicledataDataList().subscribe((res: any) => {
-            this.rows = res.data;
-            this.checkList();
-            this.spinner.hide();
-          }, (err) => {
-            this.spinner.hide();
-          })
-        }).catch(err => {
-          this.spinner.hide();
-        })
-      };
+        this.vehicledataService.deleteVehicledataData(item)
+            .then((res) => {
+              this.vehicledataService.getVehicledataDataList().subscribe((res: any) => {
+                this.rows = res.data;
+                this.checkList();
+                this.spinner.hide();
+              }, (err) => {
+                this.spinner.hide();
+              });
+            }).catch(err => {
+              this.spinner.hide();
+            });
+      }
     });
-
   }
 
-  updateFilter(event) {
-    //change search keyword to lower case
-    // const val = event.target.value.toLowerCase();
+  // updateFilter(event) {
+  //   //change search keyword to lower case
+  //   // const val = event.target.value.toLowerCase();
 
-    // filter our data
-
-  }
+  //   // filter our data
+  // }
 
 }

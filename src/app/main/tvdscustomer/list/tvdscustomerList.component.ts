@@ -26,8 +26,8 @@ export class TvdscustomerListComponent implements OnInit, AfterViewChecked {
   @ViewChild(DatatableComponent) table: DatatableComponent;
   private currentComponentWidth;
 
-  rows: Array<any>;
-  temp = [];
+  rows: Array<any> = null;
+  temp = null;
   ColumnMode = ColumnMode;
 
   page = {
@@ -50,12 +50,14 @@ export class TvdscustomerListComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit(): void {
-    console.log(environment.apiUrl);
+    // console.log(environment.apiUrl);
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
-    this.temp = this.route.snapshot.data.items.data;
-    this.page.count = this.route.snapshot.data.items.totalCount;
-    this.formatMoment();
+    if (this.rows) {
+      this.temp = this.route.snapshot.data.items.data;
+      this.page.count = this.route.snapshot.data.items.totalCount;
+      // this.formatMoment();
+    }
   }
 
   ngAfterViewChecked(): void {
@@ -67,13 +69,13 @@ export class TvdscustomerListComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  formatMoment() {
-    for (let i = 0; i < this.rows.length; i++) {
-      const row = this.rows[i];
-      row.created = moment(row.created).format("DD/MM/YYYY");
-      row.updated = moment(row.updated).format("DD/MM/YYYY");
-    }
-  }
+  // formatMoment() {
+  //   for (let i = 0; i < this.rows.length; i++) {
+  //     const row = this.rows[i];
+  //     row.created = moment(row.created).format("DD/MM/YYYY");
+  //     row.updated = moment(row.updated).format("DD/MM/YYYY");
+  //   }
+  // }
 
   addData() {
     this.router.navigateByUrl("/tvdscustomer/tvdscustomerForm/new");
@@ -96,7 +98,7 @@ export class TvdscustomerListComponent implements OnInit, AfterViewChecked {
             duration: 5000,
           });
           this.reloadData();
-          this.formatMoment();
+          // this.formatMoment();
           this.spinner.hide();
         }).catch((res) => {
           this._snackBar.open("การลบผิดพลาด กรุณาลองใหม่ภายหลัง", "", {
@@ -126,7 +128,7 @@ export class TvdscustomerListComponent implements OnInit, AfterViewChecked {
     this.rows = res.data;
     this.temp = res.data;
     this.page.count = res.totalCount;
-    this.formatMoment();
+    // this.formatMoment();
   }
 
   updateFilter(event) {

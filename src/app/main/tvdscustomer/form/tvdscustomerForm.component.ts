@@ -11,8 +11,10 @@ import { locale as thai } from "../i18n/th";
 import { TvdscustomerService } from "../services/tvdscustomer.service";
 import { ActivatedRoute } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
-import { ValidatePID } from "./pid.validate";
+import { ValidatePID } from "app/share/validates/pid.validate";
 import { MatSnackBar } from "@angular/material";
+import { PostcodeService } from 'app/services/postcode.service';
+import { validatePostCode } from 'app/share/validates/postcode.validate';
 
 @Component({
   selector: "app-tvdscustomer-form",
@@ -25,8 +27,9 @@ export class TvdscustomerFormComponent implements OnInit {
   tvdscustomerForm: FormGroup;
   tvdscustomerData: any = {};
 
-  postcodesList: any = [];
-  temp = [];
+  postcodeList: any = [];
+  // temp = [];
+
 
   title: Array<any> = [
     { value: "นาย", viewValue: "นาย" },
@@ -39,6 +42,7 @@ export class TvdscustomerFormComponent implements OnInit {
     private location: Location,
     private formBuilder: FormBuilder,
     private tvdscustomerService: TvdscustomerService,
+    private postcodeService: PostcodeService,
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     private snackBar: MatSnackBar
@@ -47,6 +51,9 @@ export class TvdscustomerFormComponent implements OnInit {
   }
 
   async ngOnInit() {
+
+    this.postcodeList = this.route.snapshot.data.postcode;
+
     this.tvdscustomerData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
@@ -75,14 +82,14 @@ export class TvdscustomerFormComponent implements OnInit {
     //   this.postcodesList = res.data;
     //   this.temp = res.data;
     // })
-    let res: any = await this.tvdscustomerService.getPostcodesList();
-    this.postcodesList = res.data;
-    this.temp = res.data;
+    // let res: any = await this.tvdscustomerService.getPostcodesList();
+    // this.postcodesList = res.data;
+    // this.temp = res.data;
 
-    this.tvdscustomerForm.controls["addressPostCode"].setValidators([
-      Validators.required,
-      this.validatePostCode(this.postcodesList),
-    ]);
+    // this.tvdscustomerForm.controls["addressPostCode"].setValidators([
+    //   Validators.required,
+    //   validatePostCode(this.postcodesList),
+    // ]);
 
     this.spinner.hide();
   }
@@ -117,7 +124,11 @@ export class TvdscustomerFormComponent implements OnInit {
       ],
       addressPostCode: [
         this.tvdscustomerData.addressPostCode,
-        [Validators.required, Validators.pattern(POSTCODE_PATTERN)],
+        [ 
+          Validators.required, 
+          Validators.pattern(POSTCODE_PATTERN),
+          validatePostCode(this.postcodeService.postcodeList)
+        ],
       ],
     });
   }
@@ -151,7 +162,11 @@ export class TvdscustomerFormComponent implements OnInit {
       ],
       addressPostCode: [
         this.tvdscustomerData.addressPostCode,
-        [Validators.required, Validators.pattern(POSTCODE_PATTERN)],
+        [ 
+          Validators.required, 
+          Validators.pattern(POSTCODE_PATTERN),
+          validatePostCode(this.postcodeService.postcodeList)
+        ],
       ],
     });
   }
@@ -198,49 +213,53 @@ export class TvdscustomerFormComponent implements OnInit {
     }
   }
 
-  updateFilter(event) {
-    //change search keyword to lower case
-    const val = event.target.value.toLowerCase();
-
-    // filter our data
-    const temp = this.temp.filter(function (d) {
-      return d.postcode.toLowerCase().indexOf(val) !== -1 || !val;
-    });
-
-    // update the rows
-    this.postcodesList = temp;
+  filterPostcode(event): void {
+    this.postcodeList = this.postcodeService.filter(event.target.value);
   }
+  // updateFilter(event) {
+  //   //change search keyword to lower case
+  //   const val = event.target.value.toLowerCase();
 
-  getPosts(val) {
+  //   // filter our data
+  //   // and clear tmp -> move to service
+  //   const temp = this.temp.filter(function (d) {
+  //     return d.postcode.toLowerCase().indexOf(val) !== -1 || !val;
+  //   });
+
+  //   // update the rows
+  //   this.postcodesList = temp;
+  // }
+
+  setPostcode(val) {
     //12150 | บึงคำพร้อย | อำเภอลำลูกกา | ปทุมธานี
-    let viewValue = val.viewValue;
-    let arrValue = val.viewValue.split("|");
-    let subdistrict = arrValue[1].trim();
-    let district = arrValue[2].trim();
-    let province = arrValue[3].trim();
+    // let viewValue = val.viewValue;
+    const arrValue = val.viewValue.split('|');
+    const subdistrict = arrValue[1].trim();
+    const district = arrValue[2].trim();
+    const province = arrValue[3].trim();
 
-    this.tvdscustomerForm.controls["addressProvince"].setValue(province);
-    this.tvdscustomerForm.controls["addressDistrict"].setValue(district);
-    this.tvdscustomerForm.controls["addressSubDistrict"].setValue(subdistrict);
+    this.tvdscustomerForm.controls['addressProvince'].setValue(province);
+    this.tvdscustomerForm.controls['addressDistrict'].setValue(district);
+    this.tvdscustomerForm.controls['addressSubDistrict'].setValue(subdistrict);
   }
 
-  validatePostCode(myArray: any[]): ValidatorFn {
-    if (myArray.length === 0) return null;
-    return (c: AbstractControl): { [key: string]: boolean } | null => {
-      let selectboxValue = c.value;
-      console.log(myArray);
-      console.log(selectboxValue);
-      let pickedOrNot = myArray.filter((alias) => {
-        return alias.postcode === selectboxValue;
-      });
-      console.log(pickedOrNot.length);
-      if (pickedOrNot.length > 0) {
-        // everything's fine. return no error. therefore it's null.
-        return null;
-      } else {
-        //there's no matching selectboxvalue selected. so return match error.
-        return { match: true };
-      }
-    };
-  }
+  // validatePostCode(myArray: any[]): ValidatorFn {
+  //   if (myArray.length === 0) return null;
+  //   return (c: AbstractControl): { [key: string]: boolean } | null => {
+  //     let selectboxValue = c.value;
+  //     // console.log(myArray);
+  //     // console.log(selectboxValue);
+  //     let pickedOrNot = myArray.filter((alias) => {
+  //       return alias.postcode === selectboxValue;
+  //     });
+  //     // console.log(pickedOrNot.length);
+  //     if (pickedOrNot.length > 0) {
+  //       // everything's fine. return no error. therefore it's null.
+  //       return null;
+  //     } else {
+  //       //there's no matching selectboxvalue selected. so return match error.
+  //       return { match: true };
+  //     }
+  //   };
+  // }
 }

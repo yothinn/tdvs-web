@@ -27,7 +27,6 @@ import { fuseConfig } from 'app/fuse-config';
 import { AppComponent } from 'app/app.component';
 import { LayoutModule } from 'app/layout/layout.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { SampleModule } from 'app/main/sample/sample.module';
 import { GlobalErrorHandler } from "./global-error-handler";
 import { ServerErrorInterceptor } from "./server-error.interceptor";
 
@@ -35,6 +34,7 @@ import { ServerErrorInterceptor } from "./server-error.interceptor";
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
 import { environment } from 'environments/environment';
 import { DialogConfirmModule } from './dialog-confirm/dialog-confirm.module';
+import { ShareModule } from './share/share.module';
 
 const config: SocketIoConfig = { url: environment.apiUrl, options: {} };
 
@@ -72,6 +72,10 @@ const appRoutes: Routes = [
     loadChildren: './authentication/register/register.module#RegisterModule'
   },
   {
+    path: 'report',
+    loadChildren: './main/report/report.module#ReportModule'
+  },
+  {
     path: '**',
     redirectTo: 'joborder'
   }
@@ -91,7 +95,7 @@ export const MY_FORMATS = {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -118,22 +122,23 @@ export const MY_FORMATS = {
     FuseSidebarModule,
     FuseThemeOptionsModule,
 
+    ShareModule,
+
     // App modules
     LayoutModule,
     NgxSpinnerModule,
-    SampleModule,
-    DialogConfirmModule
+    DialogConfirmModule,
   ],
   bootstrap: [
     AppComponent
   ],
   providers: [
     // { provide: ErrorHandler, useClass: GlobalErrorHandler },
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: ServerErrorInterceptor,
-    //   multi: true
-    // },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ServerErrorInterceptor,
+      multi: true
+    },
     { provide: MAT_DATE_LOCALE, useValue: "th-TH" },
     {
       provide: DateAdapter,

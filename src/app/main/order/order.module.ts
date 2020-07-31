@@ -29,12 +29,12 @@ const routes = [
     resolve: { items: OrderService },
     canActivate: [AuthenGuardService]
   },
-  {
-    path: '**',
-    component: OrderListComponent,
-    resolve: { items: OrderService },
-    canActivate: [AuthenGuardService]
-  }
+  // {
+  //   path: '**',
+  //   component: OrderListComponent,
+  //   resolve: { items: OrderService },
+  //   canActivate: [AuthenGuardService]
+  // }
 ];
 
 @NgModule({

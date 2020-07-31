@@ -69,7 +69,7 @@ export class JoborderFormComponent implements OnInit {
         orderStatus: "draft",
         contactLists: [],
       };
-    console.log(this.joborderData);
+    // console.log(this.joborderData);
 
     if (this.joborderData.contactLists.length > 0) {
       this.formatMoment(this.joborderData.docdate);
@@ -82,7 +82,7 @@ export class JoborderFormComponent implements OnInit {
     this.getVehicleData();
 
     this.socket.on("user-confirm-reject", (message: any) => {
-      console.log(message);
+      // console.log(message);
       if (message.docno === this.joborderData.docno) {
         this.joborderData = message;
         this.socketUpdateMarkerOnMap();
@@ -122,7 +122,8 @@ export class JoborderFormComponent implements OnInit {
         this.spinner.hide();
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
+        // TODO : throw error
         this.spinner.hide();
       });
   }
@@ -172,14 +173,19 @@ export class JoborderFormComponent implements OnInit {
 
   async getMarkerData(docdate) {
     this.markersData = await this.joborderService.getMarkerDataList(docdate);
-    console.log(this.markersData);
+    // console.log(this.markersData);
     this.spinner.hide();
   }
 
+  /**
+   * when click marker, show customer info in map page  
+   */
   clickedInfoWindow(infoWindow) {
     if (this.previous_info_window == null)
+      // Open info
       this.previous_info_window = infoWindow;
     else {
+      // Close info
       this.infoWindowOpened = infoWindow;
       this.previous_info_window.close();
     }
@@ -274,6 +280,11 @@ export class JoborderFormComponent implements OnInit {
       });
   }
 
+  /**
+   * change status joborder and show mark in map
+   * @param { string } status : status that want to change
+   * @param { number } i : customer index
+   */
   onChangeStatus(status, i) {
     if (this.joborderData.orderStatus === "draft") {
       this.joborderData.orderStatus = "waitapprove";
@@ -335,7 +346,7 @@ export class JoborderFormComponent implements OnInit {
   }
 
   sendReject(contactListData) {
-    console.log(contactListData)
+    // console.log(contactListData)
     if (contactListData.lineUserId) {
       let body = {
         to: contactListData.lineUserId,
@@ -531,8 +542,12 @@ export class JoborderFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Drag and drop for rearrage index  in joborder map
+   * @param event 
+   */
   drop(event: CdkDragDrop<any[]>) {
-    console.log(`${event.previousIndex} to ${event.currentIndex}`);
+    // console.log(`${event.previousIndex} to ${event.currentIndex}`);
     moveItemInArray(
       this.joborderData.contactLists,
       event.previousIndex,

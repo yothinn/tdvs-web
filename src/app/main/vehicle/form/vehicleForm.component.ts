@@ -69,10 +69,10 @@ export class VehicleFormComponent implements OnInit {
         };
 
     if (this.vehicleData._id) {
-      console.log("case Edit");
+      // console.log("case Edit");
       this.vehicleForm = this.editForm();
     } else {
-      console.log("case New");
+      // console.log("case New");
       this.vehicleForm = this.createForm();
     }
     let res: any = await this.vehicleService.getVehicleStaffList();
@@ -153,7 +153,7 @@ export class VehicleFormComponent implements OnInit {
       return d.lisenceID.toLowerCase().indexOf(val) !== -1 || !val;
     });
 
-    console.log(tempVehicle);
+    // console.log(tempVehicle);
     // update the rows
     this.vehicleDetailData = tempVehicle;
   }
@@ -266,15 +266,17 @@ export class VehicleFormComponent implements OnInit {
     if (!control.value) return null;
     let frmGroup: FormGroup = <FormGroup>control.parent;
     try {
-      console.log(new Date(frmGroup.controls["startDate"].value).getTime());
+      // console.log(new Date(frmGroup.controls["startDate"].value).getTime());
       if (
         new Date(control.value).getTime() <
         new Date(frmGroup.controls["startDate"].value).getTime()
       ) {
-        console.log("invalid");
+        // console.log("invalid");
         return { validDate: true };
       }
-    } catch (error) {}
+    } catch (error) {
+      // TODO: throw error
+    }
 
     return null;
   }

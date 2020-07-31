@@ -37,7 +37,7 @@ export class OrderListComponent implements OnInit {
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
     this.temp = this.route.snapshot.data.items.data;
-    console.log(this.rows);
+    // console.log(this.rows);
     this.formatMoment();
     this.sortRows();
   }
@@ -73,7 +73,7 @@ export class OrderListComponent implements OnInit {
         this.formatMoment();
         this.sortRows();
         if (status === "golive") {
-          console.log(resdoc);
+          // console.log(resdoc);
           this.downloadAsPDF(resdoc);
         }
       });
@@ -111,7 +111,7 @@ export class OrderListComponent implements OnInit {
     const doc = new jsPDF();
 
     let a = doc.getFontList();
-    console.log(a);
+    // console.log(a);
     doc.setFont("THSarabun");
     doc.setFontType("normal");
     // doc.setFontType("bold");

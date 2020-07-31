@@ -7,8 +7,9 @@ export const environment = {
   hrm:false,
   staging: false,
   appName: "tvds-dev",
-  apiUrl: "https://tvds-service-7lgq2xsobq-de.a.run.app",
-  // apiUrl: 'http://localhost:3000',
+  // apiUrl: "https://tvds-service-7lgq2xsobq-de.a.run.app",
+  apiUrl: 'http://localhost:3000',
+  authApiUrl: "https://authen-service-7lgq2xsobq-de.a.run.app",
   // SOCKET_ENDPOINT: 'http://localhost:3000'
 };
 

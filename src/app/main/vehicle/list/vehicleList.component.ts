@@ -25,8 +25,8 @@ export class VehicleListComponent implements OnInit {
   @ViewChild(DatatableComponent) table: DatatableComponent;
   private currentComponentWidth;
 
-  rows: Array<any>;
-  temp = [];
+  rows: Array<any> = null;
+  temp = null;
   ColumnMode = ColumnMode;
 
   page = {
@@ -52,12 +52,14 @@ export class VehicleListComponent implements OnInit {
   ngOnInit(): void {
     this.spinner.hide();
     this.rows = this.route.snapshot.data.items.data;
-    this.temp = this.route.snapshot.data.items.data;
-    this.page.count = this.route.snapshot.data.items.totalCount;
-    this.formatMoment();
+    if (this.rows) {
+      this.temp = this.route.snapshot.data.items.data;
+      this.page.count = this.route.snapshot.data.items.totalCount;
+      this.formatMoment();
+    }
   }
 
-  
+  // For resize data table
   ngAfterViewChecked(): void {
     // Check if the table size has changed,
     if (this.table && this.table.recalculate && (this.tableWrapper.nativeElement.clientWidth !== this.currentComponentWidth)) {

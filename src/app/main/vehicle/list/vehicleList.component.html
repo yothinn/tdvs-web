@@ -27,7 +27,7 @@
           class="logo-text h1"
           [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }"
         >
-        รายการข้อมูลการจัดการรถ
+          ตารางรถให้บริการ
         </span>
       </div>
       <!-- / APP TITLE -->
@@ -44,7 +44,14 @@
     <!-- / HEADER -->
 
     <!-- CONTENT CARD -->
-    <div class="content-card" #tableWrapper>
+    <div class="content-card"
+      *ngIf="!rows">
+      เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้
+    </div>
+    <div class="content-card" 
+      *ngIf="rows"
+      #tableWrapper
+    >
       <!-- CONTENT -->
             <ngx-datatable #table 
               class="material fullscreen" 

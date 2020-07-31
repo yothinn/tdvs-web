@@ -5,7 +5,18 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { FuseSharedModule } from '@fuse/shared.module';
 import { AuthenGuardService } from 'app/authentication/authen-guard.service';
-import { MatIconModule, MatMenuModule, MatSelectModule, MatDatepickerModule, MatFormFieldModule, MatTableModule, MatRadioModule, MatInputModule, MatListModule, MatButtonModule, MatTabsModule, MatExpansionModule, MatProgressSpinnerModule, MatTreeModule, MatSliderModule, MatToolbarModule, MatDialogModule } from "@angular/material";
+import {  MatIconModule, 
+          MatMenuModule, 
+          MatSelectModule, 
+          MatDatepickerModule, 
+          MatFormFieldModule, 
+          MatInputModule, 
+          MatListModule, 
+          MatButtonModule, 
+          MatTabsModule, 
+          MatProgressSpinnerModule, 
+          MatSliderModule, 
+          MatDialogModule } from "@angular/material";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { JoborderService } from './services/joborder.service';
@@ -17,6 +28,7 @@ import { SelectCarAndDateComponent } from './select-car-and-date/select-car-and-
 import { JoborderPdfComponent } from './joborder-pdf/joborder-pdf.component';
 import { ServiceDateFilterPipe } from './select-car-and-date/select-car-and-date.pipe';
 import { RejectReasonModalComponent } from './reject-reason-modal/reject-reason-modal.component';
+import { ShareModule } from 'app/share/share.module';
 
 
 const routes = [
@@ -43,8 +55,11 @@ const routes = [
 @NgModule({
   declarations: [
     JoborderListComponent,
-    JoborderFormComponent, SelectCarAndDateComponent, JoborderPdfComponent, 
-    ServiceDateFilterPipe, RejectReasonModalComponent
+    JoborderFormComponent, 
+    SelectCarAndDateComponent, 
+    JoborderPdfComponent, 
+    ServiceDateFilterPipe, 
+    RejectReasonModalComponent,
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -57,15 +72,12 @@ const routes = [
     MatSelectModule,
     MatDatepickerModule,
     MatFormFieldModule,
-    MatTableModule,
-    MatRadioModule,
     MatTabsModule,
     MatIconModule,
     MatInputModule,
     MatListModule,
     MatMenuModule,
     MatButtonModule,
-    MatExpansionModule,
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSnackBarModule,
@@ -76,13 +88,13 @@ const routes = [
       apiKey: 'AIzaSyDnjHI8F5TKYn8Vu8nUtqOn1sVOq2UInQE'
     }),
 
-    MatTreeModule,
     MatSliderModule,
-    MatToolbarModule,
 
     TranslateModule,
     FuseSharedModule,
-    NgxDatatableModule
+    NgxDatatableModule,
+
+    ShareModule,
   ],
   exports: [
     JoborderListComponent,

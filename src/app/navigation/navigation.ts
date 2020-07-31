@@ -1,6 +1,22 @@
 import { FuseNavigation } from '@fuse/types';
 
 export const navigation: FuseNavigation[] = [
+    // {
+    //     id: 'report',
+    //     title: 'Report',
+    //     translate: 'รายงาน',
+    //     type: 'group',
+    //     children: [
+    //         {
+    //             id: 'joborderReport',
+    //             title: 'joborderReport',
+    //             translate: 'รายงานใบสั่งงาน',
+    //             type: 'item',
+    //             icon: 'description',
+    //             url: '/report/joborder'
+    //         }
+    //     ]
+    // },
     {
         id: 'Menu',
         title: 'Menu Order',

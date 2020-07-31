@@ -66,7 +66,7 @@ export class OrderFormComponent implements OnInit {
         orderStatus: "draft",
         contactLists: [],
       };
-    console.log(this.orderData);
+    // console.log(this.orderData);
 
     if (this.orderData.contactLists.length > 0) {
       this.formatMoment(this.orderData.docdate);
@@ -83,7 +83,7 @@ export class OrderFormComponent implements OnInit {
 
     // this.orderService.setupSocketConnection();
     this.socket.on("user-confirm-reject", (message: any) => {
-      console.log(message);
+      // console.log(message);
       if (message.docno === this.orderData.docno) {
         this.orderData = message;
       }
@@ -99,7 +99,8 @@ export class OrderFormComponent implements OnInit {
         this.spinner.hide();
       })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
+        // TODO : throw error
         this.spinner.hide();
       });
   }
@@ -233,7 +234,7 @@ export class OrderFormComponent implements OnInit {
       // console.log(mIndex)
 
       this.clickedMarkerCheckLine(item);
-      console.log(item);
+      // console.log(item);
 
       if (mIndex === -1) {
         let itemList = {
@@ -483,12 +484,12 @@ export class OrderFormComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<any[]>) {
-    console.log(`${event.previousIndex} to ${event.currentIndex}`);
+    // console.log(`${event.previousIndex} to ${event.currentIndex}`);
     moveItemInArray(
       this.orderData.contactLists,
       event.previousIndex,
       event.currentIndex
     );
-    console.log(this.orderData.contactLists);
+    // console.log(this.orderData.contactLists);
   }
 }

@@ -15,14 +15,14 @@ const routes = [
   {
     path: "vehicleForm/:id",
     component: VehicleFormComponent,
-    resolve: { items: VehicleService }
-    // canActivate: [AuthenGuardService]
+    resolve: { items: VehicleService },
+    canActivate: [AuthenGuardService]
   },
   {
-      path     : '**',
-      component: VehicleListComponent,
-      resolve: { items: VehicleService }
-      // canActivate: [AuthenGuardService]
+    path     : '**',
+    component: VehicleListComponent,
+    resolve: { items: VehicleService },
+    canActivate: [AuthenGuardService]
   }
 ];
 
