@@ -173,7 +173,7 @@ export class JoborderFormComponent implements OnInit {
 
   async getMarkerData(docdate) {
     this.markersData = await this.joborderService.getMarkerDataList(docdate);
-    // console.log(this.markersData);
+    console.log(this.markersData);
     this.spinner.hide();
   }
 

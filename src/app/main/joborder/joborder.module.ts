@@ -18,6 +18,7 @@ import {  MatIconModule,
           MatSliderModule, 
           MatDialogModule } from "@angular/material";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { JoborderService } from './services/joborder.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -83,6 +84,7 @@ const routes = [
     MatSnackBarModule,
     MatSidenavModule,
     DragDropModule,
+    FlexLayoutModule,
 
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDnjHI8F5TKYn8Vu8nUtqOn1sVOq2UInQE'
