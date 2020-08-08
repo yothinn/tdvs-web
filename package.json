@@ -60,7 +60,7 @@
     "ngx-spinner": "^7.2.0",
     "node-sass": "^4.13.1",
     "perfect-scrollbar": "1.4.0",
-    "prismjs": "1.15.0",
+    "prismjs": "1.21.0",
     "rxjs": "6.3.3",
     "rxjs-compat": "6.3.3",
     "socket.io-client": "^2.3.0",
