@@ -309,7 +309,7 @@
           [disableDefaultUI]="false"
           [zoomControl]="false"
         >
-          <div *ngFor="let markerItem of markersData; let i = index">
+          <div *ngFor="let markerItem of markersData.slice; let i = index">
             <div *ngIf="markerItem.longitude || markerItem.latitude">
               <agm-marker
                 (markerClick)="clickedInfoWindow(infoWindow)"
@@ -318,7 +318,7 @@
                 [iconUrl]="markerItem.icon"
               >
                 <agm-info-window #infoWindow fxLayout="column">
-                  <div class="h3">
+                  <div class="h3 mt-16 ml-8 mr-8">
                     {{ markerItem.title ? markerItem.title : "คุณ" }}
                     {{
                       markerItem.displayName
@@ -326,18 +326,16 @@
                         : "ไม่ระบุ"
                     }}
                   </div>
-                  <div class="h4 mt-8">
+                  <div class="h4 mt-16 ml-8 mr-8">
                     {{ markerItem.addressLine1 }}
                     {{ markerItem.addressStreet }}
                     {{ markerItem.addressSubDistrict }}
                     {{ markerItem.addressDistrict }}
-                  </div>
-                  <div class="h4">
                     {{ markerItem.addressProvince }}
                     {{ markerItem.addressPostCode }}
                   </div>
-                  <div class="mt-8" fxLayout="row">
-                    <div class="h5" fxFlex="60">
+                  <div class="mt-16 ml-8 mr-8" fxLayout="row">
+                    <div class="h4" fxFlex="60" fxLayoutAlign="start center">
                       <span> วันที่ลงทะเบียน : </span>
                       <span>{{ markerItem.created | date:"dd/MM/yyy" }} </span>
                     </div>
@@ -365,6 +363,49 @@
                       <span *ngIf="markerItem.docno !== joborderData.docno">
                         {{ markerItem.docno }}
                       </span>
+                    </div>
+                  </div>
+                  <div class="mt-16 ml-8 mr-8" fxLayout="column">
+                    <div class="h4">
+                      <mat-checkbox 
+                        name="chkHistory"
+                        #chkHistory 
+                        (click)="onShowHistory(chkHistory, markerItem)"
+                      >
+                        แสดงประวัติการให้บริการ
+                      </mat-checkbox>
+                    </div>
+                    <!-- Show/Hide Histroy content -->
+                    <div *ngIf="chkHistory.checked" id="history-container" fxLayout="column">
+                      <div *ngIf="markerItem?.jobHistory?.length == 0">
+                        <span><strong>ไม่มีประวัติการให้บริการ</strong></span>
+                      </div>
+                      <div *ngIf="markerItem?.jobHistory?.length > 0">
+                        <div fxLayout="row" id="history-header">
+                          <span fxFlex="20%" class="history-content"><strong>เลขที่</strong></span>
+                          <span fxFlex="15%" class="history-content"><strong>วันที่</strong></span>
+                          <span fxFlex="20%" class="history-content"><strong>สถานะ</strong></span>
+                          <span fxFlex="15%" class="history-content"><strong>ยอดขาย</strong></span>
+                          <span fxFlex="30%" class="history-content"><strong>เหตุผลยกเลิก</strong></span>
+                        </div>
+                        <div *ngFor="let historyItem of markerItem.jobHistory" id="history-list" fxLayout="row">
+                          <span fxFlex="20%" class="history-content" style="text-align: center;">
+                            {{historyItem.docno}}
+                          </span>
+                          <span fxFlex="15%" class="history-content" style="text-align: center;">
+                            {{historyItem.docdate | date:"dd/MM/yyyy"}}
+                          </span>
+                          <span fxFlex="20%" class="history-content" style="text-align: center;">
+                            {{historyItem.contactLists.contactStatus | thaicontactstatus}}
+                          </span>
+                          <span fxFlex="15%" class="history-content" style="text-align: right;">
+                            {{historyItem?.sales ? historyItem?.sales : 0 | number:"1.2-2" }}
+                          </span>
+                          <span fxFlex="30%" class="history-content">
+                            {{historyItem?.remark}}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </agm-info-window>

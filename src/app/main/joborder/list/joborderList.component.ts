@@ -130,10 +130,12 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
   // formatMoment() {
   //   for (let i = 0; i < this.rows.length; i++) {
   //     const row = this.rows[i];
+  //     console.log(row.docdate);
   //     row.docdate = moment(row.docdate).format("DD/MM/YYYY");
+  //     console.log(row.docdate);
   //     // row.docdate = moment(row.docdate).format();
   //   }
-  // }
+  //}
 
   sortRows() {
     this.rows.reverse();

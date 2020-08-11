@@ -18,6 +18,7 @@ import {  MatIconModule,
           MatSliderModule, 
           MatDialogModule } from "@angular/material";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { JoborderService } from './services/joborder.service';
@@ -83,6 +84,8 @@ const routes = [
     MatDialogModule,
     MatSnackBarModule,
     MatSidenavModule,
+    MatCheckboxModule,
+
     DragDropModule,
     FlexLayoutModule,
 

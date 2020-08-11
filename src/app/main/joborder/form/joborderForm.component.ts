@@ -40,6 +40,7 @@ export class JoborderFormComponent implements OnInit {
   lat: number = 13.6186285;
   lng: number = 100.5078163;
 
+
   infoWindowOpened = null;
   previous_info_window = null;
 
@@ -173,7 +174,7 @@ export class JoborderFormComponent implements OnInit {
 
   async getMarkerData(docdate) {
     this.markersData = await this.joborderService.getMarkerDataList(docdate);
-    console.log(this.markersData);
+    // console.log(this.markersData);
     this.spinner.hide();
   }
 
@@ -556,5 +557,22 @@ export class JoborderFormComponent implements OnInit {
     // console.log(this.joborderData.contactLists);
     // พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
     this.onSave();
+  }
+
+  /**
+   * Show or hide history
+   * @param {checker control} chkHistory
+   * @param {json} markerItem 
+   */
+  onShowHistory(chkHistroy, markerItem) {
+    // console.log(markerItem);
+
+    if (!chkHistroy.checked) { 
+      // false -> true : show history
+      this.joborderService.getJoborderHistory(markerItem._id)
+          .then(res => {
+            markerItem.jobHistory = res;
+          });
+    } 
   }
 }
