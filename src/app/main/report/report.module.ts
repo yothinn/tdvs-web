@@ -15,6 +15,7 @@ import { FuseSharedModule } from '@fuse/shared.module';
 import { ShareModule } from 'app/share/share.module';
 import { SalesReportComponent } from './sales-report/sales-report.component';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { SalesReportBydatesComponent } from './sales-report-bydates/sales-report-bydates.component';
 
 // 
 const routes = [
@@ -36,6 +37,7 @@ const routes = [
   declarations: [
     JoborderReportComponent,
     SalesReportComponent,
+    SalesReportBydatesComponent,
   ],
   imports: [
     CommonModule,
