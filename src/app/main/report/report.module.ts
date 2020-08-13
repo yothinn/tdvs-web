@@ -9,6 +9,7 @@ import {  MatButtonModule,
           MatIconModule,
        } from "@angular/material";
 import { ShareModule } from 'app/share/share.module';
+import { SalesReportComponent } from './sales-report/sales-report.component';
 
 // 
 const routes = [
@@ -18,9 +19,9 @@ const routes = [
     canActivate: [AuthenGuardService],
     resolve: { items: ReportService },
   },
-  { // /report/joborder
-    path: "joborder",
-    component: JoborderReportComponent,
+  { // /report/sales
+    path: "sales",
+    component: SalesReportComponent,
     canActivate: [AuthenGuardService],
     resolve: { items: ReportService },
   },
@@ -29,6 +30,7 @@ const routes = [
 @NgModule({
   declarations: [
     JoborderReportComponent,
+    SalesReportComponent,
   ],
   imports: [
     CommonModule,

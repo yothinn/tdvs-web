@@ -309,7 +309,7 @@
           [disableDefaultUI]="false"
           [zoomControl]="false"
         >
-          <div *ngFor="let markerItem of markersData.slice; let i = index">
+          <div *ngFor="let markerItem of markersData; let i = index">
             <div *ngIf="markerItem.longitude || markerItem.latitude">
               <agm-marker
                 (markerClick)="clickedInfoWindow(infoWindow)"
@@ -319,12 +319,14 @@
               >
                 <agm-info-window #infoWindow fxLayout="column">
                   <div class="h3 mt-16 ml-8 mr-8">
-                    {{ markerItem.title ? markerItem.title : "คุณ" }}
-                    {{
-                      markerItem.displayName
-                        ? markerItem.displayName
-                        : "ไม่ระบุ"
-                    }}
+                    <strong>
+                      {{ markerItem.title ? markerItem.title : "คุณ" }}
+                      {{
+                        markerItem.displayName
+                          ? markerItem.displayName
+                          : "ไม่ระบุ"
+                      }}
+                    </strong>
                   </div>
                   <div class="h4 mt-16 ml-8 mr-8">
                     {{ markerItem.addressLine1 }}
@@ -333,6 +335,14 @@
                     {{ markerItem.addressDistrict }}
                     {{ markerItem.addressProvince }}
                     {{ markerItem.addressPostCode }}
+                  </div>
+                  <div class="h4 mt-16 ml-8 mr-8" *ngIf="markerItem.notes">
+                    <div>
+                      <strong>ข้อมูลเพิ่มเติม</strong>
+                    </div>
+                    <div style="white-space: pre-line;">
+                      {{ markerItem.notes}}
+                    </div>
                   </div>
                   <div class="mt-16 ml-8 mr-8" fxLayout="row">
                     <div class="h4" fxFlex="60" fxLayoutAlign="start center">
