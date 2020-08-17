@@ -34,25 +34,9 @@ export class ReportService {
     if (path === 'joborder') {
       // route : report/joborder/:id
       return this.routeParams.id ? this.joborder.getJoborderData(this.routeParams.id) : '';
-    
     } else if (path === 'sales') {
-      const startDate = moment().day(-30);
-      const endDate = moment();
-
-
-      console.log(startDate);
-      console.log(endDate);
-      const body = {
-        startDate: startDate.toJSON(),
-        endDate: endDate.toJSON(), 
-      };
-
-      console.log(body);
-
-      return forkJoin([
-          this.getSalesReportByJoborder(body),
-          this.getSalesReportByDates(body)
-        ]);
+      //return '';
+      return this.getSalesReportByJoborder({page: 1});
     } else {
       return '';
     }

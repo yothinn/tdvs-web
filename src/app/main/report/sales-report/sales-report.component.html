@@ -33,7 +33,7 @@
     <div class="content-card"
       *ngIf="!rows"
     >
-      ไม่สามารถโหลดข้อมูลได้
+      เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้
     </div>
     <div class="content-card" 
       *ngIf="rows"
@@ -49,27 +49,52 @@
         [scrollbarV]="true"
         [scrollbarH]="true" 
         [virtualization]="false"
-        [rows]="rows" 
+        [limit]="10" 
+        [rows]="rows"
+        [externalPaging]="true" 
+        [reorderable]="true" 
+        [count]="page.count" 
+        [offset]="page.offset" 
+        [limit]="page.limit" 
+        (page)="setPage($event)" 
       >
 
-        <ngx-datatable-column name="เลชที่ใบสั่งงาน" [flexGrow]="3">
+        <ngx-datatable-column name="เลชที่ใบสั่งงาน" [flexGrow]="1.5">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{ row.docno }}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="วันที่" [flexGrow]="4">
+        <ngx-datatable-column name="วันที่" [flexGrow]="1.5">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{ row.docdate | date:"dd/MM/yyy" }}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="ยอดขายรวม" [flexGrow]="2.5">
+        <ngx-datatable-column prop="carNo" name="รถที่รับผิดชอบ" [flexGrow]="2.5">
           <ng-template ngx-datatable-cell-template let-row="row">
-            {{ row.salesAmount | number:"1.2-2"}}
+            {{
+              row.carNo.lisenceID
+                ? "(" +
+                  row.carNo.lisenceID +
+                  ")" +
+                  " " +
+                  row.carNo.driverInfo.displayName
+                : "ยังไม่ระบุ"
+            }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="orderStatus" name="สถานะ" [flexGrow]="1.5">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            {{ row.orderStatus | thaiorderstatus }}
+          </ng-template>
+        </ngx-datatable-column>  
+        <ngx-datatable-column name="ยอดขายรวม" [flexGrow]="1.5" [cellClass]="'sales-content'">
+          <ng-template ngx-datatable-cell-template let-row="row">
+              {{ row.salesAmount | number:"1.2-2"}}
           </ng-template>
         </ngx-datatable-column>
        
 
-        <!-- <ngx-datatable-column [flexGrow]="1">
+        <ngx-datatable-column [flexGrow]="1">
           <ng-template ngx-datatable-cell-template let-row="row">
             <button class="mat-icon-button" aria-label="More" [matMenuTriggerFor]="moreMenu"
               (click)="$event.stopPropagation()">
@@ -77,17 +102,13 @@
             </button>
 
             <mat-menu #moreMenu>
-              <button mat-menu-item aria-label="edit" (click)="editData(row)">
+              <button mat-menu-item aria-label="edit" (click)="onJoborderDetail(row)">
                 <mat-icon>edit</mat-icon>
-                <span>แก้ไข</span>
-              </button>
-              <button mat-menu-item aria-label="delete" (click)="deleteData(row)">
-                <mat-icon>delete</mat-icon>
-                <span>ลบ</span>
+                <span>ดูรายละเอียด</span>
               </button>
             </mat-menu>
           </ng-template> 
-        </ngx-datatable-column> -->
+        </ngx-datatable-column>
       </ngx-datatable>
     </div>
     <!-- /CONTENT CARD -->

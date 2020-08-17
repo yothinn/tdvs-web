@@ -164,10 +164,10 @@
                 <mat-icon>print</mat-icon>
                 <span>พิมพ์ใบสั่งงาน</span>
               </button>
-              <button mat-menu-item (click)="onJoborderReport(row)">
+              <!-- <button mat-menu-item (click)="onJoborderReport(row)">
                 <mat-icon>pageview</mat-icon>
                 <span>ดูรายงาน</span>
-              </button>
+              </button> -->
               <button mat-menu-item *ngIf="
                   row.orderStatus === 'waitapprove' ||
                   row.orderStatus === 'orderavailable' ||

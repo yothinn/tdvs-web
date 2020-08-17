@@ -8,6 +8,7 @@ import { ReportService } from './report.service';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {  MatButtonModule,
           MatIconModule,
+          MatMenuModule,
        } from "@angular/material";
 import { FuseModule } from '@fuse/fuse.module';
 import { FuseSharedModule } from '@fuse/shared.module';
@@ -46,6 +47,7 @@ const routes = [
     ShareModule,
 
     MatButtonModule,
+    MatMenuModule,
     MatIconModule,
     FlexLayoutModule,
     FuseSharedModule,
