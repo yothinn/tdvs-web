@@ -35,8 +35,8 @@ export class ReportService {
       // route : report/joborder/:id
       return this.routeParams.id ? this.joborder.getJoborderData(this.routeParams.id) : '';
     } else if (path === 'sales') {
-      //return '';
-      return this.getSalesReportByJoborder({page: 1});
+      return '';
+      //return this.getSalesReportByJoborder({page: 1});
     } else {
       return '';
     }
@@ -47,8 +47,8 @@ export class ReportService {
    * return data report each 10 size per page
    * @param {json} 
    * JSON : {
-   *  startDate: "UTC date , require"
-   *  endDate: "UTC date,  require"
+   *  startDate: "UTC date "
+   *  endDate: "UTC date"
    *  page: "number, 1 is default"
    *  size: "number, 10 is default"
    * }
@@ -62,8 +62,8 @@ export class ReportService {
    * return data report each 10 size per page
    * @param {json} 
    * JSON : {
-   *  startDate: "UTC date , require"
-   *  endDate: "UTC date,  require"
+   *  startDate: "UTC date"
+   *  endDate: "UTC date"
    *  page: "number, 1 is default"
    *  size: "number, 10 is default"
    * }

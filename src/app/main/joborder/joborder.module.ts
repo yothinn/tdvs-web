@@ -48,7 +48,13 @@ const routes = [
     canActivate: [AuthenGuardService]
   },
   {
-    path: '**',
+    path: "suggestion",
+    component: JobordersuggestionComponent,
+    //resolve: { items: JoborderService },
+    canActivate: [AuthenGuardService]
+  },
+  {
+    path: 'list',
     component: JoborderListComponent,
     resolve: { items: JoborderService },
     canActivate: [AuthenGuardService]

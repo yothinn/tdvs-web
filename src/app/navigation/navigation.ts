@@ -10,10 +10,18 @@ export const navigation: FuseNavigation[] = [
             {
                 id: 'joborderReport',
                 title: 'joborderReport',
-                translate: 'รายงานใบสั่งงาน',
+                translate: 'ยอดขายตามใบสั่งงาน',
                 type: 'item',
                 icon: 'description',
                 url: '/report/sales'
+            },
+            {
+                id: 'salesReportByDates',
+                title: 'salesReportByDates',
+                translate: 'ยอดขายตามวันที่',
+                type: 'item',
+                icon: 'description',
+                url: '/report/dates'
             }
         ]
     },
@@ -37,7 +45,15 @@ export const navigation: FuseNavigation[] = [
                 translate: 'จัดทำใบสั่งงาน',
                 type: 'item',
                 icon: 'description',
-                url: '/joborder'
+                url: '/joborder/list'
+            },
+            {
+                id: 'suggestion',
+                title: 'suggestion',
+                translate: 'ข้อเสนอแนะลูกค้า',
+                type: 'item',
+                icon: 'description',
+                url: '/joborder/suggestion'
             }
         ]
     },

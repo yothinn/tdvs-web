@@ -32,6 +32,12 @@ const routes = [
     canActivate: [AuthenGuardService],
     resolve: { items: ReportService },
   },
+  { // /report/dates
+    path: "dates",
+    component: SalesReportBydatesComponent,
+    canActivate: [AuthenGuardService],
+    resolve: { items: ReportService },
+  },
 ];
 
 @NgModule({

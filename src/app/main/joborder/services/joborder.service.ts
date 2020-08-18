@@ -14,7 +14,8 @@ const api_url = environment.apiUrl + "/api/joborders/";
 const api_url_vehicle = environment.apiUrl + "/api/vehicles/";
 const api_url_markers = environment.apiUrl + "/api/jobordersupdatemap/";
 const api_url_line = environment.apiUrl + "/api/lineconnects/members/push";
-const api_url_history = environment.apiUrl + "/api/joborders/history/"
+const api_url_history = environment.apiUrl + "/api/joborders/history/";
+const api_url_suggestion = environment.apiUrl + "/api/suggestion";
 
 
 @Injectable({
@@ -107,6 +108,21 @@ export class JoborderService {
           resolve(res.data);
         }, reject);
     });
+  }
+
+  /**
+   * Get customer suggestion
+   * return data report each 10 size per page
+   * @param {json} 
+   * JSON : {
+   *  startDate: "UTC date"
+   *  endDate: "UTC date"
+   *  page: "number, 1 is default"
+   *  size: "number, 10 is default"
+   * }
+   */
+  getCustomerSuggestion(body): Observable<any> {
+    return this.http.post(api_url_suggestion, body, { headers: this.auth.getAuthorizationHeader() });
   }
 
   sendConFirmData(body): Promise<any> {

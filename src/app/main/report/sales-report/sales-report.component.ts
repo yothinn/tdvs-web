@@ -33,10 +33,10 @@ export class SalesReportComponent implements OnInit, OnDestroy, AfterViewChecked
 
   page = {
     limit: 10,
-    count: 40,
+    count: 0,
     offset: 0,
   };
-  keyword = '';
+  // keyword = '';
 
   private _unsubscribeAll: Subject<any>;
 
@@ -51,11 +51,11 @@ export class SalesReportComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngOnInit() {
-    //console.log(this.route.snapshot.data.items);
+    console.log(this.route.snapshot.data.items);
     //console.log(this.route.snapshot.data.items[1].data);
 
-    this.rows = this.route.snapshot.data.items.data;
-    // this.setPage({offset: 0});
+    //this.rows = this.route.snapshot.data.items.data;
+    this.setPage({offset: 0});
   }
 
   ngAfterViewChecked() {
