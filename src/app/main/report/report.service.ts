@@ -27,7 +27,7 @@ export class ReportService {
     this.routeParams = route.params;
     // console.log("resolve with params : " + JSON.stringify(this.routeParams));
 
-    console.log(route.url[0].path);
+    // console.log(route.url[0].path);
 
     const path = route.url[0].path;
 

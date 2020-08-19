@@ -51,7 +51,7 @@ export class SalesReportComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngOnInit() {
-    console.log(this.route.snapshot.data.items);
+    // console.log(this.route.snapshot.data.items);
     //console.log(this.route.snapshot.data.items[1].data);
 
     //this.rows = this.route.snapshot.data.items.data;

@@ -12,7 +12,7 @@ export const navigation: FuseNavigation[] = [
                 title: 'joborderReport',
                 translate: 'ยอดขายตามใบสั่งงาน',
                 type: 'item',
-                icon: 'description',
+                icon: 'featured_play_list',
                 url: '/report/sales'
             },
             {
@@ -20,7 +20,7 @@ export const navigation: FuseNavigation[] = [
                 title: 'salesReportByDates',
                 translate: 'ยอดขายตามวันที่',
                 type: 'item',
-                icon: 'description',
+                icon: 'calendar_today',
                 url: '/report/dates'
             }
         ]
@@ -52,7 +52,7 @@ export const navigation: FuseNavigation[] = [
                 title: 'suggestion',
                 translate: 'ข้อเสนอแนะลูกค้า',
                 type: 'item',
-                icon: 'description',
+                icon: 'comment',
                 url: '/joborder/suggestion'
             }
         ]
@@ -84,7 +84,7 @@ export const navigation: FuseNavigation[] = [
                 title: 'vehicle',
                 translate: 'ตารางรถให้บริการ',
                 type: 'item',
-                icon: 'directions_car',
+                icon: 'local_shipping',
                 url: '/vehicle'
             },
             {

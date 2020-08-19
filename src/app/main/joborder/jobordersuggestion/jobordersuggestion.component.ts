@@ -83,7 +83,7 @@ export class JobordersuggestionComponent implements OnInit, OnDestroy, AfterView
 
        this.page.offset = pageInfo.offset;
        this.page.count = res.totalCount;
-       console.log(res);
+       // console.log(res);
     });
   }
 

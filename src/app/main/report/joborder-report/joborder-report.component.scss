@@ -1,23 +1,26 @@
 @import "src/@fuse/scss/fuse";
 
 h3 {
-    margin: 10px 0px 10px 0px;
+    // margin: 10px 0px 10px 0px;
     // border: 1px solid black;
 }
 
-.content {
-}
-
-.accent {
-    margin: 0px 30px 0px 30px;    
-}
-
 .header {
-    padding: 0px 10px 0px 40px;
+    margin-top: 15px;
+    margin-left: 10px;
+}
+
+.content-card {
+    margin-top: 10px;
+    background-color: white;
+}
+
+.content {
+
 }
 
 .header-table {
-    background-color: lightblue;
+    // background-color: white;
     text-align: center;
     //padding: 5px 0px, 5px 0px;
     margin: 0px 30px 0px 30px;    
@@ -36,7 +39,7 @@ h3 {
 
 .display-sales {
     text-align: right;
-    padding-right: 20px;
+    padding-right: 10px;
 }
 
 .button {

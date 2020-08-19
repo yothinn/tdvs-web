@@ -31,7 +31,8 @@ export class ServerErrorInterceptor implements HttpInterceptor {
           this.auth.logout();
           this.router.navigate(['auth/login']);
         } else if (error.status === 400) {
-          console.log('network error');
+          // console.log('network error');
+          return throwError(error);
         } else {
           return throwError(error);
         }

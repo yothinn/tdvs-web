@@ -1,153 +1,124 @@
-<!-- When data is null -->
-<div 
-  class="page-layout carded fullwidth inner-scroll"
-  *ngIf="!joborderData"
->
-  เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้
-</div>
-<div class="page-layout carded fullwidth inner-scroll"
-  *ngIf="joborderData"
->
-  <div class="header accent logo mb-24 mb-md-0" fxLayout="column">
-    <div fxLayout="row">
-      <span class="logo-text h1">
-        รายงานใบสั่งงาน
-      </span>
-    </div>
-    <div fxLayout="row">
-      <div fxFlex="50%"> 
-        <h3>
-          <strong>เลขที่ใบสั่งงาน:   </strong>
-          <span>{{  joborderData?.docno }}  </span>
-        </h3>
-      </div>
-      <div fxFlex="50%"> 
-        <h3>
-          <strong>วันที่ใบสั่งงาน:   </strong>
-          <span>{{ joborderData?.docdate | date:"dd/MM/yyyy" }}</span>
-        </h3>
-      </div>
-    </div>
-    <div fxLayout="row">
-      <div fxFlex="50%">
-          <h3>
-            <strong>รถรับผิดชอบ:  </strong>
-            <span>
-              {{ 
-                joborderData?.carNo.lisenceID + " " +
-                joborderData?.carNo.driverInfo.displayName
-              }}
+<div class="page-layout carded  fullwidth inner-scroll">
+  <!-- TOP BACKGROUND -->
+  <div class="top-bg accent"></div>
+  <!-- / TOP BACKGROUND -->
+
+  <!-- CENTER -->
+  <div class="center">
+    <!-- HEADER -->
+    <div class="header accent" fxLayout="column" fxLayoutAlign="space-between">
+      <!-- APP TITLE -->      
+        <div class="logo head-joborder">
+            <span class="logo-text pt-16 h1">
+              รายงานใบสั่งงาน
             </span>
-          </h3>
         </div>
-      <div fxFlex="50%"> 
-        <h3>
-          <strong>สถานะ:   </strong>
-          <span>{{ joborderData?.orderStatus | thaiorderstatus }} </span>
-        </h3>
-      </div>
+        <div fxLayout="row">
+            <div fxFlex="50%"> 
+              <h3>
+                <strong>เลขที่ใบสั่งงาน:   </strong>
+                <span>{{  joborderData?.docno }}  </span>
+              </h3>
+            </div>
+            <div fxFlex="50%"> 
+              <h3>
+                <strong>วันที่ใบสั่งงาน:   </strong>
+                <span>{{ joborderData?.docdate | date:"dd/MM/yyyy" }}</span>
+              </h3>
+            </div>
+        </div>
+        <div fxLayout="row">
+            <div fxFlex="50%">
+                <h3>
+                  <strong>รถรับผิดชอบ:  </strong>
+                  <span>
+                    {{ 
+                      joborderData?.carNo.lisenceID + " " +
+                      joborderData?.carNo.driverInfo.displayName
+                    }}
+                  </span>
+                </h3>
+            </div>
+            <div fxFlex="50%"> 
+              <h3>
+                <strong>สถานะ:   </strong>
+                <span>{{ joborderData?.orderStatus | thaiorderstatus }} </span>
+              </h3>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="content">
-    <!-- Header Block -->
-    <!-- <div class="header">
-      <div fxLayout="row">
-        <div fxFlex="50%"> 
-          <h3>
-            <strong>เลขที่ใบสั่งงาน:   </strong>
-            <span>{{  joborderData.docno }}  </span>
-          </h3>
-        </div>
-        <div fxFlex="50%"> 
-          <h3>
-            <strong>วันที่ใบสั่งงาน:   </strong>
-            <span>{{ joborderData.docdate | date:"dd/MM/yyyy" }}</span>
-          </h3>
-        </div>
-      </div>
-      <div fxLayout="row">
-        <div fxFlex="50%">
-            <h3>
-              <strong>รถรับผิดชอบ:  </strong>
-              <span>
-                {{ 
-                  joborderData.carNo.lisenceID + " " +
-                  joborderData.carNo.driverInfo.displayName
-                }}
-              </span>
-            </h3>
+      <!-- / APP TITLE -->
+
+    <!-- When data is null -->
+    <div class="content-card" *ngIf="!joborderData">
+      <!-- เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้ -->
+    </div>
+    <div class="content-card" *ngIf="joborderData">
+      <div class="content" fxLayout="column">
+          <!-- Header table-->
+          <div fxLayout="row" class="header-table" >
+            <div fxFlex="5%" ><h3><strong>สำดับ</strong></h3></div>
+            <div fxFlex="20%"><h3><strong>ชื่อ-นามสกุล</strong></h3></div>
+            <div fxFlex="15%"><h3><strong>แขวง</strong></h3></div>
+            <div fxFlex="15%"><h3><strong>เขต</strong></h3></div>
+            <div fxFlex="20%"><h3><strong>จังหวัด</strong></h3></div>
+            <div fxFlex="15%"><h3><strong>สถานะ</strong></h3></div>
+            <div fxFlex="10%"><h3><strong>ยอดขาย</strong></h3></div>
           </div>
-        <div fxFlex="50%"> 
-          <h3>
-            <strong>สถานะ:   </strong>
-            <span>{{ joborderData.orderStatus | thaiorderstatus }} </span>
-          </h3>
-        </div>
+          <!-- contactList data table -->
+          <div style="overflow-y: auto;">
+            <div 
+              fxLayout="row" 
+              *ngFor="let contact of joborderData?.contactLists;let i = index"
+              class="content-table"
+            >
+              <div fxFlex="5%" style="padding-left: 15px;">
+                {{ i + 1 }}
+              </div>
+              <div fxFlex="20%" style="padding-left: 20px;">
+                {{ contact.displayName}}
+              </div>
+              <div fxFlex="15%" style="padding-left: 20px;">
+                {{ 
+                  contact.addressSubDistrict
+                }}
+              </div>
+              <div fxFlex="15%" style="padding-left: 20px;">
+                {{ contact.addressDistrict }}
+              </div>
+              <div fxFlex="20%" style="padding-left: 20px;">
+                {{ contact.addressProvince }}
+              </div>
+              <div fxFlex="15%" style="padding-left: 15px;">
+                {{ contact.contactStatus | thaicontactstatus }}
+              </div>
+              <div fxFlex="10%" class="display-sales">
+                {{ contact.sales | number:"1.2-2" }}
+              </div>
+            </div>
+          <!-- สรุป-->
+            <div class="summary-table">
+              <div fxFlex="5%"></div>
+              <div fxFlex="70%"></div>
+              <div fxFlex="15%" style="text-align: center;">
+                <h3><strong>รวมยอดขาย</strong></h3>
+              </div>
+              <div fxFlex="10%" class="display-sales">
+                <h3><strong> {{ salesAmount | number:"1.2-2"}}</strong></h3>
+              </div>
+            </div>
+          </div>
       </div>
-    </div> -->
-    <!-- table -->
-    <div class="table" fxLayout="column">
-      <!-- Header table-->
-      <div fxLayout="row" class="header-table">
-        <div fxFlex="5%" ><h3><strong>สำดับ</strong></h3></div>
-        <div fxFlex="20%"><h3><strong>ชื่อ-นามสกุล</strong></h3></div>
-        <div fxFlex="15%"><h3><strong>แขวง</strong></h3></div>
-        <div fxFlex="15%"><h3><strong>เขต</strong></h3></div>
-        <div fxFlex="20%"><h3><strong>จังหวัด</strong></h3></div>
-        <div fxFlex="15%"><h3><strong>สถานะ</strong></h3></div>
-        <div fxFlex="10%"><h3><strong>ยอดขาย</strong></h3></div>
+      <!-- button -->
+      <div class="button" fxLayoutAlign="end">
+        <button 
+          mat-raised-button 
+          color="accent"
+          (click)="onDownloadXlsx()"
+        >
+          ดาวน์โหลด xlsx 
+        </button>
       </div>
-      <!-- contactList data table -->
-      <div 
-        fxLayout="row" 
-        *ngFor="let contact of joborderData?.contactLists;let i = index"
-        class="content-table"
-      >
-        <div fxFlex="5%" style="padding-left: 15px;">
-          {{ i + 1 }}
-        </div>
-        <div fxFlex="20%" style="padding-left: 20px;">
-          {{ contact.displayName}}
-        </div>
-        <div fxFlex="15%" style="padding-left: 20px;">
-          {{ 
-            contact.addressSubDistrict
-          }}
-        </div>
-        <div fxFlex="15%" style="padding-left: 20px;">
-          {{ contact.addressDistrict }}
-        </div>
-        <div fxFlex="20%" style="padding-left: 20px;">
-          {{ contact.addressProvince }}
-        </div>
-        <div fxFlex="15%" style="padding-left: 15px;">
-          {{ contact.contactStatus | thaicontactstatus }}
-        </div>
-        <div fxFlex="10%" class="display-sales">
-          {{ contact.sales | number:"1.2-2" }}
-        </div>
-      </div>
-      <!-- สรุป-->
-      <div class="summary-table">
-        <div fxFlex="5%"></div>
-        <div fxFlex="70%"></div>
-        <div fxFlex="15%" style="text-align: center;">
-          <h3><strong>รวมยอดขาย</strong></h3>
-        </div>
-        <div fxFlex="10%" class="display-sales">
-          <h3><strong> {{ salesAmount | number:"1.2-2"}}</strong></h3>
-        </div>
-      </div>
-    </div>
-    <!-- button -->
-    <div class="button" fxLayoutAlign="end">
-      <button 
-        mat-raised-button 
-        color="accent"
-        (click)="onDownloadXlsx()"
-      >
-        ดาวน์โหลด xlsx 
-      </button>
     </div>
   </div>
 </div>

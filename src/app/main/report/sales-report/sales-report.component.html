@@ -33,7 +33,7 @@
     <div class="content-card"
       *ngIf="!rows"
     >
-      เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้
+      <!-- เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้ -->
     </div>
     <div class="content-card" 
       *ngIf="rows"
@@ -59,17 +59,17 @@
         (page)="setPage($event)" 
       >
 
-        <ngx-datatable-column name="เลชที่ใบสั่งงาน" [flexGrow]="1.5">
+        <ngx-datatable-column name="เลชที่ใบสั่งงาน" [headerClass]="'header-table'" [flexGrow]="1.5">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{ row.docno }}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="วันที่" [flexGrow]="1.5">
+        <ngx-datatable-column name="วันที่" [headerClass]="'header-table'" [flexGrow]="1.5">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{ row.docdate | date:"dd/MM/yyy" }}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column prop="carNo" name="รถที่รับผิดชอบ" [flexGrow]="2.5">
+        <ngx-datatable-column prop="carNo" [headerClass]="'header-table'" name="รถที่รับผิดชอบ" [flexGrow]="2.5">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{
               row.carNo.lisenceID
@@ -82,12 +82,12 @@
             }}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column prop="orderStatus" name="สถานะ" [flexGrow]="1.5">
+        <ngx-datatable-column prop="orderStatus" name="สถานะ" [headerClass]="'header-table'" [flexGrow]="1.5">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{ row.orderStatus | thaiorderstatus }}
           </ng-template>
         </ngx-datatable-column>  
-        <ngx-datatable-column name="ยอดขายรวม" [flexGrow]="1.5" [cellClass]="'sales-content'">
+        <ngx-datatable-column name="ยอดขายรวม" [flexGrow]="1.5" [headerClass]="'header-table'" [cellClass]="'sales-content'">
           <ng-template ngx-datatable-cell-template let-row="row">
               {{ row.salesAmount | number:"1.2-2"}}
           </ng-template>

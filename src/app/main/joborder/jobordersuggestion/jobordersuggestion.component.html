@@ -33,7 +33,7 @@
     <div class="content-card"
       *ngIf="!rows"
     >
-      เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้
+      <!-- เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้ -->
     </div>
     <div class="content-card" 
       *ngIf="rows"
@@ -74,12 +74,12 @@
             {{ row.contactLists.displayName }}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column prop="เบอร์โทร" name="mobileNo1" [flexGrow]="1.5">
+        <ngx-datatable-column prop="เบอร์โทร" name="เบอร์โทรศัพท์" [flexGrow]="1">
           <ng-template ngx-datatable-cell-template let-row="row">
             {{ row.contactLists.mobileNo1 }}
           </ng-template>
         </ngx-datatable-column>  
-        <ngx-datatable-column name="ข้อเสนอแนะ" [flexGrow]="2.5">
+        <ngx-datatable-column name="ข้อเสนอแนะ" [flexGrow]="3">
           <ng-template ngx-datatable-cell-template let-row="row">
               {{ row.contactLists.suggestion }}
           </ng-template>
