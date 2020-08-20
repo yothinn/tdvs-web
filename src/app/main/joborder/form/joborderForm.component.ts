@@ -161,7 +161,7 @@ export class JoborderFormComponent implements OnInit {
         }
       } else {
         if (!this.joborderData._id) {
-          this.router.navigateByUrl("/joborder");
+          this.router.navigateByUrl("/joborder/list");
         }
       }
     });
@@ -489,7 +489,7 @@ export class JoborderFormComponent implements OnInit {
   goBack() {
     this.spinner.show();
     // this.location.back();
-    this.router.navigateByUrl("/joborder");
+    this.router.navigateByUrl("/joborder/list");
   }
 
   async onSave() {
