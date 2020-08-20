@@ -16,7 +16,6 @@ import { MatSnackBar } from "@angular/material";
 import { JoborderService } from "../services/joborder.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DialogConfirmService } from "app/dialog-confirm/service/dialog-confirm.service";
-import { TH_ORDERSTATUS, TH_CONTACTSTATUS } from 'app/types/tvds-status'
 
 import * as moment from "moment";
 import * as jsPDF from "jspdf";
@@ -130,10 +129,12 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
   // formatMoment() {
   //   for (let i = 0; i < this.rows.length; i++) {
   //     const row = this.rows[i];
+  //     console.log(row.docdate);
   //     row.docdate = moment(row.docdate).format("DD/MM/YYYY");
+  //     console.log(row.docdate);
   //     // row.docdate = moment(row.docdate).format();
   //   }
-  // }
+  //}
 
   sortRows() {
     this.rows.reverse();
@@ -239,9 +240,9 @@ export class JoborderListComponent implements OnInit, AfterViewChecked {
     // console.log(event);
   }
 
-  onJoborderReport(row): void {
-    this.router.navigate(['report/joborder', row._id]);
-  }
+  // onJoborderReport(row): void {
+  //   this.router.navigate(['report/joborder', row._id]);
+  // }
 
   // Move to service
   // downloadAsPDF(data: any) {

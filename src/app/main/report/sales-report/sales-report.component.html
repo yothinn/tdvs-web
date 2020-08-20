@@ -1,0 +1,117 @@
+<div class="page-layout carded  fullwidth inner-scroll">
+  <!-- TOP BACKGROUND -->
+  <div class="top-bg accent"></div>
+  <!-- / TOP BACKGROUND -->
+
+  <!-- CENTER -->
+  <div class="center">
+    <!-- HEADER -->
+    <div class="header accent" fxLayout="row wrap" fxLayoutAlign="space-between center">
+      <!-- APP TITLE -->
+      <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
+          format_list_numbered
+        </mat-icon>
+        <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
+          รายงานยอดขายตามใบสั่งงาน
+        </span>
+      </div>
+      <!-- / APP TITLE -->
+
+      <!-- SEARCH -->
+      <!-- <div class="search-wrapper mx-32 mx-md-0">
+        <div class="search" fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon>search</mat-icon>
+          <input placeholder="ค้นหา" (keyup)="updateFilter($event)" />
+        </div>
+      </div> -->
+      <!-- / SEARCH -->
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT CARD -->
+    <div class="content-card"
+      *ngIf="!rows"
+    >
+      <!-- เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้ -->
+    </div>
+    <div class="content-card" 
+      *ngIf="rows"
+      #tableWrapper
+    >
+      <!-- CONTENT -->
+      <ngx-datatable #table 
+        class="material fullscreen" 
+        [columnMode]="'flex'" 
+        [headerHeight]="64" 
+        [footerHeight]="64"
+        rowHeight="auto" 
+        [scrollbarV]="true"
+        [scrollbarH]="true" 
+        [virtualization]="false"
+        [limit]="10" 
+        [rows]="rows"
+        [externalPaging]="true" 
+        [reorderable]="true" 
+        [count]="page.count" 
+        [offset]="page.offset" 
+        [limit]="page.limit" 
+        (page)="setPage($event)" 
+      >
+
+        <ngx-datatable-column name="เลชที่ใบสั่งงาน" [headerClass]="'header-table'" [flexGrow]="1.5">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            {{ row.docno }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="วันที่" [headerClass]="'header-table'" [flexGrow]="1.5">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            {{ row.docdate | date:"dd/MM/yyy" }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="carNo" [headerClass]="'header-table'" name="รถที่รับผิดชอบ" [flexGrow]="2.5">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            {{
+              row.carNo.lisenceID
+                ? "(" +
+                  row.carNo.lisenceID +
+                  ")" +
+                  " " +
+                  row.carNo.driverInfo.displayName
+                : "ยังไม่ระบุ"
+            }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="orderStatus" name="สถานะ" [headerClass]="'header-table'" [flexGrow]="1.5">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            {{ row.orderStatus | thaiorderstatus }}
+          </ng-template>
+        </ngx-datatable-column>  
+        <ngx-datatable-column name="ยอดขายรวม" [flexGrow]="1.5" [headerClass]="'header-table'" [cellClass]="'sales-content'">
+          <ng-template ngx-datatable-cell-template let-row="row">
+              {{ row.salesAmount | number:"1.2-2"}}
+          </ng-template>
+        </ngx-datatable-column>
+       
+
+        <ngx-datatable-column [flexGrow]="1">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <button class="mat-icon-button" aria-label="More" [matMenuTriggerFor]="moreMenu"
+              (click)="$event.stopPropagation()">
+              <mat-icon class="secondary-text">more_vert</mat-icon>
+            </button>
+
+            <mat-menu #moreMenu>
+              <button mat-menu-item aria-label="edit" (click)="onJoborderDetail(row)">
+                <mat-icon>edit</mat-icon>
+                <span>ดูรายละเอียด</span>
+              </button>
+            </mat-menu>
+          </ng-template> 
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+    <!-- /CONTENT CARD -->
+  </div>
+  <!-- /CENTER -->
+</div>

@@ -16,6 +16,9 @@ import { MatSnackBar } from "@angular/material";
 import { PostcodeService } from 'app/services/postcode.service';
 import { validatePostCode } from 'app/share/validates/postcode.validate';
 
+const POSTCODE_PATTERN = /^[0-9]{5,5}$/;
+const MOBILE_PATTERN = /^[0-9]{10,10}$/;
+
 @Component({
   selector: "app-tvdscustomer-form",
   templateUrl: "./tvdscustomerForm.component.html",
@@ -50,33 +53,37 @@ export class TvdscustomerFormComponent implements OnInit {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
 
-  async ngOnInit() {
+  ngOnInit() {
 
     this.postcodeList = this.route.snapshot.data.postcode;
 
     this.tvdscustomerData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
-          title: "",
-          firstName: "",
-          lastName: "",
-          persanalId: "",
-          mobileNo1: "",
-          mobileNo2: "",
-          mobileNo3: "",
-          addressLine1: "",
-          addressStreet: "",
-          addressSubDistrict: "",
-          addressDistrict: "",
-          addressProvince: "",
-          addressPostCode: "",
+          title: '',
+          firstName: '',
+          lastName: '',
+          persanalId: '',
+          mobileNo1: '',
+          mobileNo2: '',
+          mobileNo3: '',
+          addressLine1: '',
+          addressStreet: '',
+          addressSubDistrict: '',
+          addressDistrict: '',
+          addressProvince: '',
+          addressPostCode: '',
+          notes: '',
         };
+    this.tvdscustomerData.persanalId = this.tvdscustomerData.persanalId || '';
+    this.tvdscustomerData.notes = this.tvdscustomerData.notes || '';
 
-    if (this.tvdscustomerData._id) {
-      this.tvdscustomerForm = this.editForm();
-    } else {
-      this.tvdscustomerForm = this.createForm();
-    }
+    this.initForm();
+    // if (this.tvdscustomerData._id) {
+    //   this.tvdscustomerForm = this.editForm();
+    // } else {
+    //   this.tvdscustomerForm = this.createForm();
+    // }
 
     // this.tvdscustomerService.getPostcodesList().subscribe((res: any) => {
     //   this.postcodesList = res.data;
@@ -94,10 +101,8 @@ export class TvdscustomerFormComponent implements OnInit {
     this.spinner.hide();
   }
 
-  createForm(): FormGroup {
-    let POSTCODE_PATTERN = /^[0-9]{5,5}$/;
-    let MOBILE_PATTERN = /^[0-9]{10,10}$/;
-    return this.formBuilder.group({
+  initForm(): void {
+    this.tvdscustomerForm = this.formBuilder.group({
       title: [this.tvdscustomerData.title],
       firstName: [this.tvdscustomerData.firstName, Validators.required],
       lastName: [this.tvdscustomerData.lastName, Validators.required],
@@ -109,7 +114,7 @@ export class TvdscustomerFormComponent implements OnInit {
       mobileNo2: [this.tvdscustomerData.mobileNo2],
       mobileNo3: [this.tvdscustomerData.mobileNo3],
       addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
-      addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
+      addressStreet: [this.tvdscustomerData.addressStreet],
       addressSubDistrict: [
         this.tvdscustomerData.addressSubDistrict,
         Validators.required,
@@ -130,46 +135,87 @@ export class TvdscustomerFormComponent implements OnInit {
           validatePostCode(this.postcodeService.postcodeList)
         ],
       ],
+      notes: [this.tvdscustomerData.notes]
     });
   }
-  editForm(): FormGroup {
-    let POSTCODE_PATTERN = /^[0-9]{5,5}$/;
-    let MOBILE_PATTERN = /^[0-9]{10,10}$/;
-    return this.formBuilder.group({
-      title: [this.tvdscustomerData.title],
-      firstName: [this.tvdscustomerData.firstName, Validators.required],
-      lastName: [this.tvdscustomerData.lastName, Validators.required],
-      persanalId: [this.tvdscustomerData.persanalId, [ValidatePID]],
-      mobileNo1: [
-        this.tvdscustomerData.mobileNo1,
-        [Validators.required, Validators.pattern(MOBILE_PATTERN)],
-      ],
-      mobileNo2: [this.tvdscustomerData.mobileNo2],
-      mobileNo3: [this.tvdscustomerData.mobileNo3],
-      addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
-      addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
-      addressSubDistrict: [
-        this.tvdscustomerData.addressSubDistrict,
-        Validators.required,
-      ],
-      addressDistrict: [
-        this.tvdscustomerData.addressDistrict,
-        Validators.required,
-      ],
-      addressProvince: [
-        this.tvdscustomerData.addressProvince,
-        Validators.required,
-      ],
-      addressPostCode: [
-        this.tvdscustomerData.addressPostCode,
-        [ 
-          Validators.required, 
-          Validators.pattern(POSTCODE_PATTERN),
-          validatePostCode(this.postcodeService.postcodeList)
-        ],
-      ],
-    });
-  }
+
+  // createForm(): FormGroup {
+  //   let POSTCODE_PATTERN = /^[0-9]{5,5}$/;
+  //   let MOBILE_PATTERN = /^[0-9]{10,10}$/;
+  //   return this.formBuilder.group({
+  //     title: [this.tvdscustomerData.title],
+  //     firstName: [this.tvdscustomerData.firstName, Validators.required],
+  //     lastName: [this.tvdscustomerData.lastName, Validators.required],
+  //     persanalId: [this.tvdscustomerData.persanalId, [ValidatePID]],
+  //     mobileNo1: [
+  //       this.tvdscustomerData.mobileNo1,
+  //       [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+  //     ],
+  //     mobileNo2: [this.tvdscustomerData.mobileNo2],
+  //     mobileNo3: [this.tvdscustomerData.mobileNo3],
+  //     addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
+  //     addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
+  //     addressSubDistrict: [
+  //       this.tvdscustomerData.addressSubDistrict,
+  //       Validators.required,
+  //     ],
+  //     addressDistrict: [
+  //       this.tvdscustomerData.addressDistrict,
+  //       Validators.required,
+  //     ],
+  //     addressProvince: [
+  //       this.tvdscustomerData.addressProvince,
+  //       Validators.required,
+  //     ],
+  //     addressPostCode: [
+  //       this.tvdscustomerData.addressPostCode,
+  //       [ 
+  //         Validators.required, 
+  //         Validators.pattern(POSTCODE_PATTERN),
+  //         validatePostCode(this.postcodeService.postcodeList)
+  //       ],
+  //     ],
+  //   });
+  // }
+
+  // editForm(): FormGroup {
+  //   let POSTCODE_PATTERN = /^[0-9]{5,5}$/;
+  //   let MOBILE_PATTERN = /^[0-9]{10,10}$/;
+  //   return this.formBuilder.group({
+  //     title: [this.tvdscustomerData.title],
+  //     firstName: [this.tvdscustomerData.firstName, Validators.required],
+  //     lastName: [this.tvdscustomerData.lastName, Validators.required],
+  //     persanalId: [this.tvdscustomerData.persanalId, [ValidatePID]],
+  //     mobileNo1: [
+  //       this.tvdscustomerData.mobileNo1,
+  //       [Validators.required, Validators.pattern(MOBILE_PATTERN)],
+  //     ],
+  //     mobileNo2: [this.tvdscustomerData.mobileNo2],
+  //     mobileNo3: [this.tvdscustomerData.mobileNo3],
+  //     addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
+  //     addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
+  //     addressSubDistrict: [
+  //       this.tvdscustomerData.addressSubDistrict,
+  //       Validators.required,
+  //     ],
+  //     addressDistrict: [
+  //       this.tvdscustomerData.addressDistrict,
+  //       Validators.required,
+  //     ],
+  //     addressProvince: [
+  //       this.tvdscustomerData.addressProvince,
+  //       Validators.required,
+  //     ],
+  //     addressPostCode: [
+  //       this.tvdscustomerData.addressPostCode,
+  //       [ 
+  //         Validators.required, 
+  //         Validators.pattern(POSTCODE_PATTERN),
+  //         validatePostCode(this.postcodeService.postcodeList)
+  //       ],
+  //     ],
+  //   });
+  // }
 
   goBack() {
     this.spinner.show();

@@ -14,6 +14,8 @@ const api_url = environment.apiUrl + "/api/joborders/";
 const api_url_vehicle = environment.apiUrl + "/api/vehicles/";
 const api_url_markers = environment.apiUrl + "/api/jobordersupdatemap/";
 const api_url_line = environment.apiUrl + "/api/lineconnects/members/push";
+const api_url_history = environment.apiUrl + "/api/joborders/history/";
+const api_url_suggestion = environment.apiUrl + "/api/suggestion";
 
 
 @Injectable({
@@ -84,6 +86,7 @@ export class JoborderService {
   }
 
   getMarkerDataList(body): Promise<any> {
+    // console.log(body);
     return new Promise((resolve, reject) => {
       this.http
         .post(api_url_markers, body, { headers: this.auth.getAuthorizationHeader() })
@@ -91,6 +94,35 @@ export class JoborderService {
           resolve(res.data);
         }, reject);
     });
+  }
+
+  /**
+   * Get Joborder history of customer id
+   * @param {string} id : customer object id
+   */
+  getJoborderHistory(id): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http
+        .get(`${api_url_history}${id}`, { headers: this.auth.getAuthorizationHeader() })
+        .subscribe((res: any) => {
+          resolve(res.data);
+        }, reject);
+    });
+  }
+
+  /**
+   * Get customer suggestion
+   * return data report each 10 size per page
+   * @param {json} 
+   * JSON : {
+   *  startDate: "UTC date"
+   *  endDate: "UTC date"
+   *  page: "number, 1 is default"
+   *  size: "number, 10 is default"
+   * }
+   */
+  getCustomerSuggestion(body): Observable<any> {
+    return this.http.post(api_url_suggestion, body, { headers: this.auth.getAuthorizationHeader() });
   }
 
   sendConFirmData(body): Promise<any> {

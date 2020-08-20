@@ -101,6 +101,14 @@
   color: red;
 }
 
+.current-month {
+  color: #66ff33;
+}
+
+.previous-month {
+  color: #ffff00;
+}
+
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
@@ -113,4 +121,27 @@
 
 .cdk-drag-animating {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.gm-style-iw {
+  width: 600px; 
+  min-height: 180px;
+}
+
+#history-container {
+  margin: 5px 0px 5px 0px ;
+
+}
+
+#history-header {
+  margin: 0px 5px 5px 5px ;
+  text-align: center;
+}
+
+#history-list {
+  margin: 0px 5px 0px 5px ;
+}
+
+.history-content {
+  margin: 2px 2px 2px 2px ;
 }

@@ -40,6 +40,7 @@ export class JoborderFormComponent implements OnInit {
   lat: number = 13.6186285;
   lng: number = 100.5078163;
 
+
   infoWindowOpened = null;
   previous_info_window = null;
 
@@ -71,10 +72,10 @@ export class JoborderFormComponent implements OnInit {
       };
     // console.log(this.joborderData);
 
+    this.formatMoment(this.joborderData.docdate);
+    this.sideNaveOpened = true;
+    this.zoom = 13;
     if (this.joborderData.contactLists.length > 0) {
-      this.formatMoment(this.joborderData.docdate);
-      this.sideNaveOpened = true;
-      this.zoom = 13;
       this.lat = Number(this.joborderData.contactLists[0].latitude);
       this.lng = Number(this.joborderData.contactLists[0].longitude);
     }
@@ -390,8 +391,8 @@ export class JoborderFormComponent implements OnInit {
 
   changeIconMarker(markerItem, txt) {
     // console.log(markerItem)
-    let bg = "ff2a2a";
-    let label = txt;
+    // let bg = "ff2a2a";
+    // let label = txt;
 
     //case DELETE
     if (txt === "") {
@@ -399,17 +400,24 @@ export class JoborderFormComponent implements OnInit {
       markerItem.contactStatus = "";
     }
 
-    if (markerItem.isShareHolder) {
-      bg = "167eff"; //สีน้ำเงิน
-    }
+    // if (markerItem.isShareHolder) {
+    //   bg = "167eff"; //สีน้ำเงิน
+    // }
 
+    // Change url name 
+    // url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
+    const pos = markerItem.icon.url.indexOf("&name=");
+    const sliceStr = markerItem.icon.url.slice(0, pos);
+        
     markerItem.icon = {
-      url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
+      url: `${sliceStr}&name=${txt}`,
       scaledSize: {
         width: 34,
         height: 34,
       },
     };
+    // console.log(markerItem.icon.url);
+    // console.log(markerItem.icon);
   }
 
   navigateByItem(contactItem) {
@@ -453,17 +461,15 @@ export class JoborderFormComponent implements OnInit {
                 },
               ],
               text:
-                "ตามที่ท่านได้ลงทะเบียนบริการกับ รถธรรมธุรกิจ ไว้ เรามีความยินดีที่จะนำสินค้า ข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวัน" +
-                this.nameDate +
-                "ที่: " +
+                "ตามที่ท่านลงทะเบียนกับรถธรรมธุรกิจไว้ เรามีความยินดีที่จะนำสินค้าข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวันที่ " +
                 this.titleDate +
-                " กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยเราจะติดต่อท่านอีกครั้งก่อนออกเดินทางไปยังที่นัดหมาย \
-                  หรือสอบถามข้อมูลนัดหมายเพิ่มเติมที่ 098-8316596 \
-                  ขอบคุณครับ ธรรมธุรกิจ",
+                " กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยจะติดต่ออีกครั้งก่อนเดินทาง หรือสอบถามเพิ่มเติม 098-8316596" +
+                " ขอบคุณครับ",
             },
           },
         ],
       };
+
       // console.log(body)
       this.joborderService
         .sendConFirmData(body)
@@ -556,5 +562,22 @@ export class JoborderFormComponent implements OnInit {
     // console.log(this.joborderData.contactLists);
     // พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
     this.onSave();
+  }
+
+  /**
+   * Show or hide history
+   * @param {checker control} chkHistory
+   * @param {json} markerItem 
+   */
+  onShowHistory(chkHistroy, markerItem) {
+    // console.log(markerItem);
+
+    if (!chkHistroy.checked) { 
+      // false -> true : show history
+      this.joborderService.getJoborderHistory(markerItem._id)
+          .then(res => {
+            markerItem.jobHistory = res;
+          });
+    } 
   }
 }

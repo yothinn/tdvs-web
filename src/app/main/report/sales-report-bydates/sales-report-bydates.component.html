@@ -1,0 +1,79 @@
+<div class="page-layout carded  fullwidth inner-scroll">
+  <!-- TOP BACKGROUND -->
+  <div class="top-bg accent"></div>
+  <!-- / TOP BACKGROUND -->
+
+  <!-- CENTER -->
+  <div class="center">
+    <!-- HEADER -->
+    <div class="header accent" fxLayout="row wrap" fxLayoutAlign="space-between center">
+      <!-- APP TITLE -->
+      <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="logo-icon s-32 mr-16" [@animate]="{ value: '*', params: { delay: '50ms', scale: '0.2' } }">
+          format_list_numbered
+        </mat-icon>
+        <span class="logo-text h1" [@animate]="{ value: '*', params: { delay: '100ms', x: '-25px' } }">
+          รายงานยอดขายตามวันที่
+        </span>
+      </div>
+      <!-- / APP TITLE -->
+
+      <!-- SEARCH -->
+      <!-- <div class="search-wrapper mx-32 mx-md-0">
+        <div class="search" fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon>search</mat-icon>
+          <input placeholder="ค้นหา" (keyup)="updateFilter($event)" />
+        </div>
+      </div> -->
+      <!-- / SEARCH -->
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT CARD -->
+    <div class="content-card"
+      *ngIf="!rows"
+    >
+      <!-- เกิดข้อผิดพลาด ไม่สามารถโหลดข้อมูลได้ -->
+    </div>
+    <div class="content-card" 
+      *ngIf="rows"
+      #tableWrapper
+    >
+      <!-- CONTENT -->
+      <ngx-datatable #table 
+        class="material fullscreen" 
+        [columnMode]="'flex'" 
+        [headerHeight]="64" 
+        [footerHeight]="64"
+        rowHeight="auto" 
+        [scrollbarV]="true"
+        [scrollbarH]="true" 
+        [virtualization]="false"
+        [limit]="10" 
+        [rows]="rows"
+        [externalPaging]="true" 
+        [reorderable]="true" 
+        [count]="page.count" 
+        [offset]="page.offset" 
+        [limit]="page.limit" 
+        (page)="setPage($event)" 
+      >
+
+        <ngx-datatable-column name="วันที่" [flexGrow]="1.5">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            {{ row._id | date:"dd/MM/yyy" }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="ยอดขายรวม" [flexGrow]="1.5" [cellClass]="'sales-content'">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            {{ row.salesAmount | number:"1.2-2"}}
+          </ng-template>
+        </ngx-datatable-column>
+       
+      </ngx-datatable>
+    </div>
+    <!-- /CONTENT CARD -->
+  </div>
+  <!-- /CENTER -->
+</div>
+

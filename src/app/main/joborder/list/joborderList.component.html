@@ -68,6 +68,9 @@
           <ng-template ngx-datatable-cell-template let-row="row">
             {{ row.docdate | date:"dd/MM/yyyy" }}
           </ng-template>
+          <!-- <ng-template ngx-datatable-cell-template let-row="row">
+            {{ row.docdate }}
+          </ng-template> -->
         </ngx-datatable-column>
         <ngx-datatable-column prop="carNo" name="รถที่รับผิดชอบ" [flexGrow]="3.6">
           <ng-template ngx-datatable-cell-template let-row="row">
@@ -161,10 +164,10 @@
                 <mat-icon>print</mat-icon>
                 <span>พิมพ์ใบสั่งงาน</span>
               </button>
-              <button mat-menu-item (click)="onJoborderReport(row)">
+              <!-- <button mat-menu-item (click)="onJoborderReport(row)">
                 <mat-icon>pageview</mat-icon>
                 <span>ดูรายงาน</span>
-              </button>
+              </button> -->
               <button mat-menu-item *ngIf="
                   row.orderStatus === 'waitapprove' ||
                   row.orderStatus === 'orderavailable' ||

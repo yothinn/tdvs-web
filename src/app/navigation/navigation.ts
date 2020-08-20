@@ -1,22 +1,30 @@
 import { FuseNavigation } from '@fuse/types';
 
 export const navigation: FuseNavigation[] = [
-    // {
-    //     id: 'report',
-    //     title: 'Report',
-    //     translate: 'รายงาน',
-    //     type: 'group',
-    //     children: [
-    //         {
-    //             id: 'joborderReport',
-    //             title: 'joborderReport',
-    //             translate: 'รายงานใบสั่งงาน',
-    //             type: 'item',
-    //             icon: 'description',
-    //             url: '/report/joborder'
-    //         }
-    //     ]
-    // },
+    {
+        id: 'report',
+        title: 'Report',
+        translate: 'รายงาน',
+        type: 'group',
+        children: [
+            {
+                id: 'joborderReport',
+                title: 'joborderReport',
+                translate: 'ยอดขายตามใบสั่งงาน',
+                type: 'item',
+                icon: 'featured_play_list',
+                url: '/report/sales'
+            },
+            {
+                id: 'salesReportByDates',
+                title: 'salesReportByDates',
+                translate: 'ยอดขายตามวันที่',
+                type: 'item',
+                icon: 'calendar_today',
+                url: '/report/dates'
+            }
+        ]
+    },
     {
         id: 'Menu',
         title: 'Menu Order',
@@ -37,7 +45,15 @@ export const navigation: FuseNavigation[] = [
                 translate: 'จัดทำใบสั่งงาน',
                 type: 'item',
                 icon: 'description',
-                url: '/joborder'
+                url: '/joborder/list'
+            },
+            {
+                id: 'suggestion',
+                title: 'suggestion',
+                translate: 'ข้อเสนอแนะลูกค้า',
+                type: 'item',
+                icon: 'comment',
+                url: '/joborder/suggestion'
             }
         ]
     },
@@ -68,7 +84,7 @@ export const navigation: FuseNavigation[] = [
                 title: 'vehicle',
                 translate: 'ตารางรถให้บริการ',
                 type: 'item',
-                icon: 'directions_car',
+                icon: 'local_shipping',
                 url: '/vehicle'
             },
             {

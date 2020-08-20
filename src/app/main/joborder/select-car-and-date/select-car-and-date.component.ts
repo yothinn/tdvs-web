@@ -44,6 +44,7 @@ export class SelectCarAndDateComponent implements OnInit {
 
   onConfirm() {
     // console.log(this.data);
+    // console.log(this.data.docdate.toString());
     this.dialogRef.close(this.data);
   }
 

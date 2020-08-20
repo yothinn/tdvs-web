@@ -77,7 +77,7 @@ const appRoutes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'joborder'
+    redirectTo: 'joborder/list'
   }
 ];
 
@@ -134,11 +134,11 @@ export const MY_FORMATS = {
   ],
   providers: [
     // { provide: ErrorHandler, useClass: GlobalErrorHandler },
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: ServerErrorInterceptor,
-    //   multi: true
-    // },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ServerErrorInterceptor,
+      multi: true
+    },
     { provide: MAT_DATE_LOCALE, useValue: "th-TH" },
     {
       provide: DateAdapter,

@@ -18,6 +18,8 @@ import {  MatIconModule,
           MatSliderModule, 
           MatDialogModule } from "@angular/material";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { JoborderService } from './services/joborder.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -29,6 +31,7 @@ import { JoborderPdfComponent } from './joborder-pdf/joborder-pdf.component';
 import { ServiceDateFilterPipe } from './select-car-and-date/select-car-and-date.pipe';
 import { RejectReasonModalComponent } from './reject-reason-modal/reject-reason-modal.component';
 import { ShareModule } from 'app/share/share.module';
+import { JobordersuggestionComponent } from './jobordersuggestion/jobordersuggestion.component';
 
 
 const routes = [
@@ -45,7 +48,13 @@ const routes = [
     canActivate: [AuthenGuardService]
   },
   {
-    path: '**',
+    path: "suggestion",
+    component: JobordersuggestionComponent,
+    //resolve: { items: JoborderService },
+    canActivate: [AuthenGuardService]
+  },
+  {
+    path: 'list',
     component: JoborderListComponent,
     resolve: { items: JoborderService },
     canActivate: [AuthenGuardService]
@@ -59,7 +68,7 @@ const routes = [
     SelectCarAndDateComponent, 
     JoborderPdfComponent, 
     ServiceDateFilterPipe, 
-    RejectReasonModalComponent,
+    RejectReasonModalComponent, JobordersuggestionComponent,
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -82,7 +91,10 @@ const routes = [
     MatDialogModule,
     MatSnackBarModule,
     MatSidenavModule,
+    MatCheckboxModule,
+
     DragDropModule,
+    FlexLayoutModule,
 
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDnjHI8F5TKYn8Vu8nUtqOn1sVOq2UInQE'
