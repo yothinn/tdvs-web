@@ -409,10 +409,10 @@
                             {{historyItem.contactLists.contactStatus | thaicontactstatus}}
                           </span>
                           <span fxFlex="15%" class="history-content" style="text-align: right;">
-                            {{historyItem?.sales ? historyItem?.sales : 0 | number:"1.2-2" }}
+                            {{ (historyItem?.contactLists.sales ? historyItem?.contactLists.sales : 0) | number:"1.2-2" }}
                           </span>
                           <span fxFlex="30%" class="history-content">
-                            {{historyItem?.remark}}
+                            {{historyItem?.contactLists.remark}}
                           </span>
                         </div>
                       </div>
