@@ -577,6 +577,7 @@ export class JoborderFormComponent implements OnInit {
       this.joborderService.getJoborderHistory(markerItem._id)
           .then(res => {
             markerItem.jobHistory = res;
+            // console.log(res);
           });
     } 
   }
