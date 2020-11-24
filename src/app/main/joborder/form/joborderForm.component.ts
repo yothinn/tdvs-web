@@ -19,6 +19,7 @@ import { SelectCarAndDateComponent } from "../select-car-and-date/select-car-and
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason-modal.component';
 
+
 @Component({
   selector: "app-joborder-form",
   templateUrl: "./joborderForm.component.html",
