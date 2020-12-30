@@ -31,12 +31,12 @@ import { GlobalErrorHandler } from "./global-error-handler";
 import { ServerErrorInterceptor } from "./server-error.interceptor";
 
 
-import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { environment } from 'environments/environment';
 import { DialogConfirmModule } from './dialog-confirm/dialog-confirm.module';
 import { ShareModule } from './share/share.module';
 
-const config: SocketIoConfig = { url: environment.apiUrl, options: {} };
+const config: SocketIoConfig = { url: environment.apiUrl, options: {transports: ['polling'], autoConnect: false} };
 
 const appRoutes: Routes = [
   { // อย่าปิดนะครับ
