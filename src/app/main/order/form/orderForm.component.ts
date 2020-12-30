@@ -15,7 +15,7 @@ import { MatDialog } from "@angular/material";
 import { CarAndDateComponent } from "../car-and-date/car-and-date.component";
 import * as moment from "moment";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
-import { Socket } from "ng-socket-io";
+import { Socket } from "ngx-socket-io";
 
 @Component({
   selector: "app-order-form",

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from "@angular/core";
 import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
 import { fuseAnimations } from "@fuse/animations";
 
@@ -12,7 +12,7 @@ import { JoborderService } from "../services/joborder.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { Socket } from "ng-socket-io";
+import { Socket } from "ngx-socket-io";
 import { MatDialog } from "@angular/material/dialog";
 import * as moment from "moment";
 import { SelectCarAndDateComponent } from "../select-car-and-date/select-car-and-date.component";
@@ -27,7 +27,7 @@ import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason
   encapsulation: ViewEncapsulation.None,
   animations: fuseAnimations,
 })
-export class JoborderFormComponent implements OnInit {
+export class JoborderFormComponent implements OnInit, OnDestroy {
   joborderData: any = {};
   vehicleData: Array<any> = [];
   markersData: Array<any> = [];
@@ -61,6 +61,9 @@ export class JoborderFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.socket.connect();
+
     this.joborderData = this.route.snapshot.data.items
       ? this.route.snapshot.data.items.data
       : {
@@ -92,6 +95,10 @@ export class JoborderFormComponent implements OnInit {
     });
 
     this.spinner.hide();
+  }
+
+  ngOnDestroy() {
+    this.socket.disconnect();
   }
 
   socketUpdateMarkerOnMap() {
