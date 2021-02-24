@@ -32,6 +32,9 @@ import { ServiceDateFilterPipe } from './select-car-and-date/select-car-and-date
 import { RejectReasonModalComponent } from './reject-reason-modal/reject-reason-modal.component';
 import { ShareModule } from 'app/share/share.module';
 import { JobordersuggestionComponent } from './jobordersuggestion/jobordersuggestion.component';
+import { JoborderDataComponent } from './joborder-data/joborder-data.component';
+import { MarkerInfoWindowComponent } from './marker-info-window/marker-info-window.component';
+import { SearchFiltersDataComponent } from './search-filters-data/search-filters-data.component';
 
 
 const routes = [
@@ -68,7 +71,7 @@ const routes = [
     SelectCarAndDateComponent, 
     JoborderPdfComponent, 
     ServiceDateFilterPipe, 
-    RejectReasonModalComponent, JobordersuggestionComponent,
+    RejectReasonModalComponent, JobordersuggestionComponent, JoborderDataComponent, MarkerInfoWindowComponent, SearchFiltersDataComponent,
   ],
   imports: [
     RouterModule.forChild(routes),

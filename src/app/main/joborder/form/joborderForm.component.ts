@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewEncapsulation, AfterViewInit, ViewChild, ChangeDetectorRef } from "@angular/core";
 import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
 import { fuseAnimations } from "@fuse/animations";
 
@@ -27,11 +27,30 @@ import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason
   encapsulation: ViewEncapsulation.None,
   animations: fuseAnimations,
 })
-export class JoborderFormComponent implements OnInit, OnDestroy {
+export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
   joborderData: any = {};
   vehicleData: Array<any> = [];
   markersData: Array<any> = [];
+  filterMarker: Array<any> = [];
 
+  convenientDayList = [
+    {
+      weekDay: 3,
+      displayDay: 'วันพุธ'
+    },
+    {
+      weekDay: 4,
+      displayDay: 'วันพฤหัสบดี'
+    },
+    {
+      weekDay: 6,
+      displayDay: 'วันเสาร์'
+    },
+    {
+      weekDay: 0,
+      displayDay: 'วันอาทิตย์'
+    }
+  ]
   sideNaveOpened: Boolean = false;
 
   titleDate: any;
@@ -41,7 +60,10 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
   lat: number = 13.6186285;
   lng: number = 100.5078163;
 
+  @ViewChild('agmMap') agmMap: any;
 
+
+  boundChangeTimer;
   infoWindowOpened = null;
   previous_info_window = null;
 
@@ -54,8 +76,9 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private _snackBar: MatSnackBar,
+    private _ref: ChangeDetectorRef,
     private socket: Socket,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
@@ -94,11 +117,16 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
       }
     });
 
+    console.log(this.markersData);
     this.spinner.hide();
   }
 
   ngOnDestroy() {
     this.socket.disconnect();
+  }
+
+  ngAfterViewInit(): void {
+    
   }
 
   socketUpdateMarkerOnMap() {
@@ -125,7 +153,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
           let docdate = {
             docdate: this.joborderData.docdate,
           };
-          this.getMarkerData(docdate);
+          this.getMarkerData(docdate);          
         }
 
         this.spinner.hide();
@@ -182,7 +210,15 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
   async getMarkerData(docdate) {
     this.markersData = await this.joborderService.getMarkerDataList(docdate);
-    // console.log(this.markersData);
+
+    console.log(this.agmMap._mapsWrapper.getBounds());
+
+    this.agmMap._mapsWrapper.getBounds().then(value => {
+      console.log(value);
+      this.onBoundsMapChange(value);
+    })
+    
+
     this.spinner.hide();
   }
 
@@ -190,21 +226,35 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
    * when click marker, show customer info in map page  
    */
   clickedInfoWindow(infoWindow) {
-    if (this.previous_info_window == null)
-      // Open info
+
+    // if (this.previous_info_window == null)
+    //   // Open info
+    //   this.previous_info_window = infoWindow;
+    // else {
+    //   // Close info
+      
+    //   this.infoWindowOpened = infoWindow;
+    //   console.log(this.previous_info_window);
+    //   this.previous_info_window.close();
+    // }
+    // this.previous_info_window = infoWindow;
+
+    try {
+      if (this.previous_info_window) {
+        this.previous_info_window.close();
+      }
       this.previous_info_window = infoWindow;
-    else {
-      // Close info
-      this.infoWindowOpened = infoWindow;
-      this.previous_info_window.close();
+    } catch(error) {
+      // this.previous_info_window.close();
+      this.previous_info_window = null;
     }
-    this.previous_info_window = infoWindow;
   }
 
   closeInfo() {
     if (this.previous_info_window != null) {
       this.previous_info_window.close();
     }
+    this.previous_info_window = null;
   }
 
   clickedMarker(item: any, index: number) {
@@ -589,4 +639,55 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
           });
     } 
   }
+
+  onBoundsMapChange(event) {
+    console.log("pass change");
+
+    // console.log(event.getNorthEast().lat());
+    // console.log(event.getNorthEast().lng());
+    // console.log(event.getSouthWest().lat());
+    // console.log(event.getSouthWest().lng());
+
+    // show only marker data in google map boundary
+    // event is boundary viewport
+    // TODO : When first loading data is not load but it call already onBoundMapChange ?
+    // TODO : boundChange call many time when change it should be calculate only one or not ?
+    clearTimeout(this.boundChangeTimer);
+    this.boundChangeTimer = setTimeout(() => {
+      let filter = [];
+    
+      console.log(this.markersData.length);
+
+      for (let mark of this.markersData) {
+        // console.log(mark);
+  
+        // Change lat, lng to number
+        let pos = {
+          lat: Number(mark.latitude),
+          lng: Number(mark.longitude)
+        };
+  
+        if (!pos.lat || !pos.lng) continue;
+    
+        // console.log(pos);
+        // console.log(event.contains(pos));
+  
+        // check lat, lng is contains boundary
+        if(event.contains(pos)) {
+          filter.push(mark);
+        }
+      }
+      
+      // Final filter is marker that in boundary
+      this.filterMarker = filter;
+      console.log(this.filterMarker.length);
+    }, 1000);
+
+    
+  }
+
+  onMapDragEnd(event) {
+    console.log("drag end");
+  }
+
 }

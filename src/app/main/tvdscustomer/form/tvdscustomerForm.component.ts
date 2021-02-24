@@ -33,6 +33,29 @@ export class TvdscustomerFormComponent implements OnInit {
   postcodeList: any = [];
   // temp = [];
 
+  convenientDayList = [
+    {
+      weekDay: 3,
+      displayDay: 'วันพุธ',
+      selected: false
+    },
+    {
+      weekDay: 4,
+      displayDay: 'วันพฤหัสบดี',
+      selected: false
+    },
+    {
+      weekDay: 6,
+      displayDay: 'วันเสาร์',
+      selected: false
+    },
+    {
+      weekDay: 0,
+      displayDay: 'วันอาทิตย์',
+      selected: false
+    }
+  ]
+
 
   title: Array<any> = [
     { value: "นาย", viewValue: "นาย" },
@@ -74,11 +97,17 @@ export class TvdscustomerFormComponent implements OnInit {
           addressProvince: '',
           addressPostCode: '',
           notes: '',
+          latitude: '',
+          longitude: ''
         };
     this.tvdscustomerData.persanalId = this.tvdscustomerData.persanalId || '';
     this.tvdscustomerData.notes = this.tvdscustomerData.notes || '';
 
     this.initForm();
+
+    this.convenientDayList.forEach(item => {
+      item.selected = this.tvdscustomerData.convenientDay[item.weekDay] || false;
+    });
     // if (this.tvdscustomerData._id) {
     //   this.tvdscustomerForm = this.editForm();
     // } else {
@@ -97,6 +126,7 @@ export class TvdscustomerFormComponent implements OnInit {
     //   Validators.required,
     //   validatePostCode(this.postcodesList),
     // ]);
+
 
     this.spinner.hide();
   }
@@ -135,7 +165,9 @@ export class TvdscustomerFormComponent implements OnInit {
           validatePostCode(this.postcodeService.postcodeList)
         ],
       ],
-      notes: [this.tvdscustomerData.notes]
+      notes: [this.tvdscustomerData.notes],
+      latitude: [this.tvdscustomerData.latitude],
+      longitude: [this.tvdscustomerData.longitude],
     });
   }
 
@@ -225,10 +257,19 @@ export class TvdscustomerFormComponent implements OnInit {
   async onSave() {
     this.spinner.show();
 
+    let updData;
+    updData = this.tvdscustomerForm.value;
+    updData['convenientDay'] = Array(7).fill(false);
+    this.convenientDayList.forEach(item => updData.convenientDay[item.weekDay] = item.selected);
+    
+    console.log(updData);
+    
     if (this.tvdscustomerData._id) {
-      this.tvdscustomerForm.value._id = this.tvdscustomerData._id;
+      // this.tvdscustomerForm.value._id = this.tvdscustomerData._id;
+      updData._id = this.tvdscustomerData._id;
       this.tvdscustomerService
-        .updateTvdscustomerData(this.tvdscustomerForm.value)
+        .updateTvdscustomerData(updData)
+        //.updateTvdscustomerData(this.tvdscustomerForm.value)
         .then((res) => {
           this.snackBar.open("บันทึกข้อมูลสำเร็จ", "", {
             duration: 7000,
@@ -243,7 +284,8 @@ export class TvdscustomerFormComponent implements OnInit {
         });
     } else {
       this.tvdscustomerService
-        .createTvdscustomerData(this.tvdscustomerForm.value)
+        .createTvdscustomerData(updData)
+        // .createTvdscustomerData(this.tvdscustomerForm.value)
         .then(() => {
           this.snackBar.open("บันทึกข้อมูลสำเร็จ", "", {
             duration: 7000,

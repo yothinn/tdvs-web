@@ -196,6 +196,38 @@
                   </div>
                 </div>
 
+                <div fxLayout="row wrap" fxFlex="100">
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.33" class="pl-20 pr-16">
+                    <mat-form-field appearance="outline" class="example-full-width" fxFlex>
+                      <mat-label>ละติจูด</mat-label>
+                      <input matInput formControlName="latitude" name="latitude">
+                    </mat-form-field>
+                  </div>
+                  <div fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.33" class="pl-20 pr-16">
+                    <mat-form-field appearance="outline" class="example-full-width" fxFlex>
+                      <mat-label>ลองติจูด</mat-label>
+                      <input matInput formControlName="longitude" name="longitude">
+                    </mat-form-field>
+                  </div>
+                  <div fxLayout="column" fxLayoutAlign="center" fxFlex="100" fxFlex.gt-xs="33.33" class="pl-20 pr-16">
+                  </div>
+                </div>
+
+                <div fxLayout="row wrap" fxFlex="100" class="mt-8 mb-16 pl-20 pr-16">
+                  <h3 style="margin: 0" class="pr-16">
+                    วันที่สะดวกรับบริการ : 
+                  </h3>
+
+                  <mat-checkbox 
+                    *ngFor="let d of convenientDayList" 
+                    class="pl-16 pr-16"
+                    [(ngModel)]="d.selected"
+                    [ngModelOptions]="{standalone: true}"
+                  >
+                    {{ d.displayDay }}
+                  </mat-checkbox>
+                </div>
+
                 <div fxLayout="row" fxFlex="100">
                   <div fxLayoutAlign="center" fxFlex="100" class="pl-20 pr-16">
                     <mat-form-field class="example-full-width" appearance="outline" fxFlex>
