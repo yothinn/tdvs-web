@@ -1,9 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild } from "@angular/core";
 import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
 import { fuseAnimations } from "@fuse/animations";
-
-import { Location } from "@angular/common";
-import { FormGroup, Validators, FormBuilder } from "@angular/forms";
 
 import { locale as english } from "../i18n/en";
 import { locale as thai } from "../i18n/th";
@@ -19,574 +16,719 @@ import { SelectCarAndDateComponent } from "../select-car-and-date/select-car-and
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason-modal.component';
 
-
 @Component({
-  selector: "app-joborder-form",
-  templateUrl: "./joborderForm.component.html",
-  styleUrls: ["./joborderForm.component.scss"],
-  encapsulation: ViewEncapsulation.None,
-  animations: fuseAnimations,
+	selector: "app-joborder-form",
+	templateUrl: "./joborderForm.component.html",
+	styleUrls: ["./joborderForm.component.scss"],
+	encapsulation: ViewEncapsulation.None,
+	animations: fuseAnimations,
 })
 export class JoborderFormComponent implements OnInit, OnDestroy {
-  joborderData: any = {};
-  vehicleData: Array<any> = [];
-  markersData: Array<any> = [];
+	joborderData: any = {};
+	vehicleData: Array<any> = [];
+	markersData: Array<any> = [];
+	filterMarker: Array<any> = [];
 
-  sideNaveOpened: Boolean = false;
+	// corPolyLine = [
+	// 	{ lng: 100.687294, lat: 13.916239 },
+	// 	{ lng: 100.683517, lat: 13.911074 },
+	// 	{ lng: 100.692616, lat: 13.897077 },
+	// 	{ lng: 100.691586, lat: 13.884912 },
+	// 	{ lng: 100.688324, lat: 13.878079 },
+	// 	{ lng: 100.684204, lat: 13.874413 },
+	// 	{ lng: 100.685577, lat: 13.868914 },
+	// 	{ lng: 100.682487, lat: 13.860081 },
+	// 	{ lng: 100.662918, lat: 13.855997 },
+	// 	{ lng: 100.650129, lat: 13.84433 },
+	// 	{ lng: 100.648499, lat: 13.833996 },
+	// 	{ lng: 100.657082, lat: 13.83558 },
+	// 	{ lng: 100.6608584, lat: 13.8299955 },
+	// 	{ lng: 100.66309, lat: 13.812993 },
+	// 	{ lng: 100.673132, lat: 13.796657 },
+	// 	{ lng: 100.674934, lat: 13.780735 },
+	// 	{ lng: 100.664721, lat: 13.77515 },
+	// 	{ lng: 100.668669, lat: 13.767397 },
+	// 	{ lng: 100.669613, lat: 13.756226 },
+	// 	{ lng: 100.678797, lat: 13.751891 },
+	// 	{ lng: 100.66618, lat: 13.746889 },
+	// 	{ lng: 100.658455, lat: 13.737467 },
+	// 	{ lng: 100.708237, lat: 13.730881 },
+	// 	{ lng: 100.710125, lat: 13.716873 },
+	// 	{ lng: 100.788403, lat: 13.716706 },
+	// 	{ lng: 100.85947, lat: 13.689021 },
+	// 	{ lng: 100.8875264, lat: 13.7540535 },
+	// 	{ lng: 100.93895, lat: 13.813744 },
+	// 	{ lng: 100.912514, lat: 13.846414 },
+	// 	{ lng: 100.913887, lat: 13.946396 },
+	// 	{ lng: 100.792351, lat: 13.932068 },
+	// 	{ lng: 100.754242, lat: 13.919072 },
+	// 	{ lng: 100.687294, lat: 13.916239 },
+	// ];
 
-  titleDate: any;
-  nameDate: any;
+	convenientDayList = [
+		{
+			weekDay: 3,
+			displayDay: 'วันพุธ'
+		},
+		{
+			weekDay: 4,
+			displayDay: 'วันพฤหัสบดี'
+		},
+		{
+			weekDay: 6,
+			displayDay: 'วันเสาร์'
+		},
+		{
+			weekDay: 0,
+			displayDay: 'วันอาทิตย์'
+		}
+	]
+	sideNaveOpened: Boolean = false;
 
-  zoom: number = 10;
-  lat: number = 13.6186285;
-  lng: number = 100.5078163;
+	titleDate: any;
+	nameDate: any;
+
+	zoom: number = 10;
+	lat: number = 13.6186285;
+	lng: number = 100.5078163;
+
+	@ViewChild('agmMap') agmMap: any;
+	@ViewChild('polygon') polygon: any;
+
+	boundChangeTimer;
+	infoWindowOpened = null;
+	previous_info_window = null;
+
+	constructor(
+		private _fuseTranslationLoaderService: FuseTranslationLoaderService,
+		private joborderService: JoborderService,
+		private route: ActivatedRoute,
+		private router: Router,
+		public dialog: MatDialog,
+		private _snackBar: MatSnackBar,
+		private socket: Socket,
+		private spinner: NgxSpinnerService,
+	) {
+		this._fuseTranslationLoaderService.loadTranslations(english, thai);
+	}
+
+	ngOnInit(): void {
+
+		this.socket.connect();
+
+		this.joborderData = this.route.snapshot.data.items
+			? this.route.snapshot.data.items.data
+			: {
+				docno: "",
+				docdate: "",
+				carNo: "",
+				cusAmount: null,
+				orderStatus: "draft",
+				contactLists: [],
+			};
+		// console.log(this.joborderData);
+
+		this.formatMoment(this.joborderData.docdate);
+		this.sideNaveOpened = true;
+		this.zoom = 13;
+		if (this.joborderData.contactLists.length > 0) {
+			this.lat = Number(this.joborderData.contactLists[0].latitude);
+			this.lng = Number(this.joborderData.contactLists[0].longitude);
+		}
+
+		this.getVehicleData();
+
+		this.socket.on("user-confirm-reject", (message: any) => {
+			// console.log(message);
+			if (message.docno === this.joborderData.docno) {
+				this.joborderData = message;
+				this.socketUpdateMarkerOnMap();
+			}
+		});
+
+		// console.log(this.markersData);
+
+		this.spinner.hide();
+	}
+
+	ngOnDestroy() {
+		this.socket.disconnect();
+	}
+
+	socketUpdateMarkerOnMap() {
+		this.joborderData.contactLists.forEach((contact) => {
+			// console.log(contact.contactStatus.substring(0,1).toUpperCase());
+			let label = contact.contactStatus.substring(0, 1).toUpperCase();
+			if (contact.contactStatus === "waitcontact") {
+				label = "S";
+			}
+			this.findOnMap(contact, label);
+		});
+	}
+
+	getVehicleData() {
+		this.joborderService
+			.getVehicleData()
+			.then((res) => {
+				this.vehicleData = res;
+
+				// พี่โก๋ปรับให้ Modal เฉพาะกรณีสร้างใหม่
+				if (this.joborderData.docno === "") {
+					this.openCarAndDate();
+				} else {
+					let docdate = {
+						docdate: this.joborderData.docdate,
+					};
+					this.getMarkerData(docdate);
+				}
+
+				this.spinner.hide();
+			})
+			.catch((err) => {
+				// console.log(err);
+				// TODO : throw error
+				this.spinner.hide();
+			});
+	}
+
+	openCarAndDate(): void {
+		const dialogRef = this.dialog.open(SelectCarAndDateComponent, {
+			width: "350px",
+			disableClose: true,
+			data: {
+				carNo: this.joborderData.carNo,
+				docdate: this.joborderData.docdate,
+				cars: this.vehicleData,
+				docno: this.joborderData.docno,
+			},
+		});
+
+		dialogRef.afterClosed().subscribe((result) => {
+			if (result) {
+				this.spinner.show();
+				this.joborderData.carNo = result.carNo;
+				this.joborderData.docdate = result.docdate;
+				this.formatMoment(result.docdate);
+				// console.log(this.joborderData);
+
+				let docdate = {
+					docdate: result.docdate,
+				};
+				// console.log(docdate);
+				if (!this.joborderData._id) {
+					this.getMarkerData(docdate);
+				} else {
+					// this.spinner.hide();
+					this.onSave();
+				}
+			} else {
+				if (!this.joborderData._id) {
+					this.router.navigateByUrl("/joborder/list");
+				}
+			}
+		});
+	}
+
+	formatMoment(date) {
+		this.titleDate = moment(date).format("DD/MM/YYYY");
+		this.nameDate = moment(date).format("dddd");
+	}
+
+	async getMarkerData(docdate) {
+		this.markersData = await this.joborderService.getMarkerDataList(docdate);
+
+		// console.log(this.agmMap._mapsWrapper.getBounds());
+
+		// When first load redraw data
+		this.agmMap._mapsWrapper.getBounds().then(value => {
+			// console.log(value);
+			this.onBoundsMapChange(value);
+		})
 
 
-  infoWindowOpened = null;
-  previous_info_window = null;
+		this.spinner.hide();
+	}
 
-  constructor(
-    private _fuseTranslationLoaderService: FuseTranslationLoaderService,
-    private location: Location,
-    private formBuilder: FormBuilder,
-    private joborderService: JoborderService,
-    private route: ActivatedRoute,
-    private router: Router,
-    public dialog: MatDialog,
-    private _snackBar: MatSnackBar,
-    private socket: Socket,
-    private spinner: NgxSpinnerService
-  ) {
-    this._fuseTranslationLoaderService.loadTranslations(english, thai);
-  }
+	/**
+	 * when click marker, show customer info in map page  
+	 */
+	clickedInfoWindow(infoWindow) {
 
-  ngOnInit(): void {
+		try {
+			if (this.previous_info_window) {
+				this.previous_info_window.close();
+			}
+			this.previous_info_window = infoWindow;
+		} catch (error) {
+			// this.previous_info_window.close();
+			this.previous_info_window = null;
+		}
+	}
 
-    this.socket.connect();
+	closeInfo() {
+		if (this.previous_info_window != null) {
+			this.previous_info_window.close();
+		}
+		this.previous_info_window = null;
+	}
 
-    this.joborderData = this.route.snapshot.data.items
-      ? this.route.snapshot.data.items.data
-      : {
-        docno: "",
-        docdate: "",
-        carNo: "",
-        cusAmount: null,
-        orderStatus: "draft",
-        contactLists: [],
-      };
-    // console.log(this.joborderData);
+	clickedMarker(item: any, index: number) {
+		if (item.contactStatus === "") {
+			let mIndex = this.joborderData.contactLists.findIndex((el) => {
+				return el._id === item._id;
+			});
 
-    this.formatMoment(this.joborderData.docdate);
-    this.sideNaveOpened = true;
-    this.zoom = 13;
-    if (this.joborderData.contactLists.length > 0) {
-      this.lat = Number(this.joborderData.contactLists[0].latitude);
-      this.lng = Number(this.joborderData.contactLists[0].longitude);
-    }
+			let defualtStatus = "select";
 
-    this.getVehicleData();
+			if (!item.lineUserId) {
+				defualtStatus = "waitcontact";
+			}
 
-    this.socket.on("user-confirm-reject", (message: any) => {
-      // console.log(message);
-      if (message.docno === this.joborderData.docno) {
-        this.joborderData = message;
-        this.socketUpdateMarkerOnMap();
-      }
-    });
+			if (mIndex === -1) {
+				let itemList = {
+					_id: item._id,
+					contactStatus: defualtStatus,
+					title: item.title,
+					firstName: item.firstName,
+					lastName: item.lastName,
+					displayName: item.displayName,
+					persanalId: item.persanalId,
+					isShareHolder: item.isShareHolder,
+					mobileNo1: item.mobileNo1,
+					mobileNo2: item.mobileNo2,
+					mobileNo3: item.mobileNo3,
+					addressLine1: item.addressLine1,
+					addressStreet: item.addressStreet,
+					addressSubDistrict: item.addressSubDistrict,
+					addressDistrict: item.addressDistrict,
+					addressProvince: item.addressProvince,
+					addressPostCode: item.addressPostCode,
+					lineUserId: item.lineUserId,
+					latitude: item.latitude,
+					longitude: item.longitude,
+				};
+				// console.log(itemList)
 
-    this.spinner.hide();
-  }
+				this.joborderData.contactLists.push(itemList);
+				this.changeIconMarker(item, "S");
+			}
+			// console.log(this.joborderData.contactLists);
 
-  ngOnDestroy() {
-    this.socket.disconnect();
-  }
+			item.docno = this.joborderData.docno;
+			item.contactStatus = "S";
+			this.closeInfo();
 
-  socketUpdateMarkerOnMap() {
-    this.joborderData.contactLists.forEach((contact) => {
-      // console.log(contact.contactStatus.substring(0,1).toUpperCase());
-      let label = contact.contactStatus.substring(0, 1).toUpperCase();
-      if (contact.contactStatus === "waitcontact") {
-        label = "S";
-      }
-      this.findOnMap(contact, label);
-    });
-  }
+			if (this.joborderData.contactLists.length > 0) {
+				this.sideNaveOpened = true;
+			}
+			// พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
+			this.onSave();
+		}
+	}
 
-  getVehicleData() {
-    this.joborderService
-      .getVehicleData()
-      .then((res) => {
-        this.vehicleData = res;
+	onDeleteList(index) {
+		this.findOnMap(this.joborderData.contactLists[index], "");
+		this.joborderData.contactLists.splice(index, 1);
+		if (this.joborderData.contactLists.length === 0) {
+			this.sideNaveOpened = false;
+		}
+		// พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
+		this.joborderService
+			.updateJoborderData(this.joborderData._id, this.joborderData)
+			.then((res) => {
+				// console.log(res);
+				this.joborderData = res;
 
-        // พี่โก๋ปรับให้ Modal เฉพาะกรณีสร้างใหม่
-        if (this.joborderData.docno === "") {
-          this.openCarAndDate();
-        } else {
-          let docdate = {
-            docdate: this.joborderData.docdate,
-          };
-          this.getMarkerData(docdate);
-        }
+				this.spinner.hide();
 
-        this.spinner.hide();
-      })
-      .catch((err) => {
-        // console.log(err);
-        // TODO : throw error
-        this.spinner.hide();
-      });
-  }
+				this._snackBar.open("ลบจุดบริการเรียบร้อย", "", {
+					duration: 7000,
+				});
+			})
+			.catch((err) => {
+				this.spinner.hide();
+				this._snackBar.open("เกิดข้อผิดพลาดในการลบจุดบริการ", "", {
+					duration: 7000,
+				});
+			});
+	}
 
-  openCarAndDate(): void {
-    const dialogRef = this.dialog.open(SelectCarAndDateComponent, {
-      width: "350px",
-      disableClose: true,
-      data: {
-        carNo: this.joborderData.carNo,
-        docdate: this.joborderData.docdate,
-        cars: this.vehicleData,
-        docno: this.joborderData.docno,
-      },
-    });
+	/**
+	 * change status joborder and show mark in map
+	 * @param { string } status : status that want to change
+	 * @param { number } i : customer index
+	 */
+	onChangeStatus(status, i) {
+		if (this.joborderData.orderStatus === "draft") {
+			this.joborderData.orderStatus = "waitapprove";
+		}
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.spinner.show();
-        this.joborderData.carNo = result.carNo;
-        this.joborderData.docdate = result.docdate;
-        this.formatMoment(result.docdate);
-        // console.log(this.joborderData);
+		if (status === "sendLine") {
+			this.joborderData.contactLists[i].contactStatus = "waitapprove";
+			this.sendConFirm(this.joborderData.contactLists[i]);
+			this.onSaveStatus("w");
+			this.findOnMap(this.joborderData.contactLists[i], "W");
+		}
+		if (status === "confirm") {
+			this.joborderData.contactLists[i].contactStatus = "confirm";
+			this.onSaveStatus("c");
+			this.findOnMap(this.joborderData.contactLists[i], "C");
+		}
+		if (status === "reject") {
+			const dialogRef = this.dialog.open(RejectReasonModalComponent, {
+				width: "450px",
+				disableClose: true,
+				data: { remark: this.joborderData.contactLists[i].remark, lineUserId: this.joborderData.contactLists[i].lineUserId }
+			});
 
-        let docdate = {
-          docdate: result.docdate,
-        };
-        // console.log(docdate);
-        if (!this.joborderData._id) {
-          this.getMarkerData(docdate);
-        } else {
-          // this.spinner.hide();
-          this.onSave();
-        }
-      } else {
-        if (!this.joborderData._id) {
-          this.router.navigateByUrl("/joborder/list");
-        }
-      }
-    });
-  }
+			dialogRef.afterClosed().subscribe(result => {
+				if (result) {
+					this.joborderData.contactLists[i].remark = result;
+					this.joborderData.contactLists[i].contactStatus = "reject";
+					this.onSaveStatus("r");
+					this.sendReject(this.joborderData.contactLists[i]);
+					this.findOnMap(this.joborderData.contactLists[i], "R");
+				}
+			});
 
-  formatMoment(date) {
-    this.titleDate = moment(date).format("DD/MM/YYYY");
-    this.nameDate = moment(date).format("dddd");
-  }
+		}
+	}
 
-  async getMarkerData(docdate) {
-    this.markersData = await this.joborderService.getMarkerDataList(docdate);
-    // console.log(this.markersData);
-    this.spinner.hide();
-  }
+	onSaveStatus(txt) {
+		this.joborderService
+			.updateJoborderData(this.joborderData._id, this.joborderData)
+			.then((res) => {
+				this.joborderData = res;
 
-  /**
-   * when click marker, show customer info in map page  
-   */
-  clickedInfoWindow(infoWindow) {
-    if (this.previous_info_window == null)
-      // Open info
-      this.previous_info_window = infoWindow;
-    else {
-      // Close info
-      this.infoWindowOpened = infoWindow;
-      this.previous_info_window.close();
-    }
-    this.previous_info_window = infoWindow;
-  }
+				if (txt === "c") {
+					this._snackBar.open("ปรับปรุงข้อมูลสถานะเรียบร้อย", "", {
+						duration: 7000,
+					});
+				}
+				// if (txt === "r") {
+				//   this._snackBar.open("ปรับปรุงข้อมูลสถานะเรียบร้อย", "", {
+				//     duration: 7000,
+				//   });
+				// }
+			})
+			.catch((err) => {
+				this._snackBar.open("เกิดข้อผิดพลาดในการปรับปรุงข้อมูลสถานะ", "", {
+					duration: 7000,
+				});
+			});
+	}
 
-  closeInfo() {
-    if (this.previous_info_window != null) {
-      this.previous_info_window.close();
-    }
-  }
+	sendReject(contactListData) {
+		// console.log(contactListData)
+		if (contactListData.lineUserId) {
+			let body = {
+				to: contactListData.lineUserId,
+				messages: [
+					{
+						type: "text",
+						text: "สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: " + contactListData.remark
+					},
+				],
+			};
+			// console.log(body)
+			this.joborderService
+				.sendConFirmData(body)
+				.then((res) => {
+					this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {
+						duration: 5000,
+					});
+				})
+				.catch((error) => {
+					this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
+						duration: 5000,
+					});
+				});
+		} else {
+			this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพย์ เพื่อแจ้งสถานะ", "", {
+				duration: 8000,
+			});
+		}
+	}
 
-  clickedMarker(item: any, index: number) {
-    if (item.contactStatus === "") {
-      let mIndex = this.joborderData.contactLists.findIndex((el) => {
-        return el._id === item._id;
-      });
-      // console.log(mIndex)
-      // console.log(item)
-      let defualtStatus = "select";
+	findOnMap(jobOrderDataItem, txt) {
+		// console.log(item._id)
+		// console.log(this.markersData)
 
-      if (!item.lineUserId) {
-        defualtStatus = "waitcontact";
-      }
+		let mIndex = this.markersData.findIndex((el) => {
+			return el._id === jobOrderDataItem._id;
+		});
+		// console.log(this.markersData[mIndex])
+		this.changeIconMarker(this.markersData[mIndex], txt);
+	}
 
-      if (mIndex === -1) {
-        let itemList = {
-          _id: item._id,
-          contactStatus: defualtStatus,
-          title: item.title,
-          firstName: item.firstName,
-          lastName: item.lastName,
-          displayName: item.displayName,
-          persanalId: item.persanalId,
-          isShareHolder: item.isShareHolder,
-          mobileNo1: item.mobileNo1,
-          mobileNo2: item.mobileNo2,
-          mobileNo3: item.mobileNo3,
-          addressLine1: item.addressLine1,
-          addressStreet: item.addressStreet,
-          addressSubDistrict: item.addressSubDistrict,
-          addressDistrict: item.addressDistrict,
-          addressProvince: item.addressProvince,
-          addressPostCode: item.addressPostCode,
-          lineUserId: item.lineUserId,
-          latitude: item.latitude,
-          longitude: item.longitude,
-        };
-        // console.log(itemList)
+	changeIconMarker(markerItem, txt) {
+		// console.log(markerItem)
+		// let bg = "ff2a2a";
+		// let label = txt;
 
-        this.joborderData.contactLists.push(itemList);
-        this.changeIconMarker(item, "S");
-      }
-      // console.log(this.joborderData.contactLists);
+		//case DELETE
+		if (txt === "") {
+			markerItem.docno = "";
+			markerItem.contactStatus = "";
+		}
 
-      item.docno = this.joborderData.docno;
-      item.contactStatus = "S";
-      this.closeInfo();
+		// if (markerItem.isShareHolder) {
+		//   bg = "167eff"; //สีน้ำเงิน
+		// }
 
-      if (this.joborderData.contactLists.length > 0) {
-        this.sideNaveOpened = true;
-      }
-      // พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
-      this.onSave();
-    }
-  }
+		// Change url name 
+		// url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
+		const pos = markerItem.icon.url.indexOf("&name=");
+		const sliceStr = markerItem.icon.url.slice(0, pos);
 
-  onDeleteList(index) {
-    this.findOnMap(this.joborderData.contactLists[index], "");
-    this.joborderData.contactLists.splice(index, 1);
-    if (this.joborderData.contactLists.length === 0) {
-      this.sideNaveOpened = false;
-    }
-    // พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
-    this.joborderService
-      .updateJoborderData(this.joborderData._id, this.joborderData)
-      .then((res) => {
-        // console.log(res);
-        this.joborderData = res;
+		markerItem.icon = {
+			url: `${sliceStr}&name=${txt}`,
+			scaledSize: {
+				width: 34,
+				height: 34,
+			},
+		};
+		// console.log(markerItem.icon.url);
+		// console.log(markerItem.icon);
+	}
 
-        this.spinner.hide();
+	navigateByItem(contactItem) {
+		this.lat = Number(contactItem.latitude);
+		this.lng = Number(contactItem.longitude);
+	}
 
-        this._snackBar.open("ลบจุดบริการเรียบร้อย", "", {
-          duration: 7000,
-        });
-      })
-      .catch((err) => {
-        this.spinner.hide();
-        this._snackBar.open("เกิดข้อผิดพลาดในการลบจุดบริการ", "", {
-          duration: 7000,
-        });
-      });
-  }
+	sendConFirm(contactListData) {
+		// console.log(contactListData)
+		if (contactListData.lineUserId) {
+			let body = {
+				to: contactListData.lineUserId,
+				messages: [
+					{
+						type: "template",
+						altText: "รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน กรุณายืนยันการนัดหมายด้วยค่ะ",
+						template: {
+							type: "confirm",
+							actions: [
+								{
+									type: "message",
+									label: "รับนัดหมาย",
+									text:
+										"รับนัดหมาย วัน" +
+										this.nameDate +
+										"ที่: " +
+										this.titleDate +
+										" เลขเอกสาร: " +
+										this.joborderData.docno,
+								},
+								{
+									type: "message",
+									label: "ปฏิเสธ",
+									text:
+										"ปฏิเสธ วัน" +
+										this.nameDate +
+										"ที่: " +
+										this.titleDate +
+										" เลขเอกสาร: " +
+										this.joborderData.docno,
+								},
+							],
+							text:
+								"ตามที่ท่านลงทะเบียนกับรถธรรมธุรกิจไว้ เรามีความยินดีที่จะนำสินค้าข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวันที่ " +
+								this.titleDate +
+								" กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยจะติดต่ออีกครั้งก่อนเดินทาง หรือสอบถามเพิ่มเติม 098-8316596" +
+								" ขอบคุณครับ",
+						},
+					},
+				],
+			};
 
-  /**
-   * change status joborder and show mark in map
-   * @param { string } status : status that want to change
-   * @param { number } i : customer index
-   */
-  onChangeStatus(status, i) {
-    if (this.joborderData.orderStatus === "draft") {
-      this.joborderData.orderStatus = "waitapprove";
-    }
+			// console.log(body)
+			this.joborderService
+				.sendConFirmData(body)
+				.then((res) => {
+					this._snackBar.open("ส่งข้อความสำเร็จ รอยืนยัน", "", {
+						duration: 5000,
+					});
+				})
+				.catch((error) => {
+					this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
+						duration: 5000,
+					});
+				});
+		}
+	}
 
-    if (status === "sendLine") {
-      this.joborderData.contactLists[i].contactStatus = "waitapprove";
-      this.sendConFirm(this.joborderData.contactLists[i]);
-      this.onSaveStatus("w");
-      this.findOnMap(this.joborderData.contactLists[i], "W");
-    }
-    if (status === "confirm") {
-      this.joborderData.contactLists[i].contactStatus = "confirm";
-      this.onSaveStatus("c");
-      this.findOnMap(this.joborderData.contactLists[i], "C");
-    }
-    if (status === "reject") {
-      const dialogRef = this.dialog.open(RejectReasonModalComponent, {
-        width: "450px",
-        disableClose: true,
-        data: { remark: this.joborderData.contactLists[i].remark, lineUserId: this.joborderData.contactLists[i].lineUserId }
-      });
+	goBack() {
+		this.spinner.show();
+		// this.location.back();
+		this.router.navigateByUrl("/joborder/list");
+	}
 
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.joborderData.contactLists[i].remark = result;
-          this.joborderData.contactLists[i].contactStatus = "reject";
-          this.onSaveStatus("r");
-          this.sendReject(this.joborderData.contactLists[i]);
-          this.findOnMap(this.joborderData.contactLists[i], "R");
-        }
-      });
+	async onSave() {
+		this.spinner.show();
 
-    }
-  }
+		if (this.joborderData._id) {
+			this.joborderService
+				.updateJoborderData(this.joborderData._id, this.joborderData)
+				.then((res) => {
+					// console.log(res);
+					this.joborderData = res;
 
-  onSaveStatus(txt) {
-    this.joborderService
-      .updateJoborderData(this.joborderData._id, this.joborderData)
-      .then((res) => {
-        this.joborderData = res;
+					this.spinner.hide();
 
-        if (txt === "c") {
-          this._snackBar.open("ปรับปรุงข้อมูลสถานะเรียบร้อย", "", {
-            duration: 7000,
-          });
-        }
-        // if (txt === "r") {
-        //   this._snackBar.open("ปรับปรุงข้อมูลสถานะเรียบร้อย", "", {
-        //     duration: 7000,
-        //   });
-        // }
-      })
-      .catch((err) => {
-        this._snackBar.open("เกิดข้อผิดพลาดในการปรับปรุงข้อมูลสถานะ", "", {
-          duration: 7000,
-        });
-      });
-  }
+					this._snackBar.open("บันทึกจุดบริการเรียบร้อย", "", {
+						duration: 7000,
+					});
+				})
+				.catch((err) => {
+					this.spinner.hide();
+					this._snackBar.open("เกิดข้อผิดพลาดในการบันทึกจุดบริการ", "", {
+						duration: 7000,
+					});
+				});
+		} else {
+			this.joborderService
+				.createJoborderData(this.joborderData)
+				.then((res) => {
+					this.spinner.hide();
 
-  sendReject(contactListData) {
-    // console.log(contactListData)
-    if (contactListData.lineUserId) {
-      let body = {
-        to: contactListData.lineUserId,
-        messages: [
-          {
-            type: "text",
-            text: "สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: " + contactListData.remark
-          },
-        ],
-      };
-      // console.log(body)
-      this.joborderService
-        .sendConFirmData(body)
-        .then((res) => {
-          this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {
-            duration: 5000,
-          });
-        })
-        .catch((error) => {
-          this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
-            duration: 5000,
-          });
-        });
-    } else {
-      this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพย์ เพื่อแจ้งสถานะ", "", {
-        duration: 8000,
-      });
-    }
-  }
+					let data = {
+						_id: res._id,
+						docno: res.docno,
+						docdate: res.docdate,
+						carNo: res.carNo,
+						cusAmount: res.cusAmount,
+						orderStatus: res.orderStatus,
+						contactLists: res.contactLists,
+					};
+					this.joborderData = data;
+					this._snackBar.open("เริ่มจัดเส้นทาง และบันทึกจุดบริการ เรียบร้อย", "", {
+						duration: 7000,
+					});
+					if (this.joborderData._id) {
+						this.router.navigateByUrl(
+							"/joborder/joborderForm/" + this.joborderData._id
+						);
+					}
+				})
+				.catch((err) => {
+					this.spinner.hide();
+					this._snackBar.open("เกิดข้อผิดพลาดในการเริ่มจัดเส้นทาง และบันทึกจุดบริการ", "", {
+						duration: 7000,
+					});
+				});
+		}
+	}
 
-  findOnMap(jobOrderDataItem, txt) {
-    // console.log(item._id)
-    // console.log(this.markersData)
+	/**
+	 * Drag and drop for rearrage index  in joborder map
+	 * @param event 
+	 */
+	drop(event: CdkDragDrop<any[]>) {
+		// console.log(`${event.previousIndex} to ${event.currentIndex}`);
+		moveItemInArray(
+			this.joborderData.contactLists,
+			event.previousIndex,
+			event.currentIndex
+		);
+		// console.log(this.joborderData.contactLists);
+		// พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
+		this.onSave();
+	}
 
-    let mIndex = this.markersData.findIndex((el) => {
-      return el._id === jobOrderDataItem._id;
-    });
-    // console.log(this.markersData[mIndex])
-    this.changeIconMarker(this.markersData[mIndex], txt);
-  }
+	/**
+	 * Show or hide history
+	 * @param {checker control} chkHistory
+	 * @param {json} markerItem 
+	 */
+	onShowHistory(chkHistroy, markerItem) {
+		// console.log(markerItem);
 
-  changeIconMarker(markerItem, txt) {
-    // console.log(markerItem)
-    // let bg = "ff2a2a";
-    // let label = txt;
+		if (!chkHistroy.checked) {
+			// false -> true : show history
+			this.joborderService.getJoborderHistory(markerItem._id)
+				.then(res => {
+					markerItem.jobHistory = res;
+					// console.log(res);
+				});
+		}
+	}
 
-    //case DELETE
-    if (txt === "") {
-      markerItem.docno = "";
-      markerItem.contactStatus = "";
-    }
+	/**
+	 * When map bordardy map change
+	 * filter marker only is in bordary
+	 * @param event 
+	 */
+	onBoundsMapChange(event) {
+		// console.log("pass change");
 
-    // if (markerItem.isShareHolder) {
-    //   bg = "167eff"; //สีน้ำเงิน
-    // }
+		// Set and clear timeout because user drag move map continueous
+		// We will calculate when user drop mouse in 1000 ms
+		clearTimeout(this.boundChangeTimer);
+		this.boundChangeTimer = setTimeout(() => {
+			let filter = [];
 
-    // Change url name 
-    // url: `https://ui-avatars.com/api/?rounded=true&size=36&font-size=0.4&length=4&color=fff&background=${bg}&name=${label}`,
-    const pos = markerItem.icon.url.indexOf("&name=");
-    const sliceStr = markerItem.icon.url.slice(0, pos);
-        
-    markerItem.icon = {
-      url: `${sliceStr}&name=${txt}`,
-      scaledSize: {
-        width: 34,
-        height: 34,
-      },
-    };
-    // console.log(markerItem.icon.url);
-    // console.log(markerItem.icon);
-  }
+			// console.log(this.markersData.length);
 
-  navigateByItem(contactItem) {
-    this.lat = Number(contactItem.latitude);
-    this.lng = Number(contactItem.longitude);
-  }
+			for (let mark of this.markersData) {
+				// console.log(mark);
 
-  sendConFirm(contactListData) {
-    // console.log(contactListData)
-    if (contactListData.lineUserId) {
-      let body = {
-        to: contactListData.lineUserId,
-        messages: [
-          {
-            type: "template",
-            altText: "รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน กรุณายืนยันการนัดหมายด้วยค่ะ",
-            template: {
-              type: "confirm",
-              actions: [
-                {
-                  type: "message",
-                  label: "รับนัดหมาย",
-                  text:
-                    "รับนัดหมาย วัน" +
-                    this.nameDate +
-                    "ที่: " +
-                    this.titleDate +
-                    " เลขเอกสาร: " +
-                    this.joborderData.docno,
-                },
-                {
-                  type: "message",
-                  label: "ปฏิเสธ",
-                  text:
-                    "ปฏิเสธ วัน" +
-                    this.nameDate +
-                    "ที่: " +
-                    this.titleDate +
-                    " เลขเอกสาร: " +
-                    this.joborderData.docno,
-                },
-              ],
-              text:
-                "ตามที่ท่านลงทะเบียนกับรถธรรมธุรกิจไว้ เรามีความยินดีที่จะนำสินค้าข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวันที่ " +
-                this.titleDate +
-                " กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยจะติดต่ออีกครั้งก่อนเดินทาง หรือสอบถามเพิ่มเติม 098-8316596" +
-                " ขอบคุณครับ",
-            },
-          },
-        ],
-      };
+				// Change lat, lng to number
+				let pos = {
+					lat: Number(mark.latitude),
+					lng: Number(mark.longitude)
+				};
 
-      // console.log(body)
-      this.joborderService
-        .sendConFirmData(body)
-        .then((res) => {
-          this._snackBar.open("ส่งข้อความสำเร็จ รอยืนยัน", "", {
-            duration: 5000,
-          });
-        })
-        .catch((error) => {
-          this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
-            duration: 5000,
-          });
-        });
-    }
-  }
+				if (!pos.lat || !pos.lng) continue;
 
-  goBack() {
-    this.spinner.show();
-    // this.location.back();
-    this.router.navigateByUrl("/joborder/list");
-  }
+				// console.log(pos);
+				// console.log(event.contains(pos));
 
-  async onSave() {
-    this.spinner.show();
+				// check lat, lng is contains boundary
+				if (event.contains(pos)) {
+					filter.push(mark);
+				}
+			}
 
-    if (this.joborderData._id) {
-      this.joborderService
-        .updateJoborderData(this.joborderData._id, this.joborderData)
-        .then((res) => {
-          // console.log(res);
-          this.joborderData = res;
+			// Final filter is marker that in boundary
+			this.filterMarker = filter;
+			// console.log(this.filterMarker.length);
+		}, 1000);
 
-          this.spinner.hide();
 
-          this._snackBar.open("บันทึกจุดบริการเรียบร้อย", "", {
-            duration: 7000,
-          });
-        })
-        .catch((err) => {
-          this.spinner.hide();
-          this._snackBar.open("เกิดข้อผิดพลาดในการบันทึกจุดบริการ", "", {
-            duration: 7000,
-          });
-        });
-    } else {
-      this.joborderService
-        .createJoborderData(this.joborderData)
-        .then((res) => {
-          this.spinner.hide();
+	}
 
-          let data = {
-            _id: res._id,
-            docno: res.docno,
-            docdate: res.docdate,
-            carNo: res.carNo,
-            cusAmount: res.cusAmount,
-            orderStatus: res.orderStatus,
-            contactLists: res.contactLists,
-          };
-          this.joborderData = data;
-          this._snackBar.open("เริ่มจัดเส้นทาง และบันทึกจุดบริการ เรียบร้อย", "", {
-            duration: 7000,
-          });
-          if (this.joborderData._id) {
-            this.router.navigateByUrl(
-              "/joborder/joborderForm/" + this.joborderData._id
-            );
-          }
-        })
-        .catch((err) => {
-          this.spinner.hide();
-          this._snackBar.open("เกิดข้อผิดพลาดในการเริ่มจัดเส้นทาง และบันทึกจุดบริการ", "", {
-            duration: 7000,
-          });
-        });
-    }
-  }
+	/**
+	 * Find point is in polygon path or not
+	 * @param polygonPath 
+	 * @param point 
+	 */
+	pointInPolygon(polygonPath, point): boolean {
+		let i, j;
+		let inside = false;
+		let x = point.lat;
+		let y = point.lng;
 
-  /**
-   * Drag and drop for rearrage index  in joborder map
-   * @param event 
-   */
-  drop(event: CdkDragDrop<any[]>) {
-    // console.log(`${event.previousIndex} to ${event.currentIndex}`);
-    moveItemInArray(
-      this.joborderData.contactLists,
-      event.previousIndex,
-      event.currentIndex
-    );
-    // console.log(this.joborderData.contactLists);
-    // พี่โก๋เพิ่มมาเพื่อให้ click info มาแล้ว Save เลยเพราะ เกิดปัญหาตอนลูกค้า confirm ผ่าน socket แล้วทำให้รายการหาย
-    this.onSave();
-  }
+		for (i = 0, j = polygonPath.length - 1; i < polygonPath.length; j = i++) {
+			// console.log(`i : ${i} j: ${j}`);
+			let xi = polygonPath[i].lat;
+			let yi = polygonPath[i].lng;
 
-  /**
-   * Show or hide history
-   * @param {checker control} chkHistory
-   * @param {json} markerItem 
-   */
-  onShowHistory(chkHistroy, markerItem) {
-    // console.log(markerItem);
+			let xj = polygonPath[j].lat;
+			let yj = polygonPath[j].lng;
 
-    if (!chkHistroy.checked) { 
-      // false -> true : show history
-      this.joborderService.getJoborderHistory(markerItem._id)
-          .then(res => {
-            markerItem.jobHistory = res;
-            // console.log(res);
-          });
-    } 
-  }
+			let intersect = ((yi > y) != (yj > y)) &&
+				(x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+
+			if (intersect) inside = !inside;
+		}
+		return inside;
+
+
+	}
+
+	// isInPolygon(markerItem) {
+	// 	return this.pointInPolygon(this.corPolyLine, { lat: markerItem.latitude, lng: markerItem.longitude });
+	// }
+
 }

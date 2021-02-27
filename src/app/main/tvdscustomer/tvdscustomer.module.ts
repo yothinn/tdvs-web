@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { FuseSharedModule } from '@fuse/shared.module';
 import { AuthenGuardService } from 'app/authentication/authen-guard.service';
-import { MatIconModule, MatMenuModule, MatSelectModule, MatDatepickerModule, MatFormFieldModule, MatTableModule, MatRadioModule, MatInputModule, MatListModule, MatButtonModule, MatTabsModule, MatExpansionModule, MatProgressSpinnerModule, MatTreeModule, MatSliderModule, MatToolbarModule, MatDialogModule, MatAutocompleteModule, MatSlideToggleModule, MatSnackBarModule } from "@angular/material";
+import { MatIconModule, MatMenuModule, MatSelectModule, MatDatepickerModule, MatFormFieldModule, MatTableModule, MatRadioModule, MatInputModule, MatListModule, MatButtonModule, MatTabsModule, MatExpansionModule, MatProgressSpinnerModule, MatTreeModule, MatSliderModule, MatToolbarModule, MatDialogModule, MatAutocompleteModule, MatSlideToggleModule, MatSnackBarModule, MatCheckbox, MatCheckboxModule } from "@angular/material";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { TvdscustomerService } from './services/tvdscustomer.service';
@@ -58,6 +58,7 @@ const routes = [
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSnackBarModule,
+    MatCheckboxModule,
 
     MatTreeModule,
     MatSliderModule,

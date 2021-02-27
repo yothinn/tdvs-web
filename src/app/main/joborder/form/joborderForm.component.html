@@ -11,6 +11,7 @@
         fixedBottomGap="0"
       >
         <div fxLayout="row wrap" fxLayoutAlign="start center">
+          
           <div
             class="logo mb-24 mb-md-0"
             fxFlex="60"
@@ -301,15 +302,21 @@
         </div>
 
         <agm-map
+          #agmMap
           class="map-size"
           (mapClick)="closeInfo()"
+          (dragEnd)="onMapDragEnd($event)"
           [latitude]="lat"
           [longitude]="lng"
           [zoom]="zoom"
           [disableDefaultUI]="false"
           [zoomControl]="false"
+          (boundsChange)="onBoundsMapChange($event)"
         >
-          <div *ngFor="let markerItem of markersData; let i = index">
+          <!-- <agm-polygon #polygon [paths]="corPolyLine" [clickable]="false">
+
+          </agm-polygon> -->
+          <div *ngFor="let markerItem of filterMarker; let i = index">
             <div *ngIf="markerItem.longitude || markerItem.latitude">
               <agm-marker
                 (markerClick)="clickedInfoWindow(infoWindow)"
@@ -317,6 +324,7 @@
                 [longitude]="markerItem.longitude"
                 [iconUrl]="markerItem.icon"
               >
+          
                 <agm-info-window #infoWindow fxLayout="column">
                   <div class="h3 mt-16 ml-8 mr-8">
                     <strong>
@@ -375,6 +383,19 @@
                       </span>
                     </div>
                   </div>
+                    <div class="mt-16 ml-8 mr-8" fxLayout="row">
+                      <div class="h4 mr-8" fxLayoutAlign="start center">
+                          วันที่สะดวกรับบริการ :  
+                      </div>
+                      <div class="mr-8" *ngFor="let d of convenientDayList">
+                        <mat-checkbox [checked]="markerItem.convenientDay[d.weekDay]"
+                          [disableRipple]="true"
+                          (click)="$event.preventDefault()"
+                        >
+                          {{d.displayDay}}
+                        </mat-checkbox>
+                      </div>
+                    </div>
                   <div class="mt-16 ml-8 mr-8" fxLayout="column">
                     <div class="h4">
                       <mat-checkbox 
@@ -384,7 +405,8 @@
                       >
                         แสดงประวัติการให้บริการ
                       </mat-checkbox>
-                    </div>
+                 </div>
+          
                     <!-- Show/Hide Histroy content -->
                     <div *ngIf="chkHistory.checked" id="history-container" fxLayout="column">
                       <div *ngIf="markerItem?.jobHistory?.length == 0">
@@ -418,7 +440,7 @@
                       </div>
                     </div>
                   </div>
-                </agm-info-window>
+                </agm-info-window> 
               </agm-marker>
             </div>
           </div>
