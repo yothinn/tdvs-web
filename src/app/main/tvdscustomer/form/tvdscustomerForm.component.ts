@@ -108,26 +108,7 @@ export class TvdscustomerFormComponent implements OnInit {
     this.convenientDayList.forEach(item => {
       item.selected = this.tvdscustomerData.convenientDay[item.weekDay] || false;
     });
-    // if (this.tvdscustomerData._id) {
-    //   this.tvdscustomerForm = this.editForm();
-    // } else {
-    //   this.tvdscustomerForm = this.createForm();
-    // }
-
-    // this.tvdscustomerService.getPostcodesList().subscribe((res: any) => {
-    //   this.postcodesList = res.data;
-    //   this.temp = res.data;
-    // })
-    // let res: any = await this.tvdscustomerService.getPostcodesList();
-    // this.postcodesList = res.data;
-    // this.temp = res.data;
-
-    // this.tvdscustomerForm.controls["addressPostCode"].setValidators([
-    //   Validators.required,
-    //   validatePostCode(this.postcodesList),
-    // ]);
-
-
+ 
     this.spinner.hide();
   }
 
@@ -171,83 +152,6 @@ export class TvdscustomerFormComponent implements OnInit {
     });
   }
 
-  // createForm(): FormGroup {
-  //   let POSTCODE_PATTERN = /^[0-9]{5,5}$/;
-  //   let MOBILE_PATTERN = /^[0-9]{10,10}$/;
-  //   return this.formBuilder.group({
-  //     title: [this.tvdscustomerData.title],
-  //     firstName: [this.tvdscustomerData.firstName, Validators.required],
-  //     lastName: [this.tvdscustomerData.lastName, Validators.required],
-  //     persanalId: [this.tvdscustomerData.persanalId, [ValidatePID]],
-  //     mobileNo1: [
-  //       this.tvdscustomerData.mobileNo1,
-  //       [Validators.required, Validators.pattern(MOBILE_PATTERN)],
-  //     ],
-  //     mobileNo2: [this.tvdscustomerData.mobileNo2],
-  //     mobileNo3: [this.tvdscustomerData.mobileNo3],
-  //     addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
-  //     addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
-  //     addressSubDistrict: [
-  //       this.tvdscustomerData.addressSubDistrict,
-  //       Validators.required,
-  //     ],
-  //     addressDistrict: [
-  //       this.tvdscustomerData.addressDistrict,
-  //       Validators.required,
-  //     ],
-  //     addressProvince: [
-  //       this.tvdscustomerData.addressProvince,
-  //       Validators.required,
-  //     ],
-  //     addressPostCode: [
-  //       this.tvdscustomerData.addressPostCode,
-  //       [ 
-  //         Validators.required, 
-  //         Validators.pattern(POSTCODE_PATTERN),
-  //         validatePostCode(this.postcodeService.postcodeList)
-  //       ],
-  //     ],
-  //   });
-  // }
-
-  // editForm(): FormGroup {
-  //   let POSTCODE_PATTERN = /^[0-9]{5,5}$/;
-  //   let MOBILE_PATTERN = /^[0-9]{10,10}$/;
-  //   return this.formBuilder.group({
-  //     title: [this.tvdscustomerData.title],
-  //     firstName: [this.tvdscustomerData.firstName, Validators.required],
-  //     lastName: [this.tvdscustomerData.lastName, Validators.required],
-  //     persanalId: [this.tvdscustomerData.persanalId, [ValidatePID]],
-  //     mobileNo1: [
-  //       this.tvdscustomerData.mobileNo1,
-  //       [Validators.required, Validators.pattern(MOBILE_PATTERN)],
-  //     ],
-  //     mobileNo2: [this.tvdscustomerData.mobileNo2],
-  //     mobileNo3: [this.tvdscustomerData.mobileNo3],
-  //     addressLine1: [this.tvdscustomerData.addressLine1, Validators.required],
-  //     addressStreet: [this.tvdscustomerData.addressStreet, Validators.required],
-  //     addressSubDistrict: [
-  //       this.tvdscustomerData.addressSubDistrict,
-  //       Validators.required,
-  //     ],
-  //     addressDistrict: [
-  //       this.tvdscustomerData.addressDistrict,
-  //       Validators.required,
-  //     ],
-  //     addressProvince: [
-  //       this.tvdscustomerData.addressProvince,
-  //       Validators.required,
-  //     ],
-  //     addressPostCode: [
-  //       this.tvdscustomerData.addressPostCode,
-  //       [ 
-  //         Validators.required, 
-  //         Validators.pattern(POSTCODE_PATTERN),
-  //         validatePostCode(this.postcodeService.postcodeList)
-  //       ],
-  //     ],
-  //   });
-  // }
 
   goBack() {
     this.spinner.show();
@@ -262,7 +166,7 @@ export class TvdscustomerFormComponent implements OnInit {
     updData['convenientDay'] = Array(7).fill(false);
     this.convenientDayList.forEach(item => updData.convenientDay[item.weekDay] = item.selected);
     
-    console.log(updData);
+    // console.log(updData);
     
     if (this.tvdscustomerData._id) {
       // this.tvdscustomerForm.value._id = this.tvdscustomerData._id;
@@ -304,6 +208,7 @@ export class TvdscustomerFormComponent implements OnInit {
   filterPostcode(event): void {
     this.postcodeList = this.postcodeService.filter(event.target.value);
   }
+
   // updateFilter(event) {
   //   //change search keyword to lower case
   //   const val = event.target.value.toLowerCase();
@@ -331,23 +236,4 @@ export class TvdscustomerFormComponent implements OnInit {
     this.tvdscustomerForm.controls['addressSubDistrict'].setValue(subdistrict);
   }
 
-  // validatePostCode(myArray: any[]): ValidatorFn {
-  //   if (myArray.length === 0) return null;
-  //   return (c: AbstractControl): { [key: string]: boolean } | null => {
-  //     let selectboxValue = c.value;
-  //     // console.log(myArray);
-  //     // console.log(selectboxValue);
-  //     let pickedOrNot = myArray.filter((alias) => {
-  //       return alias.postcode === selectboxValue;
-  //     });
-  //     // console.log(pickedOrNot.length);
-  //     if (pickedOrNot.length > 0) {
-  //       // everything's fine. return no error. therefore it's null.
-  //       return null;
-  //     } else {
-  //       //there's no matching selectboxvalue selected. so return match error.
-  //       return { match: true };
-  //     }
-  //   };
-  // }
 }

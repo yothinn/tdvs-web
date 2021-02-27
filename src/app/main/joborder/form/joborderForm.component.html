@@ -388,7 +388,10 @@
                           วันที่สะดวกรับบริการ :  
                       </div>
                       <div class="mr-8" *ngFor="let d of convenientDayList">
-                        <mat-checkbox [checked]="markerItem.convenientDay[d.weekDay]">
+                        <mat-checkbox [checked]="markerItem.convenientDay[d.weekDay]"
+                          [disableRipple]="true"
+                          (click)="$event.preventDefault()"
+                        >
                           {{d.displayDay}}
                         </mat-checkbox>
                       </div>
