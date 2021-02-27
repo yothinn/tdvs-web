@@ -71,7 +71,11 @@ const routes = [
     SelectCarAndDateComponent, 
     JoborderPdfComponent, 
     ServiceDateFilterPipe, 
-    RejectReasonModalComponent, JobordersuggestionComponent, JoborderDataComponent, MarkerInfoWindowComponent, SearchFiltersDataComponent,
+    RejectReasonModalComponent, 
+    JobordersuggestionComponent, 
+    JoborderDataComponent, 
+    MarkerInfoWindowComponent, 
+    SearchFiltersDataComponent,
   ],
   imports: [
     RouterModule.forChild(routes),

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-search-filters-data',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchFiltersDataComponent implements OnInit {
 
+  @Output() selectClick = new EventEmitter<string>();
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+
+  onSelectClick() {
+    this.selectClick.emit("test");
   }
 
 }

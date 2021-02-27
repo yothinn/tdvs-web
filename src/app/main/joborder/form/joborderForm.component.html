@@ -11,6 +11,7 @@
         fixedBottomGap="0"
       >
         <div fxLayout="row wrap" fxLayoutAlign="start center">
+          
           <div
             class="logo mb-24 mb-md-0"
             fxFlex="60"
@@ -312,6 +313,9 @@
           [zoomControl]="false"
           (boundsChange)="onBoundsMapChange($event)"
         >
+          <!-- <agm-polygon #polygon [paths]="corPolyLine" [clickable]="false">
+
+          </agm-polygon> -->
           <div *ngFor="let markerItem of filterMarker; let i = index">
             <div *ngIf="markerItem.longitude || markerItem.latitude">
               <agm-marker
@@ -380,8 +384,10 @@
                     </div>
                   </div>
                     <div class="mt-16 ml-8 mr-8" fxLayout="row">
-                      <span>วันที่สะดวกรับบริการ: </span>
-                      <div *ngFor="let d of convenientDayList">
+                      <div class="h4 mr-8" fxLayoutAlign="start center">
+                          วันที่สะดวกรับบริการ :  
+                      </div>
+                      <div class="mr-8" *ngFor="let d of convenientDayList">
                         <mat-checkbox [checked]="markerItem.convenientDay[d.weekDay]">
                           {{d.displayDay}}
                         </mat-checkbox>
