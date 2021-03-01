@@ -15,6 +15,9 @@ import * as moment from "moment";
 import { SelectCarAndDateComponent } from "../select-car-and-date/select-car-and-date.component";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason-modal.component';
+import { CookieService } from "ngx-cookie-service";
+import { PolygonZoneService } from "app/services/polygon-zone.service";
+import { copyStyles } from "@angular/animations/browser/src/util";
 
 @Component({
 	selector: "app-joborder-form",
@@ -26,44 +29,19 @@ import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason
 export class JoborderFormComponent implements OnInit, OnDestroy {
 	joborderData: any = {};
 	vehicleData: Array<any> = [];
-	markersData: Array<any> = [];
-	filterMarker: Array<any> = [];
 
-	// corPolyLine = [
-	// 	{ lng: 100.687294, lat: 13.916239 },
-	// 	{ lng: 100.683517, lat: 13.911074 },
-	// 	{ lng: 100.692616, lat: 13.897077 },
-	// 	{ lng: 100.691586, lat: 13.884912 },
-	// 	{ lng: 100.688324, lat: 13.878079 },
-	// 	{ lng: 100.684204, lat: 13.874413 },
-	// 	{ lng: 100.685577, lat: 13.868914 },
-	// 	{ lng: 100.682487, lat: 13.860081 },
-	// 	{ lng: 100.662918, lat: 13.855997 },
-	// 	{ lng: 100.650129, lat: 13.84433 },
-	// 	{ lng: 100.648499, lat: 13.833996 },
-	// 	{ lng: 100.657082, lat: 13.83558 },
-	// 	{ lng: 100.6608584, lat: 13.8299955 },
-	// 	{ lng: 100.66309, lat: 13.812993 },
-	// 	{ lng: 100.673132, lat: 13.796657 },
-	// 	{ lng: 100.674934, lat: 13.780735 },
-	// 	{ lng: 100.664721, lat: 13.77515 },
-	// 	{ lng: 100.668669, lat: 13.767397 },
-	// 	{ lng: 100.669613, lat: 13.756226 },
-	// 	{ lng: 100.678797, lat: 13.751891 },
-	// 	{ lng: 100.66618, lat: 13.746889 },
-	// 	{ lng: 100.658455, lat: 13.737467 },
-	// 	{ lng: 100.708237, lat: 13.730881 },
-	// 	{ lng: 100.710125, lat: 13.716873 },
-	// 	{ lng: 100.788403, lat: 13.716706 },
-	// 	{ lng: 100.85947, lat: 13.689021 },
-	// 	{ lng: 100.8875264, lat: 13.7540535 },
-	// 	{ lng: 100.93895, lat: 13.813744 },
-	// 	{ lng: 100.912514, lat: 13.846414 },
-	// 	{ lng: 100.913887, lat: 13.946396 },
-	// 	{ lng: 100.792351, lat: 13.932068 },
-	// 	{ lng: 100.754242, lat: 13.919072 },
-	// 	{ lng: 100.687294, lat: 13.916239 },
-	// ];
+	// All Marker
+	markersData: Array<any> = [];
+
+	// Filter marker when user filter zone, province, district
+	filterData: Array<any> = [];
+
+	// draw marker is in boundary
+	boundMarker: Array<any> = [];
+	
+	polygonZone;
+
+	openedWindow: number = 0;
 
 	convenientDayList = [
 		{
@@ -93,15 +71,16 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	lng: number = 100.5078163;
 
 	@ViewChild('agmMap') agmMap: any;
-	@ViewChild('polygon') polygon: any;
 
 	boundChangeTimer;
-	infoWindowOpened = null;
-	previous_info_window = null;
+	districtChangeTimer;
+	//infoWindowOpened = null;
+	//previous_info_window = null;
 
 	constructor(
 		private _fuseTranslationLoaderService: FuseTranslationLoaderService,
 		private joborderService: JoborderService,
+		private _polygonZoneService: PolygonZoneService,
 		private route: ActivatedRoute,
 		private router: Router,
 		public dialog: MatDialog,
@@ -137,6 +116,8 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		}
 
 		this.getVehicleData();
+
+		this.polygonZone = this._polygonZoneService.getPolygonZone();
 
 		this.socket.on("user-confirm-reject", (message: any) => {
 			// console.log(message);
@@ -236,15 +217,10 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 	async getMarkerData(docdate) {
 		this.markersData = await this.joborderService.getMarkerDataList(docdate);
+		this.filterData = [ ...this.markersData];
 
 		// console.log(this.agmMap._mapsWrapper.getBounds());
-
-		// When first load redraw data
-		this.agmMap._mapsWrapper.getBounds().then(value => {
-			// console.log(value);
-			this.onBoundsMapChange(value);
-		})
-
+		this.redrawBound();
 
 		this.spinner.hide();
 	}
@@ -252,24 +228,33 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	/**
 	 * when click marker, show customer info in map page  
 	 */
-	clickedInfoWindow(infoWindow) {
+	// clickedInfoWindow(infoWindow) {
 
-		try {
-			if (this.previous_info_window) {
-				this.previous_info_window.close();
-			}
-			this.previous_info_window = infoWindow;
-		} catch (error) {
-			// this.previous_info_window.close();
-			this.previous_info_window = null;
-		}
+	// 	try {
+	// 		if (this.previous_info_window) {
+	// 			this.previous_info_window.close();
+	// 		}
+	// 		this.previous_info_window = infoWindow;
+	// 	} catch (error) {
+	// 		// this.previous_info_window.close();
+	// 		this.previous_info_window = null;
+	// 	}
+	// }
+
+	closeInfoWindow() {
+		this.openedWindow = 0;
+		// if (this.previous_info_window != null) {
+		// 	this.previous_info_window.close();
+		// }
+		// this.previous_info_window = null;
 	}
 
-	closeInfo() {
-		if (this.previous_info_window != null) {
-			this.previous_info_window.close();
-		}
-		this.previous_info_window = null;
+	openWindow(id) {
+		this.openedWindow = id;
+	}
+
+	isInfoWindowOpen(id) {
+		return this.openedWindow === id;
 	}
 
 	clickedMarker(item: any, index: number) {
@@ -316,7 +301,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 			item.docno = this.joborderData.docno;
 			item.contactStatus = "S";
-			this.closeInfo();
+			this.closeInfoWindow();
 
 			if (this.joborderData.contactLists.length > 0) {
 				this.sideNaveOpened = true;
@@ -454,11 +439,11 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		// console.log(item._id)
 		// console.log(this.markersData)
 
-		let mIndex = this.markersData.findIndex((el) => {
+		let mIndex = this.filterData.findIndex((el) => {
 			return el._id === jobOrderDataItem._id;
 		});
 		// console.log(this.markersData[mIndex])
-		this.changeIconMarker(this.markersData[mIndex], txt);
+		this.changeIconMarker(this.filterData[mIndex], txt);
 	}
 
 	changeIconMarker(markerItem, txt) {
@@ -655,6 +640,17 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	}
 
 	/**
+	 * Redraw marker in bound
+	 */
+	redrawBound() {
+		// When first load redraw data
+		this.agmMap._mapsWrapper.getBounds().then(value => {
+			// console.log(value);
+			this.onBoundsMapChange(value);
+		})
+	}
+
+	/**
 	 * When map bordardy map change
 	 * filter marker only is in bordary
 	 * @param event 
@@ -670,7 +666,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 			// console.log(this.markersData.length);
 
-			for (let mark of this.markersData) {
+			for (let mark of this.filterData) {
 				// console.log(mark);
 
 				// Change lat, lng to number
@@ -691,44 +687,72 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 			}
 
 			// Final filter is marker that in boundary
-			this.filterMarker = filter;
+			this.boundMarker = filter;
 			// console.log(this.filterMarker.length);
 		}, 1000);
 
 
 	}
 
-	/**
-	 * Find point is in polygon path or not
-	 * @param polygonPath 
-	 * @param point 
-	 */
-	pointInPolygon(polygonPath, point): boolean {
-		let i, j;
-		let inside = false;
-		let x = point.lat;
-		let y = point.lng;
+	onSearchCustomer(str) {
+		console.log(`Joborder : ${str}`);
 
-		for (i = 0, j = polygonPath.length - 1; i < polygonPath.length; j = i++) {
-			// console.log(`i : ${i} j: ${j}`);
-			let xi = polygonPath[i].lat;
-			let yi = polygonPath[i].lng;
+		this.spinner.show();
 
-			let xj = polygonPath[j].lat;
-			let yj = polygonPath[j].lng;
+		let item = this.filterData.find((value) => {
+			// console.log(value);
+			return value.displayName.trim().search(str.trim()) >= 0;
+		});
 
-			let intersect = ((yi > y) != (yj > y)) &&
-				(x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+		console.log(item);
 
-			if (intersect) inside = !inside;
+		this.spinner.hide();
+
+		if (item) {
+			if (item.latitude || item.longitude) {
+				this.navigateByItem(item);
+				// Open info window immediately
+				this.openWindow(item._id);
+			} else {
+				this._snackBar.open('ไม่สามารถแสดงผล เนื่องจาก ลูกค้าไม่ระบุพิกัด', "", {
+					duration: 5000,
+				});
+			}
+		} else {
+			// Cann't find string show dialog 
+			this.openedWindow = 0;
+			this._snackBar.open('ค้นหาข้อมูลไม่พบ', "", {
+				duration: 5000,
+			});
 		}
-		return inside;
-
-
 	}
 
-	// isInPolygon(markerItem) {
-	// 	return this.pointInPolygon(this.corPolyLine, { lat: markerItem.latitude, lng: markerItem.longitude });
-	// }
+	onProvinceChange(province) {
+		console.log(province);
+
+		if (province !== 'ทุกจังหวัด') {
+			this.filterData = this.markersData.filter((value) => value.addressProvince === province);
+		} else {
+			this.filterData = [...this.markersData];
+		}
+		
+		this.redrawBound();
+		console.log(this.filterData);
+	}
+
+	onDistrictChange(districtsList) {
+		console.log('district change');
+
+		clearTimeout(this.districtChangeTimer);
+		this.districtChangeTimer = setTimeout(() => {
+			console.log(districtsList);
+			this.filterData = this.markersData.filter(value => {
+				return districtsList.findIndex(d => d === value.addressDistrict) >= 0;
+			});
+	
+			this.redrawBound();
+			console.log(this.filterData);
+		}, 1000);
+	}
 
 }

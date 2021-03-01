@@ -1,0 +1,9 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+::ng-deep .mat-form-field-wrapper{
+    margin-bottom: -1.25em;
+    font-size: 12px;
+ }

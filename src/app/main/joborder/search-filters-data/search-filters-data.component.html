@@ -1,3 +1,25 @@
-<div>
-  <button (click)="onSelectClick()">คลิก</button>
+<div fxLayout="column" fxLayoutGap="0.2rem">
+  <mat-form-field appearance="fill">
+    <mat-label>ค้นหาชื่อ นามสกุล</mat-label>
+    <input matInput [formControl]="searchCtrl" (keyup.enter)="onSearch($event)">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>เลือกโซน</mat-label>
+    <mat-select [formControl]="zoneCtrl" (selectionChange)="onZoneChange($event)" multiple>
+      <mat-option *ngFor="let zone of polygonZone" [value]="zone.name">{{zone.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>เลือกจังหวัด</mat-label>
+    <mat-select [formControl]="provinceCtrl" (selectionChange)="onProvinceChange($event)">
+      <mat-option *ngFor="let province of provincesList" [value]="province">{{province}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>เลือกเขต</mat-label>
+    <mat-select [formControl]="districtCtrl" (selectionChange)="onDistrictChange($event, ev)" multiple>
+      <mat-option #ev [value]="selectall" (click)="onSelectDistrictAll(ev)">เลือกทั้งหมด</mat-option>
+      <mat-option *ngFor="let district of districtsList" [value]="district">{{district}}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
