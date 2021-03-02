@@ -15,9 +15,8 @@ import * as moment from "moment";
 import { SelectCarAndDateComponent } from "../select-car-and-date/select-car-and-date.component";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason-modal.component';
-import { CookieService } from "ngx-cookie-service";
 import { PolygonZoneService } from "app/services/polygon-zone.service";
-import { copyStyles } from "@angular/animations/browser/src/util";
+import { ContactStatus } from '../../../types/tvds-status'
 
 @Component({
 	selector: "app-joborder-form",
@@ -35,10 +34,14 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 	// Filter marker when user filter zone, province, district
 	filterData: Array<any> = [];
+	tmpFilterData = null;
 
 	// draw marker is in boundary
 	boundMarker: Array<any> = [];
 	
+	isShowMarkOnlySelect = false;
+	isShowMarkOnlyAppoint = false;
+
 	polygonZone;
 
 	openedWindow: number = 0;
@@ -74,6 +77,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 	boundChangeTimer;
 	districtChangeTimer;
+	convenientChangeTimer;
 	//infoWindowOpened = null;
 	//previous_info_window = null;
 
@@ -135,6 +139,31 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.socket.disconnect();
 	}
+
+	isShowMarker(marker): boolean {
+		if (this.isShowMarkOnlyAppoint || this.isShowMarkOnlySelect) {
+			if (this.isShowMarkOnlySelect) {
+				// Filter in contactList
+				// !! it couldn't use markder.contactStatus because it combine marker in other bill but in day
+				let pos = this.joborderData.contactLists.findIndex(item => {
+					return item.displayName === marker.displayName;
+				});
+				return pos >= 0;
+			} else if (this.isShowMarkOnlyAppoint) {
+				let pos = this.joborderData.contactLists.findIndex(item => {
+					return ((item.contactStatus !== '') && (item.contactStatus !== ContactStatus.DriverReject) &&
+							(item.contactStatus !== ContactStatus.Reject) && (item.displayName === marker.displayName) );
+				})
+				return pos >= 0;
+			}
+		} else {
+			if (marker.longitude || marker.latitude) {
+				return true;
+			}	
+		}
+		return false;
+	}
+	
 
 	socketUpdateMarkerOnMap() {
 		this.joborderData.contactLists.forEach((contact) => {
@@ -263,16 +292,16 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 				return el._id === item._id;
 			});
 
-			let defualtStatus = "select";
+			let defaultStatus = "select";
 
 			if (!item.lineUserId) {
-				defualtStatus = "waitcontact";
+				defaultStatus = "waitcontact";
 			}
 
 			if (mIndex === -1) {
 				let itemList = {
 					_id: item._id,
-					contactStatus: defualtStatus,
+					contactStatus: defaultStatus,
 					title: item.title,
 					firstName: item.firstName,
 					lastName: item.lastName,
@@ -728,7 +757,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	}
 
 	onProvinceChange(province) {
-		console.log(province);
+		// console.log(province);
 
 		if (province !== 'ทุกจังหวัด') {
 			this.filterData = this.markersData.filter((value) => value.addressProvince === province);
@@ -737,22 +766,80 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		}
 		
 		this.redrawBound();
-		console.log(this.filterData);
+		// console.log(this.filterData);
 	}
 
-	onDistrictChange(districtsList) {
-		console.log('district change');
+	onDistrictChange(filterData) {
+		// console.log('district change');
 
 		clearTimeout(this.districtChangeTimer);
 		this.districtChangeTimer = setTimeout(() => {
-			console.log(districtsList);
-			this.filterData = this.markersData.filter(value => {
-				return districtsList.findIndex(d => d === value.addressDistrict) >= 0;
-			});
-	
-			this.redrawBound();
-			console.log(this.filterData);
+			this.filterMarkData(filterData);
 		}, 1000);
+	}
+
+	onConvenientChange(filterData) {
+		clearTimeout(this.convenientChangeTimer);
+		this.convenientChangeTimer = setTimeout(() => {
+			this.filterMarkData(filterData);
+		}, 1000);
+	}
+
+
+	filterMarkData(filterData) {
+		// console.log(filterData);
+		// convert day string to weekday for use to index refer
+		let cIndex = [];
+		if (filterData.convenientList) {
+			filterData.convenientList.forEach(ele => {
+				let d = this.convenientDayList.find(v => v.displayDay == ele);
+				if (d) {
+					cIndex.push(d.weekDay);
+				}
+			});
+		}
+
+		// console.log(districtsList);
+		this.filterData = this.markersData.filter(value => {
+			let pos = 0;
+			if (filterData.districtList.length > 0) {
+				pos = filterData.districtList.findIndex(d => d === value.addressDistrict);
+			}
+
+			// console.log(value);
+			if (pos >= 0) {
+				if (filterData.convenientList) {
+					for (let index of cIndex) {
+						if (value.convenientDay[index])	return true;
+					}
+				} else {
+					return true;
+				}
+
+			}
+			return false;
+		});
+	
+		this.redrawBound();
+		console.log(this.filterData);
+	}
+
+
+	onCheckOptionChange(option) {
+		this.isShowMarkOnlyAppoint = option.isShowMarkOnlyAppoint;
+		this.isShowMarkOnlySelect = option.isShowMarkOnlySelect;
+
+		if (this.isShowMarkOnlyAppoint || this.isShowMarkOnlySelect) {
+			if (!this.tmpFilterData) this.tmpFilterData = this.filterData;
+
+			this.filterData = Array.from(this.markersData);
+		} else {
+			this.filterData = this.tmpFilterData;
+			this.tmpFilterData = null;
+		}
+		
+		this.redrawBound();
+		//console.log(this.markersData);
 	}
 
 }

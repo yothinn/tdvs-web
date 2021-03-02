@@ -15,6 +15,8 @@
             (search)="onSearchCustomer($event)"
             (selectProvinceChange)="onProvinceChange($event)"
             (selectDistrictChange)="onDistrictChange($event)"
+            (selectConvenientChange)="onConvenientChange($event)"
+            (checkOptionChange)="onCheckOptionChange($event)"
           > 
 
           </app-search-filters-data>
@@ -330,7 +332,7 @@
           </div> -->
           
           <div *ngFor="let markerItem of boundMarker; let i = index">
-            <div *ngIf="markerItem.longitude || markerItem.latitude">
+            <div *ngIf="isShowMarker(markerItem)">
               <agm-marker
                 (markerClick)="openWindow(markerItem._id)"
                 [latitude]="markerItem.latitude"

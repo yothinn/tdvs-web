@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PolygonZoneService } from 'app/services/polygon-zone.service';
@@ -11,130 +11,186 @@ import { PostcodeService } from 'app/services/postcode.service';
 })
 export class SearchFiltersDataComponent implements OnInit {
 
-	readonly PROVINCE_ALL_TXT = "ทุกจังหวัด";
-	readonly DISTRICT_ALL_TXT = "ทุกเขต";
+	readonly PROVINCE_ALL_TEXT = "ทุกจังหวัด";
 
 	provincesList;
 	districtsList;
+	disableDistrict = true;
+	
+	searchCtrl = new FormControl();
 
-	provinceCtrl;
-	districtCtrl;
-	searchCtrl;
-	zoneCtrl;
+	// polygonZone;
+	// polygonZoneList: string[] = [];
+	
+	@Input() showFilter: boolean = true;
 
-	polygonZone;
+	@Input() convenientDay: any[] = ['วันพุธ', 'วันพฤหัสบดี', 'วันเสาร์', 'วันอาทิตย์'];
 
+	@Input() selectedProvince: string = '';
+
+	@Input() selectedDistrict: string[] = [];
+
+	// @Input() selectedZone: string[] = [];
+
+	@Input() selectedConvenient: string[] = [];
+
+	@Input() isShowMarkOnlySelect: boolean = false;
+	@Input() isShowMarkOnlyAppoint: boolean = false;
+	@Input() enableConvenient: boolean = false;
 	/**
 	 * Search text event
 	 */
-	@Input() selectdProvince: string = '';
-
 	@Output('search') searchEvent = new EventEmitter<string>();
 
 	@Output() selectProvinceChange = new EventEmitter<string>();
 
-	@Output() selectDistrictChange = new EventEmitter<string[]>();
+	@Output() selectDistrictChange = new EventEmitter<any>();
 
-	@Output() selectZzoneChange = new EventEmitter<string[]>();
+	// @Output() selectZoneChange = new EventEmitter<string[]>();
+
+	@Output() selectConvenientChange = new EventEmitter<any>();
+
+	@Output() checkOptionChange = new EventEmitter<any>();
 
 	constructor(
 		private _postcodeService: PostcodeService,
-		private _polygonZoneService: PolygonZoneService,
+		// private _polygonZoneService: PolygonZoneService,
 	) { }
 
 	ngOnInit() {
+
+		this.selectedProvince = this.PROVINCE_ALL_TEXT;
+
+		// get all province
 		this._postcodeService.getProvincesList().subscribe(value => {
 			if (value.data.length !== 0) {
 				let list = value.data[0];
 				// console.log(list.provinces);
-
-				list.provinces.sort();
 				
-				this.provincesList = [ this.PROVINCE_ALL_TXT, ...list.provinces];
-
-				this.districtsList = list.districts;
-				this.districtsList.sort();
-				
-				this.districtCtrl.value = this.districtsList;
-				// console.log(this.districtsList);
-
-				this.selectdProvince = this.selectdProvince === '' ? this.PROVINCE_ALL_TXT : this.selectdProvince;
-				this.provinceCtrl.value = this.selectdProvince;
-				
+				this.provincesList = list.provinces;
+				this.provincesList.sort();
 			}
 		});
 
-		this.polygonZone = this._polygonZoneService.getPolygonZone();
+		// this.polygonZone = this._polygonZoneService.getPolygonZone();
+		// this.polygonZone.map(value => this.polygonZoneList.push(value.name));
+		// this.selectedZone = Array.from(this.polygonZoneList);
+		this.selectedConvenient = Array.from(this.convenientDay);
 		
-		let selectZone = [];
-		this.polygonZone.map(value => selectZone.push(value.name));
-
-		// console.log(selectZone);
-		
-
-		
-		this.provinceCtrl = new FormControl();
-		
-		this.searchCtrl = new FormControl();
-		this.zoneCtrl = new FormControl(selectZone);
-		this.districtCtrl = new FormControl();
+		// select default province
+		this.onProvinceChange();
 		// console.log(this.zoneCtrl);
 	}
-
 
 	onSearch(event) {
 		let searchStr = event.target.value;
 
-		console.log(searchStr);
-
+		// console.log(searchStr);
 		this.searchEvent.emit(searchStr);
 	}
 
-	onProvinceChange(event) {
-		let province = event.value;
-		console.log(province);
-		if (province === this.PROVINCE_ALL_TXT) {
-			province = 'all';
-		}
-
-		this._postcodeService.getProvincesList(province).subscribe(value => {
-			this.districtsList = value.data[0].districts;
-			console.log(this.districtsList);
-			this.districtsList.sort();
-
-			this.districtCtrl.value = this.districtsList;
-		});
-
-		this.selectProvinceChange.emit(event.value);
-	}
-
-	onDistrictChange(event, ev) {
-		let districtList = event.value;
-
-		// if dis select other district , dis select all too
-		if (!ev.active) {
-			ev._selected = false;
-		}
+	onProvinceChange() {
 		
-		console.log(districtList);
-
-		this.selectDistrictChange.emit(districtList);
-	}
-
-	onSelectDistrictAll(ev) {
-		if (ev._selected) {
-			// console.log(this.districtsList);
-			this.districtCtrl.setValue(this.districtsList);
-			ev._selected = true;
+		console.log(this.selectedProvince);
+		if (this.selectedProvince === this.PROVINCE_ALL_TEXT) {
+			this.disableDistrict = true;
 		} else {
-			console.log("deselect");
-			this.districtCtrl.setValue([]);
-			ev._selectd = false;
+			this.disableDistrict = false;
+
+			this._postcodeService.getProvincesList(this.selectedProvince).subscribe(value => {
+				this.districtsList = value.data[0].districts;
+				
+				this.districtsList.sort();
+	
+				this.selectedDistrict = Array.from(this.districtsList);
+			});
 		}
+
+		this.selectProvinceChange.emit(this.selectedProvince);
 	}
 
-	onZoneChange(event) {
+	onDistrictChange() {
+		let filterData = {
+			province: this.selectedProvince,
+			districtList : this.selectedDistrict,
+			convenientList : this.enableConvenient ? this.selectedConvenient : null
+		};
 
+		// console.log(this.selectDistrictList);
+		this.selectDistrictChange.emit(filterData);
+	}
+
+	onSelectDistrictAll(isSelectAll: boolean) {
+		// console.log(isSelectAll);
+		if (isSelectAll) {
+			if (this.selectedDistrict.length !== this.districtsList.length) {
+				// console.log("select all");
+				this.selectedDistrict = Array.from(this.districtsList);
+			}
+		} else {
+			this.selectedDistrict = [];
+		}
+
+		// console.log(this.selectDistrictList);
+	}
+
+	// onZoneChange() {
+	// 	this.selectZoneChange.emit(this.selectedZone);
+	// }
+
+	// onSelectZoneAll(isSelectAll: boolean) {
+	// 	if (isSelectAll) {
+	// 		if (this.selectedZone.length !== this.polygonZoneList.length) {
+	// 			this.selectedZone = Array.from(this.polygonZoneList);
+	// 		}
+	// 	} else {
+	// 		this.selectedZone = [];
+	// 	}
+	// }
+
+	onShowFilter() {
+		this.showFilter = !this.showFilter;
+		// console.log(this.showFilter);
+	}
+
+	onConvenientChange() {
+		let filterData = {
+			province: this.selectedProvince,
+			districtList : this.selectedDistrict,
+			convenientList : this.enableConvenient ? this.selectedConvenient : null
+		};
+
+		this.selectConvenientChange.emit(filterData);
+	}
+
+	onCheckShowMarkOnlySelect() {
+		if (this.isShowMarkOnlySelect) {
+			this.isShowMarkOnlyAppoint = false;
+		}
+
+		let option = {
+			isShowMarkOnlySelect: this.isShowMarkOnlySelect,
+			isShowMarkOnlyAppoint: this.isShowMarkOnlyAppoint
+		}
+
+		console.log(option);
+
+		this.checkOptionChange.emit(option);
+	}
+
+	onCheckShowMarkOnlyAppoint() {
+		if (this.isShowMarkOnlyAppoint) {
+			this.isShowMarkOnlySelect = false;
+		}
+
+		let option = {
+			isShowMarkOnlySelect: this.isShowMarkOnlySelect,
+			isShowMarkOnlyAppoint: this.isShowMarkOnlyAppoint
+		}
+
+		console.log(option);
+
+		this.checkOptionChange.emit(option);
 	}
 
 }
