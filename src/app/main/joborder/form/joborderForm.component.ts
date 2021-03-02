@@ -46,6 +46,14 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 	openedWindow: number = 0;
 
+	truckIcon = {
+		url: "./assets/delivery-truck.png",
+		scaledSize: {
+			width: 34,
+			height: 34,
+		},
+	};
+
 	convenientDayList = [
 		{
 			weekDay: 3,
@@ -154,6 +162,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 					return ((item.contactStatus !== '') && (item.contactStatus !== ContactStatus.DriverReject) &&
 							(item.contactStatus !== ContactStatus.Reject) && (item.displayName === marker.displayName) );
 				})
+
 				return pos >= 0;
 			}
 		} else {
@@ -162,6 +171,16 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 			}	
 		}
 		return false;
+	}
+
+	displayIcon(marker) {
+		if (this.isShowMarkOnlyAppoint || this.isShowMarkOnlySelect) {
+			if ((marker.contactStatus !== ContactStatus.DriverReject) &&
+				(marker.contactStatus !== ContactStatus.Reject)) {
+				return this.truckIcon;
+			}
+		} 
+		return marker.icon;
 	}
 	
 
@@ -246,7 +265,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 	async getMarkerData(docdate) {
 		this.markersData = await this.joborderService.getMarkerDataList(docdate);
-		this.filterData = [ ...this.markersData];
+		this.filterData = Array.from(this.markersData);
 
 		// console.log(this.agmMap._mapsWrapper.getBounds());
 		this.redrawBound();
@@ -724,7 +743,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	}
 
 	onSearchCustomer(str) {
-		console.log(`Joborder : ${str}`);
+		// console.log(`Joborder : ${str}`);
 
 		this.spinner.show();
 
@@ -733,7 +752,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 			return value.displayName.trim().search(str.trim()) >= 0;
 		});
 
-		console.log(item);
+		// console.log(item);
 
 		this.spinner.hide();
 
@@ -762,7 +781,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		if (province !== 'ทุกจังหวัด') {
 			this.filterData = this.markersData.filter((value) => value.addressProvince === province);
 		} else {
-			this.filterData = [...this.markersData];
+			this.filterData = Array.from(this.markersData);
 		}
 		
 		this.redrawBound();
@@ -821,7 +840,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		});
 	
 		this.redrawBound();
-		console.log(this.filterData);
+		// console.log(this.filterData);
 	}
 
 

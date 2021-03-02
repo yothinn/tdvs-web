@@ -91,7 +91,7 @@ export class SearchFiltersDataComponent implements OnInit {
 
 	onProvinceChange() {
 		
-		console.log(this.selectedProvince);
+		// console.log(this.selectedProvince);
 		if (this.selectedProvince === this.PROVINCE_ALL_TEXT) {
 			this.disableDistrict = true;
 		} else {
@@ -173,7 +173,7 @@ export class SearchFiltersDataComponent implements OnInit {
 			isShowMarkOnlyAppoint: this.isShowMarkOnlyAppoint
 		}
 
-		console.log(option);
+		// console.log(option);
 
 		this.checkOptionChange.emit(option);
 	}
@@ -188,7 +188,7 @@ export class SearchFiltersDataComponent implements OnInit {
 			isShowMarkOnlyAppoint: this.isShowMarkOnlyAppoint
 		}
 
-		console.log(option);
+		// console.log(option);
 
 		this.checkOptionChange.emit(option);
 	}

@@ -337,7 +337,7 @@
                 (markerClick)="openWindow(markerItem._id)"
                 [latitude]="markerItem.latitude"
                 [longitude]="markerItem.longitude"
-                [iconUrl]="markerItem.icon"
+                [iconUrl]="displayIcon(markerItem)"
               >
           
                 <agm-info-window #infoWindow [isOpen]="isInfoWindowOpen(markerItem._id)" fxLayout="column">
