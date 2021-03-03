@@ -3,7 +3,8 @@
 		<mat-label>ค้นหาชื่อ นามสกุล</mat-label>
 		<input matInput [formControl]="searchCtrl" (keyup.enter)="onSearch($event)">
 	</mat-form-field>
-	<div *ngIf="showFilter" fxLayout="column" fxLayoutGap="0.2rem">
+	<div [@slideInOut] *ngIf="showFilter" fxLayout="column" fxLayoutGap="0.2rem"
+	>
 		<!-- <mat-form-field appearance="fill">
 			<mat-label>เลือกโซน</mat-label>
 			<mat-select [(value)]="selectedZone" (selectionChange)="onZoneChange()" multiple>

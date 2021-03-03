@@ -15,7 +15,7 @@ import * as moment from "moment";
 import { SelectCarAndDateComponent } from "../select-car-and-date/select-car-and-date.component";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason-modal.component';
-import { PolygonZoneService } from "app/services/polygon-zone.service";
+// import { PolygonZoneService } from "app/services/polygon-zone.service";
 import { ContactStatus } from '../../../types/tvds-status'
 
 @Component({
@@ -34,6 +34,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 	// Filter marker when user filter zone, province, district
 	filterData: Array<any> = [];
+	// Temp when isShoMarkOnlySelect or isShowMarkOnlyAppoint is true
 	tmpFilterData = null;
 
 	// draw marker is in boundary
@@ -41,8 +42,6 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	
 	isShowMarkOnlySelect = false;
 	isShowMarkOnlyAppoint = false;
-
-	polygonZone;
 
 	openedWindow: number = 0;
 
@@ -83,6 +82,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 	@ViewChild('agmMap') agmMap: any;
 
+	// Timer
 	boundChangeTimer;
 	districtChangeTimer;
 	convenientChangeTimer;
@@ -91,14 +91,14 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private _fuseTranslationLoaderService: FuseTranslationLoaderService,
-		private joborderService: JoborderService,
-		private _polygonZoneService: PolygonZoneService,
 		private route: ActivatedRoute,
 		private router: Router,
 		public dialog: MatDialog,
 		private _snackBar: MatSnackBar,
 		private socket: Socket,
 		private spinner: NgxSpinnerService,
+		private joborderService: JoborderService,
+		// private _polygonZoneService: PolygonZoneService,
 	) {
 		this._fuseTranslationLoaderService.loadTranslations(english, thai);
 	}
@@ -129,8 +129,6 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 		this.getVehicleData();
 
-		this.polygonZone = this._polygonZoneService.getPolygonZone();
-
 		this.socket.on("user-confirm-reject", (message: any) => {
 			// console.log(message);
 			if (message.docno === this.joborderData.docno) {
@@ -148,8 +146,15 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		this.socket.disconnect();
 	}
 
+	/**
+	 * Check if show marker or not
+	 * use when isShowMarkOnlyAppoint or isShowMarkOnlySelect is true
+	 * it show only mark that select in joborder
+	 * @param marker 
+	 */
 	isShowMarker(marker): boolean {
 		if (this.isShowMarkOnlyAppoint || this.isShowMarkOnlySelect) {
+			// Show mark that selected in joborder
 			if (this.isShowMarkOnlySelect) {
 				// Filter in contactList
 				// !! it couldn't use markder.contactStatus because it combine marker in other bill but in day
@@ -158,6 +163,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 				});
 				return pos >= 0;
 			} else if (this.isShowMarkOnlyAppoint) {
+				// Show mark that selected in joborder and already confirm
 				let pos = this.joborderData.contactLists.findIndex(item => {
 					return ((item.contactStatus !== '') && (item.contactStatus !== ContactStatus.DriverReject) &&
 							(item.contactStatus !== ContactStatus.Reject) && (item.displayName === marker.displayName) );
@@ -166,6 +172,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 				return pos >= 0;
 			}
 		} else {
+			// show only marker have longitude and latitude
 			if (marker.longitude || marker.latitude) {
 				return true;
 			}	
@@ -173,6 +180,13 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		return false;
 	}
 
+	/**
+	 * decide display icon
+	 * Normally, it show icon that is in marker
+	 * when showMarkOnlyAppoint or showMarkOnlySelect is true, it change icon only 
+	 * marker that confirm
+	 * @param marker 
+	 */
 	displayIcon(marker) {
 		if (this.isShowMarkOnlyAppoint || this.isShowMarkOnlySelect) {
 			if ((marker.contactStatus !== ContactStatus.DriverReject) &&
@@ -269,7 +283,6 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 		// console.log(this.agmMap._mapsWrapper.getBounds());
 		this.redrawBound();
-
 		this.spinner.hide();
 	}
 
@@ -289,20 +302,20 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	// 	}
 	// }
 
-	closeInfoWindow() {
-		this.openedWindow = 0;
-		// if (this.previous_info_window != null) {
-		// 	this.previous_info_window.close();
-		// }
-		// this.previous_info_window = null;
-	}
-
 	openWindow(id) {
 		this.openedWindow = id;
 	}
 
 	isInfoWindowOpen(id) {
 		return this.openedWindow === id;
+	}
+
+	closeInfoWindow() {
+		this.openedWindow = 0;
+		// if (this.previous_info_window != null) {
+		// 	this.previous_info_window.close();
+		// }
+		// this.previous_info_window = null;
 	}
 
 	clickedMarker(item: any, index: number) {
@@ -704,8 +717,6 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	 * @param event 
 	 */
 	onBoundsMapChange(event) {
-		// console.log("pass change");
-
 		// Set and clear timeout because user drag move map continueous
 		// We will calculate when user drop mouse in 1000 ms
 		clearTimeout(this.boundChangeTimer);
@@ -713,7 +724,6 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 			let filter = [];
 
 			// console.log(this.markersData.length);
-
 			for (let mark of this.filterData) {
 				// console.log(mark);
 
@@ -726,7 +736,6 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 				if (!pos.lat || !pos.lng) continue;
 
 				// console.log(pos);
-				// console.log(event.contains(pos));
 
 				// check lat, lng is contains boundary
 				if (event.contains(pos)) {
@@ -738,13 +747,10 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 			this.boundMarker = filter;
 			// console.log(this.filterMarker.length);
 		}, 1000);
-
-
 	}
 
 	onSearchCustomer(str) {
 		// console.log(`Joborder : ${str}`);
-
 		this.spinner.show();
 
 		let item = this.filterData.find((value) => {
@@ -753,7 +759,6 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		});
 
 		// console.log(item);
-
 		this.spinner.hide();
 
 		if (item) {
@@ -762,22 +767,17 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 				// Open info window immediately
 				this.openWindow(item._id);
 			} else {
-				this._snackBar.open('ไม่สามารถแสดงผล เนื่องจาก ลูกค้าไม่ระบุพิกัด', "", {
-					duration: 5000,
-				});
+				this._snackBar.open('ไม่สามารถแสดงผล เนื่องจาก ลูกค้าไม่ระบุพิกัด', "", { duration: 5000} );
 			}
 		} else {
 			// Cann't find string show dialog 
 			this.openedWindow = 0;
-			this._snackBar.open('ค้นหาข้อมูลไม่พบ', "", {
-				duration: 5000,
-			});
+			this._snackBar.open('ค้นหาข้อมูลไม่พบ', "", { duration: 5000} );
 		}
 	}
 
 	onProvinceChange(province) {
 		// console.log(province);
-
 		if (province !== 'ทุกจังหวัด') {
 			this.filterData = this.markersData.filter((value) => value.addressProvince === province);
 		} else {
@@ -804,7 +804,6 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		}, 1000);
 	}
 
-
 	filterMarkData(filterData) {
 		// console.log(filterData);
 		// convert day string to weekday for use to index refer
@@ -821,13 +820,16 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		// console.log(districtsList);
 		this.filterData = this.markersData.filter(value => {
 			let pos = 0;
+			// Find district
 			if (filterData.districtList.length > 0) {
 				pos = filterData.districtList.findIndex(d => d === value.addressDistrict);
 			}
 
-			// console.log(value);
+			// if found district then find convenient day
+			// convenient format : 7 array size of boolean
 			if (pos >= 0) {
 				if (filterData.convenientList) {
+					// if convenient day in marker had some true value
 					for (let index of cIndex) {
 						if (value.convenientDay[index])	return true;
 					}
@@ -844,15 +846,21 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	}
 
 
+	/**
+	 * Check isShowMarkOnlyAppoint and isShowMarkOnlySelect
+	 * @param option 
+	 */
 	onCheckOptionChange(option) {
 		this.isShowMarkOnlyAppoint = option.isShowMarkOnlyAppoint;
 		this.isShowMarkOnlySelect = option.isShowMarkOnlySelect;
 
 		if (this.isShowMarkOnlyAppoint || this.isShowMarkOnlySelect) {
+			// Backup filter data only first time
 			if (!this.tmpFilterData) this.tmpFilterData = this.filterData;
 
 			this.filterData = Array.from(this.markersData);
 		} else {
+			// Restore backup to filter data variable
 			this.filterData = this.tmpFilterData;
 			this.tmpFilterData = null;
 		}

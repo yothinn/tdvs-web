@@ -33,7 +33,6 @@ import { RejectReasonModalComponent } from './reject-reason-modal/reject-reason-
 import { ShareModule } from 'app/share/share.module';
 import { JobordersuggestionComponent } from './jobordersuggestion/jobordersuggestion.component';
 import { JoborderDataComponent } from './joborder-data/joborder-data.component';
-import { MarkerInfoWindowComponent } from './marker-info-window/marker-info-window.component';
 import { SearchFiltersDataComponent } from './search-filters-data/search-filters-data.component';
 
 
@@ -74,7 +73,6 @@ const routes = [
     RejectReasonModalComponent, 
     JobordersuggestionComponent, 
     JoborderDataComponent, 
-    MarkerInfoWindowComponent, 
     SearchFiltersDataComponent,
   ],
   imports: [

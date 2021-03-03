@@ -1,13 +1,32 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { PolygonZoneService } from 'app/services/polygon-zone.service';
+// import { PolygonZoneService } from 'app/services/polygon-zone.service';
 import { PostcodeService } from 'app/services/postcode.service';
+import {
+	trigger,
+	state,
+	style,
+	animate,
+	transition,
+	// ...
+  } from '@angular/animations';
 
 @Component({
 	selector: 'app-search-filters-data',
 	templateUrl: './search-filters-data.component.html',
-	styleUrls: ['./search-filters-data.component.scss']
+	styleUrls: ['./search-filters-data.component.scss'],
+	animations: [
+		trigger('slideInOut', [
+		  transition(':enter', [
+			style({transform: 'translateY(-100%)'}),
+			animate('200ms ease-in', style({transform: 'translateY(0%)'}))
+		  ]),
+		  transition(':leave', [
+			animate('200ms ease-out', style({transform: 'translateY(-100%)'}))
+		  ])
+		])
+	]
 })
 export class SearchFiltersDataComponent implements OnInit {
 
@@ -22,7 +41,7 @@ export class SearchFiltersDataComponent implements OnInit {
 	// polygonZone;
 	// polygonZoneList: string[] = [];
 	
-	@Input() showFilter: boolean = true;
+	@Input() showFilter: boolean = false;
 
 	@Input() convenientDay: any[] = ['วันพุธ', 'วันพฤหัสบดี', 'วันเสาร์', 'วันอาทิตย์'];
 
@@ -35,8 +54,11 @@ export class SearchFiltersDataComponent implements OnInit {
 	@Input() selectedConvenient: string[] = [];
 
 	@Input() isShowMarkOnlySelect: boolean = false;
+
 	@Input() isShowMarkOnlyAppoint: boolean = false;
+
 	@Input() enableConvenient: boolean = false;
+	
 	/**
 	 * Search text event
 	 */
@@ -116,7 +138,7 @@ export class SearchFiltersDataComponent implements OnInit {
 			convenientList : this.enableConvenient ? this.selectedConvenient : null
 		};
 
-		// console.log(this.selectDistrictList);
+		// console.log(this.selectedDistrict);
 		this.selectDistrictChange.emit(filterData);
 	}
 
@@ -130,6 +152,8 @@ export class SearchFiltersDataComponent implements OnInit {
 		} else {
 			this.selectedDistrict = [];
 		}
+
+		this.onDistrictChange();
 
 		// console.log(this.selectDistrictList);
 	}
