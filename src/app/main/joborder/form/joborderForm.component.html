@@ -112,7 +112,7 @@
               <div class="cursor" (click)="navigateByItem(item)">
                 <div fxLayout="row">
                   <span fxFlex="85"> 
-                    ชื่อ: {{ item.displayName }} 
+                    ชื่อ: {{ item.displayName }}
                   </span>
                   <span fxFlex="15">
                     <strong>({{ i + 1 }}/{{ joborderData.contactLists.length }})</strong>
@@ -135,6 +135,9 @@
                 </div>
                 <div *ngIf="item.mobileNo3">
                   เบอร์โทร3: {{ item.mobileNo3 }}
+                </div>
+                <div *ngIf="item.lineDisplayName">
+                  Line: {{ item.lineDisplayName}}
                 </div>
                 <div *ngIf="item.lineUserId">LineId: {{ item.lineUserId }}</div>
                 <div>
@@ -349,6 +352,7 @@
                           ? markerItem.displayName
                           : "ไม่ระบุ"
                       }}
+                      ( Line: {{ markerItem.lineDisplayName }} )
                     </strong>
                   </div>
                   <div class="h4 mt-16 ml-8 mr-8">

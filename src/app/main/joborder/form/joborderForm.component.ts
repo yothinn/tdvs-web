@@ -17,6 +17,7 @@ import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason-modal.component';
 // import { PolygonZoneService } from "app/services/polygon-zone.service";
 import { ContactStatus } from '../../../types/tvds-status'
+import { markViewDirty } from "@angular/core/src/render3/instructions";
 
 @Component({
 	selector: "app-joborder-form",
@@ -117,6 +118,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 				orderStatus: "draft",
 				contactLists: [],
 			};
+
 		// console.log(this.joborderData);
 
 		this.formatMoment(this.joborderData.docdate);
@@ -172,6 +174,15 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 				return pos >= 0;
 			}
 		} else {
+			// activated field is not setup
+			if (marker.activated === null || marker.activated === undefined) {
+				marker.activated = true;
+			}
+
+			if (!marker.activated) {
+				return false;
+			}
+
 			// show only marker have longitude and latitude
 			if (marker.longitude || marker.latitude) {
 				return true;
@@ -350,6 +361,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 					addressProvince: item.addressProvince,
 					addressPostCode: item.addressPostCode,
 					lineUserId: item.lineUserId,
+					lineDisplayName: item.lineDisplayName,
 					latitude: item.latitude,
 					longitude: item.longitude,
 				};
