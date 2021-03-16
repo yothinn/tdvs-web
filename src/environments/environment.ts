@@ -12,6 +12,7 @@ export const environment = {
   apiUrl: 'http://localhost:3000',
   authApiUrl: "https://authen-service-7lgq2xsobq-de.a.run.app",
   // SOCKET_ENDPOINT: 'http://localhost:3000'
+  linechatUrl: 'http://localhost:3100',
 };
 
 /*

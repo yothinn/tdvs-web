@@ -18,6 +18,7 @@ import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason
 // import { PolygonZoneService } from "app/services/polygon-zone.service";
 import { ContactStatus } from '../../../types/tvds-status'
 import { markViewDirty } from "@angular/core/src/render3/instructions";
+import { LinechatLoginDialogComponent } from "app/main/linechat/linechat-login-dialog/linechat-login-dialog.component";
 
 @Component({
 	selector: "app-joborder-form",
@@ -879,6 +880,17 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		
 		this.redrawBound();
 		//console.log(this.markersData);
+	}
+
+	openLineChat() {
+		const dialogRef = this.dialog.open(LinechatLoginDialogComponent, {
+			width: "350px",
+			disableClose: true
+		});
+
+		dialogRef.afterClosed().subscribe(() => {
+			console.log('close dialog');
+		});
 	}
 
 }

@@ -9,8 +9,11 @@
         fixedInViewport="true"
         fixedTopGap="65"
         fixedBottomGap="0"
+        
       >
+
         <div fxLayout="column" fxLayoutGap="1rem">
+          <!-- Filter part -->
           <app-search-filters-data
             (search)="onSearchCustomer($event)"
             (selectProvinceChange)="onProvinceChange($event)"
@@ -20,61 +23,63 @@
           > 
 
           </app-search-filters-data>
+
+          <!-- Joborder part-->
           <div>
             <div fxLayout="row wrap" fxLayoutAlign="start center">
-              
-              <div
-                class="logo mb-24 mb-md-0"
+              <div 
+                class="logo mb-24 mb-md-0 ml-12"
+                fxLayout="column"
                 fxFlex="60"
-                fxLayoutAlign="start center"
               >
-                <div fxLayout="column">
-                  <div>
-                    <span class="logo-text h3">วันที่: </span>
-                    <span class="logo-text h5">{{ titleDate }}</span>
-                  </div>
-                  <div>
-                    <span class="logo-text h3">ทะเบียนรถ: </span>
-                    <span class="logo-text h5">{{
-                      joborderData.carNo.lisenceID || "ไม่ระบุ"
-                    }}</span>
-                  </div>
-                  <div>
-                    <span class="logo-text h3">คนขับ: </span>
-                    <span class="logo-text h5">{{
-                      joborderData.carNo.driverInfo
-                        ? joborderData.carNo.driverInfo.displayName
-                        : "ไม่ระบุ"
-                    }}</span>
-                  </div>
-                  <div *ngIf="joborderData.docno">
-                    <span class="logo-text h3">เลขที่ใบสั่งงาน: </span>
-                    <span class="logo-text h5">{{ joborderData.docno }}</span>
-                  </div>
-                  <div *ngIf="joborderData.docno">
-                    <span class="logo-text h3">สถานะ: </span>
-                    <span class="logo-text h5">
-                      {{ joborderData.orderStatus | thaiorderstatus }}
-                    </span>
-                    <!-- <span class="logo-text h5">{{
-                      joborderData.orderStatus === "draft"
-                        ? "จัดเส้นทาง"
-                        : joborderData.orderStatus === "waitapprove"
-                        ? "รอยืนยัน"
-                        : joborderData.orderStatus === "orderavailable"
-                        ? "ใบงานพร้อม"
-                        : joborderData.orderStatus === "serviceprepared"
-                        ? "เตรียมการบริการ"
-                        : joborderData.orderStatus === "golive"
-                        ? "กำลังให้บริการ"
-                        : joborderData.orderStatus === "close"
-                        ? "จบบริการ"
-                        : "จบบริการ(ยกเลิก)"
-                    }}</span> -->
-                  </div>
+                <div>
+                  <span class="logo-text h3">วันที่: </span>
+                  <span class="logo-text h5">{{ titleDate }}</span>
+                </div>
+                <div>
+                  <span class="logo-text h3">ทะเบียนรถ: </span>
+                  <span class="logo-text h5">{{
+                    joborderData.carNo.lisenceID || "ไม่ระบุ"
+                  }}</span>
+                </div>
+                <div>
+                  <span class="logo-text h3">คนขับ: </span>
+                  <span class="logo-text h5">{{
+                    joborderData.carNo.driverInfo
+                      ? joborderData.carNo.driverInfo.displayName
+                      : "ไม่ระบุ"
+                  }}</span>
+                </div>
+                <div *ngIf="joborderData.docno">
+                  <span class="logo-text h3">เลขที่ใบสั่งงาน: </span>
+                  <span class="logo-text h5">{{ joborderData.docno }}</span>
+                </div>
+                <div *ngIf="joborderData.docno">
+                  <span class="logo-text h3">สถานะ: </span>
+                  <span class="logo-text h5">
+                    {{ joborderData.orderStatus | thaiorderstatus }}
+                  </span>
+                  <!-- <span class="logo-text h5">{{
+                    joborderData.orderStatus === "draft"
+                      ? "จัดเส้นทาง"
+                      : joborderData.orderStatus === "waitapprove"
+                      ? "รอยืนยัน"
+                      : joborderData.orderStatus === "orderavailable"
+                      ? "ใบงานพร้อม"
+                      : joborderData.orderStatus === "serviceprepared"
+                      ? "เตรียมการบริการ"
+                      : joborderData.orderStatus === "golive"
+                      ? "กำลังให้บริการ"
+                      : joborderData.orderStatus === "close"
+                      ? "จบบริการ"
+                      : "จบบริการ(ยกเลิก)"
+                  }}</span> -->
                 </div>
               </div>
-              <div fxFlex="40" class="text-center">
+              <div
+                fxLayout="column" 
+                fxLayoutGap="1rem"
+              >
                 <!--พี่โก๋เอาออกเพราะทุก Action พี่โก๋ Save หมด-->
                 <!-- <button mat-button color="warn" (click)="onSave()" *ngIf="!joborderData._id">
                                 สร้าง
@@ -84,7 +89,7 @@
                             </button> -->
 
                 <button
-                  mat-button
+                  mat-flat-button
                   color="warn"
                   (click)="openCarAndDate()"
                   *ngIf="
@@ -95,7 +100,14 @@
                     joborderData.orderStatus !== 'ordercancel'
                   "
                 >
-                  แก้ไขข้อมูลคนขับ
+                  เปลี่ยนคนขับ
+                </button>
+                <button
+                  mat-flat-button
+                  color="primary"
+                  (click)="openLineChat()"
+                >
+                  Chat Login
                 </button>
               </div>
             </div>
@@ -150,7 +162,7 @@
                 <div>
                   สถานะ:
                   <span>
-                     {{ item.contactStatus | thaicontactstatus }}
+                    {{ item.contactStatus | thaicontactstatus }}
                   </span>
                   <!-- <span *ngIf="item.contactStatus === 'select'">เลือกแล้ว</span>
                   <span *ngIf="item.contactStatus === 'waitapprove'"

@@ -34,6 +34,9 @@ import { ShareModule } from 'app/share/share.module';
 import { JobordersuggestionComponent } from './jobordersuggestion/jobordersuggestion.component';
 import { JoborderDataComponent } from './joborder-data/joborder-data.component';
 import { SearchFiltersDataComponent } from './search-filters-data/search-filters-data.component';
+import { LinechatModule } from '../linechat/linechat.module';
+import { LinechatLoginDialogComponent } from '../linechat/linechat-login-dialog/linechat-login-dialog.component';
+import { ChatPanelModule } from 'app/layout/components/chat-panel/chat-panel.module';
 
 
 const routes = [
@@ -100,6 +103,7 @@ const routes = [
 
     DragDropModule,
     FlexLayoutModule,
+    ChatPanelModule,
 
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDnjHI8F5TKYn8Vu8nUtqOn1sVOq2UInQE'
@@ -111,6 +115,7 @@ const routes = [
     FuseSharedModule,
     NgxDatatableModule,
 
+    LinechatModule,
     ShareModule,
   ],
   exports: [
@@ -119,7 +124,8 @@ const routes = [
   ],
   entryComponents: [
     SelectCarAndDateComponent,
-    RejectReasonModalComponent
+    RejectReasonModalComponent,
+    LinechatLoginDialogComponent,
   ]
 })
 export class JoborderModule { }

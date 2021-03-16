@@ -1,0 +1,24 @@
+<h1 mat-dialog-title class="title">
+  <strong>LINE LOGIN</strong>
+</h1>
+
+
+<mat-dialog-content *ngIf="isQrcodeWait()" class="qrcode-container">
+  <h2>เข้าสู่ระบบด้วยคิวอาร์โค้ด</h2>
+  <img style="text-align: center;" [src]="getQrcodeImage()">
+  <h4>โปรดเปิดตัวอ่านในแอพ LINE สำหรับ Android หรือ iOS แล้วสแกนคิวอาร์โค้ด</h4>
+
+</mat-dialog-content>
+
+<mat-dialog-content *ngIf="isPincodeWait()" class="pincode-container">
+  <h1>รหัสยืนยันตัวตน</h1>
+  <div>
+    <h1>{{pincode}}</h1>
+    <h2>เหลือเวลา {{loginTimer | date:'mm:ss'}}</h2>
+  </div>
+  <h4>โปรดใส่รหัสยืนยันตัวตนที่แอพ LINE สำหรับ Android หรือ iOS</h4>
+</mat-dialog-content>
+
+<mat-dialog-content *ngIf="!(isQrcodeWait() || isPincodeWait())">
+  <h1>รอสักครู่ กำลังโหลด ...</h1>
+</mat-dialog-content>
