@@ -5,6 +5,7 @@ import { FuseSharedModule } from '@fuse/shared.module';
 
 import { ChatPanelComponent } from 'app/layout/components/chat-panel/chat-panel.component';
 import { ChatPanelService } from 'app/layout/components/chat-panel/chat-panel.service';
+import { LinechatModule } from 'app/main/linechat/linechat.module';
 
 @NgModule({
     declarations: [
@@ -22,7 +23,8 @@ import { ChatPanelService } from 'app/layout/components/chat-panel/chat-panel.se
         MatTooltipModule,
         MatRippleModule,
 
-        FuseSharedModule
+        FuseSharedModule,
+        LinechatModule,
     ],
     exports     : [
         ChatPanelComponent

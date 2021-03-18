@@ -16,7 +16,7 @@ export class ChatPanelService
      * @param {HttpClient} _httpClient
      */
     constructor(
-        private _httpClient: HttpClient
+        private _httpClient: HttpClient,
     )
     {
     }
@@ -41,6 +41,7 @@ export class ChatPanelService
                 reject
             );
         });
+
     }
 
     /**
@@ -82,7 +83,7 @@ export class ChatPanelService
             }
         });
     }
-
+  
     /**
      * Create new chat
      *
@@ -164,7 +165,7 @@ export class ChatPanelService
                 }, reject);
         });
     }
-
+    
     /**
      * Get user
      *

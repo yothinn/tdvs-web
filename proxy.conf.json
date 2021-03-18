@@ -1,0 +1,6 @@
+{
+    "/api/v1/sse": {
+        "target": "https://chat-streaming-api.line.biz",
+        "secure": false
+    }
+}

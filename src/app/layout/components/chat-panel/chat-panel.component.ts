@@ -2,12 +2,13 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, Vie
 import { NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { of, Subject, from } from 'rxjs';
+import { takeUntil, map, expand, tap, concatAll } from 'rxjs/operators';
 
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 import { FusePerfectScrollbarDirective } from '@fuse/directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
 import { ChatPanelService } from 'app/layout/components/chat-panel/chat-panel.service';
+import { LinechatService } from 'app/main/linechat/services/linechat.service';
 
 @Component({
     selector     : 'chat-panel',
@@ -52,9 +53,11 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
      * @param {FuseSidebarService} _fuseSidebarService
      */
     constructor(
+        // TODO : Comment later, convert to line chat service
         private _chatPanelService: ChatPanelService,
         private _httpClient: HttpClient,
-        private _fuseSidebarService: FuseSidebarService
+        private _fuseSidebarService: FuseSidebarService,
+        private _linechatService: LinechatService,
     )
     {
         // Set the defaults
@@ -80,7 +83,13 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         //     this.contacts = this._chatPanelService.contacts;
         //     this.user = this._chatPanelService.user;
         // });
-
+        this._linechatService.selectChatRoomById('U9b2714c1a2fa39646c1bb25e674aa0b3');
+        this._linechatService.getUserList()
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((userList: any) => {
+                this.contacts = userList;
+            });
+        
         // Subscribe to the foldedChanged observable
         this._fuseSidebarService.getSidebar('chatPanel').foldedChanged
             .pipe(takeUntil(this._unsubscribeAll))
@@ -97,6 +106,21 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         this._chatViewScrollbar = this._fusePerfectScrollbarDirectives.find((directive) => {
             return directive.elementRef.nativeElement.id === 'messages';
         });
+
+        this._linechatService.openChatStreaming().subscribe(e => {
+            // TODO: receive event should reload contactlist if not selected
+            // if selected should ?
+            // For test only
+            let msg = JSON.parse(e.data);
+            console.log(msg);
+            this.chat.dialog.list.push({
+                type: msg.subEvent,
+                timestamp: msg.timestamp,
+                source: msg.payload.source,
+                sendId: msg.payload.sendId,
+                message: msg.payload.message
+            });
+        })
     }
 
     /**
@@ -172,10 +196,11 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
      */
     shouldShowContactAvatar(message, i): boolean
     {
-        return (
-            message.who === this.selectedContact.id &&
-            ((this.chat.dialog[i + 1] && this.chat.dialog[i + 1].who !== this.selectedContact.id) || !this.chat.dialog[i + 1])
-        );
+        // return (
+        //     message.who === this.selectedContact.id &&
+        //     ((this.chat.dialog[i + 1] && this.chat.dialog[i + 1].who !== this.selectedContact.id) || !this.chat.dialog[i + 1])
+        // );
+        return this.chat.dialog.list[i].type === 'message';
     }
 
     /**
@@ -187,7 +212,8 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
      */
     isFirstMessageOfGroup(message, i): boolean
     {
-        return (i === 0 || this.chat.dialog[i - 1] && this.chat.dialog[i - 1].who !== message.who);
+        // return (i === 0 || this.chat.dialog[i - 1] && this.chat.dialog[i - 1].who !== message.who);
+        return (i === 0 || this.chat.dialog.list[i - 1] && this.chat.dialog.list[i -1].type !== 'messageSent')
     }
 
     /**
@@ -199,7 +225,8 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
      */
     isLastMessageOfGroup(message, i): boolean
     {
-        return (i === this.chat.dialog.length - 1 || this.chat.dialog[i + 1] && this.chat.dialog[i + 1].who !== message.who);
+        // return (i === this.chat.dialog.length - 1 || this.chat.dialog[i + 1] && this.chat.dialog[i + 1].who !== message.who);
+        return (i === this.chat.dialog.list.length - 1 || this.chat.dialog.list[i + 1] && this.chat.dialog.list[i + 1].type !== 'messageSent');
     }
 
     /**
@@ -212,7 +239,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         // If the contact equals to the selectedContact,
         // that means we will deselect the contact and
         // unload the chat
-        if ( this.selectedContact && contact.id === this.selectedContact.id )
+        if ( this.selectedContact && contact.chatId === this.selectedContact.chatId )
         {
             // Reset
             this.resetChat();
@@ -228,14 +255,26 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
             this.selectedContact = contact;
 
             // Load the chat
-            this._chatPanelService.getChat(contact.id).then((chat) => {
+            // this._chatPanelService.getChat(contact.id).then((chat) => {
 
-                // Set the chat
-                this.chat = chat;
+            //     // Set the chat
+            //     this.chat = chat;
 
-                // Prepare the chat for the replies
-                this._prepareChatForReplies();
-            });
+            //     // Prepare the chat for the replies
+            //     this._prepareChatForReplies();
+            // });
+            this._linechatService.getHistoryMessage(contact.chatId)
+                .pipe(takeUntil(this._unsubscribeAll))
+                .subscribe(msg => {
+                    msg.list.reverse();
+                    this.chat = {
+                        id: contact.chatId,
+                        dialog: msg
+                    }
+
+                    this._prepareChatForReplies();
+                    console.log(this.chat);
+                })
         }
     }
 
@@ -263,24 +302,41 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
             return;
         }
 
-        // Message
-        const message = {
-            who    : this.user.id,
-            message: this._replyForm.form.value.message,
-            time   : new Date().toISOString()
-        };
-
-        // Add the message to the chat
-        this.chat.dialog.push(message);
-
-        // Reset the reply form
+        this._linechatService.sendMessage(this.selectedContact.chatId, this._replyForm.form.value.message)
+            .subscribe(v => {
+                this._prepareChatForReplies();
+                
+                console.log(v);
+            });
         this._replyForm.reset();
 
-        // Update the server
-        this._chatPanelService.updateChat(this.chat.id, this.chat.dialog).then(response => {
+        // // Message
+        // const message = {
+        //     who    : this.user.id,
+        //     message: this._replyForm.form.value.message,
+        //     time   : new Date().toISOString()
+        // };
 
-            // Prepare the chat for the replies
-            this._prepareChatForReplies();
-        });
+        // // Add the message to the chat
+        // this.chat.dialog.push(message);
+
+        // // Reset the reply form
+        // this._replyForm.reset();
+
+        // // Update the server
+        // this._chatPanelService.updateChat(this.chat.id, this.chat.dialog).then(response => {
+
+        //     // Prepare the chat for the replies
+        //     this._prepareChatForReplies();
+        // });
     }
+
+    scrolled(event) {
+        console.log(event);
+    }
+
+    getAvatar(iconHash): string {
+        return this._linechatService.getIconUrl(iconHash);
+    }
+
 }

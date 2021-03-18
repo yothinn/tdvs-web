@@ -19,6 +19,8 @@ import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason
 import { ContactStatus } from '../../../types/tvds-status'
 import { markViewDirty } from "@angular/core/src/render3/instructions";
 import { LinechatLoginDialogComponent } from "app/main/linechat/linechat-login-dialog/linechat-login-dialog.component";
+import { LinechatService } from "app/main/linechat/services/linechat.service";
+import { VirtualTimeScheduler } from "rxjs";
 
 @Component({
 	selector: "app-joborder-form",
@@ -101,6 +103,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		private spinner: NgxSpinnerService,
 		private joborderService: JoborderService,
 		// private _polygonZoneService: PolygonZoneService,
+		private _linechatService: LinechatService,
 	) {
 		this._fuseTranslationLoaderService.loadTranslations(english, thai);
 	}
@@ -883,14 +886,62 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	}
 
 	openLineChat() {
-		const dialogRef = this.dialog.open(LinechatLoginDialogComponent, {
-			width: "350px",
-			disableClose: true
-		});
 
-		dialogRef.afterClosed().subscribe(() => {
-			console.log('close dialog');
-		});
+			// const dialogRef = this.dialog.open(LinechatLoginDialogComponent, {
+			// 	width: "350px",
+			// 	disableClose: true
+			// });
+
+			// dialogRef.afterClosed().subscribe(() => {
+			// 	console.log('close dialog');
+
+			// 	// this._linechatService.getChatRoomList().subscribe(v => {
+			// 	// 	console.log(v);
+			// 	// });
+
+					
+			// });
+ 
+
+		// this._linechatService.getChatRoomList().subscribe(v => {
+		// 	console.log(v);
+		// });	
+
+		// this._linechatService.selectChatRoomById('U9b2714c1a2fa39646c1bb25e674aa0b3');
+		// this._linechatService.getUserList().subscribe(v => {
+		// 	console.log(v);
+		// });
+
+
+		// body['chatRoomId'] ='U9b2714c1a2fa39646c1bb25e674aa0b3';
+		// body['chatId'] ='Uffda42596fdca9e928de40c17baf7fab';
+
+		// this._linechatService.selectChatRoomById('U9b2714c1a2fa39646c1bb25e674aa0b3');
+		// this._linechatService.getHistoryMessage('Uffda42596fdca9e928de40c17baf7fab').subscribe(v => {
+		// 	console.log(v);
+
+		// 	// body['backwardToken'] = v.data.backward;
+		// 	// this._linechatService.getHistoryMessage(body).subscribe(v => {
+		// 	// 	console.log(v);
+		// 	// })
+		// });
+
+		// this._linechatService.sendMessage(body['chatRoomId'], body['chatId'], 'ทดสอบการส่งข้อความ').subscribe(v => {
+		// 	console.log(v);
+		// })
+
+
+		// this._linechatService.getStreamApiToken().subscribe(v => {
+		// 	console.log(v);
+		// })
+
+		// this._linechatService.openChatStreaming().subscribe((value) => {
+		// 	console.log(value);
+		// });
+
+
+		
+
 	}
 
 }

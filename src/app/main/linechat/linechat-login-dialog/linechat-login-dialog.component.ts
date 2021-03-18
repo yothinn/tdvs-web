@@ -37,31 +37,41 @@ export class LinechatLoginDialogComponent implements OnInit, OnDestroy {
 		// this.state='pincodeWait';
 		// this.startTimer();
 
-		this.lineService.login();
-
-		this.lineService.getSseLogin()
+		this.lineService.login()
 			.pipe(takeUntil(this._unsubscribeAll))
-			.subscribe(e => {
-				this.state = e;
-				console.log(e);
-				if (e === LINECHAT_STATE.QRCODE_WAIT) {
-					this.qrcodeImg = this.lineService.qrcodeImg;
-					// console.log(this.qrcodeImg);
-				} 
-			
-				if (e === LINECHAT_STATE.PINCODE_WAIT) {
-					this.startTimer();
-					this.pincode = this.lineService.pincode;
-					// console.log(this.pincode);
-				}
+			.subscribe({
+				next: e => {
+					console.log(e)
+					this.state = e.type;
+					console.log(this.state);
+					if (e.type === LINECHAT_STATE.QRCODE_WAIT) {
+						this.qrcodeImg = e.data;
+						// console.log(this.qrcodeImg);
+					}
 
-				if (e === LINECHAT_STATE.SUCCESS) {
-					console.log("login success:dialog close");
+					if (e.type === LINECHAT_STATE.PINCODE_WAIT) {
+						this.startTimer();
+						this.pincode = e.data;
+						console.log(this.pincode);
+					}
+	
+					// if (e.type === LINECHAT_STATE.SUCCESS) {
+					// 	console.log("login success:dialog close");
+					// 	clearInterval(this.intervalId);
+					// 	this.dialogRef.close();
+					// }
+				},
+				error: (err) => {
+					clearInterval(this.intervalId);
+					console.log('error login');
+				},
+				complete: () => {
+					this.state = LINECHAT_STATE.SUCCESS;
 					clearInterval(this.intervalId);
 					this.dialogRef.close();
+					console.log('complete login');
 				}
-			})
-		
+			});
 	}
 
 	ngOnDestroy() {
