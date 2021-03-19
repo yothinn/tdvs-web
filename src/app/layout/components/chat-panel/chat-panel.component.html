@@ -19,16 +19,32 @@
 
     </ng-container>
 
-    <button mat-icon-button class="toggle-sidebar-folded mr-8" (click)="foldSidebarTemporarily();resetChat();"
-            fxHide fxShow.gt-md>
-        <mat-icon class="secondary-text s-20">close</mat-icon>
-    </button>
+    <div>
+        <button mat-flat-button 
+            *ngIf="!isLogin()"
+            class="toggle-sidebar-folded mr-8" 
+            (click)="lineLogin()"
+        >
+            LOGIN
+        </button>
+        <button mat-flat-button 
+            *ngIf="isLogin()"
+            class="toggle-sidebar-folded mr-8" 
+            (click)="lineLogout()"
+        >
+            LOGOUT
+        </button>
+        <button mat-icon-button class="toggle-sidebar-folded mr-8" (click)="foldSidebarTemporarily();resetChat();"
+                fxHide fxShow.gt-md>
+            <mat-icon class="secondary-text s-20">close</mat-icon>
+        </button>
 
-    <button mat-icon-button class="toggle-sidebar-open mr-8" (click)="toggleSidebarOpen();resetChat();"
+        <button mat-icon-button class="toggle-sidebar-open mr-8" (click)="toggleSidebarOpen();resetChat();"
             fxHide.gt-md>
         <mat-icon class="secondary-text">close</mat-icon>
     </button>
-
+    </div>
+    
 </div>
 
 <div class="content">
@@ -48,7 +64,6 @@
                  matTooltipPosition="left">
             <!-- <div class="unread-count" *ngIf="contact.unread">{{contact.unread}}</div>
             <div class="status-icon" [ngClass]="contact.status"></div> -->
-
         </div>
 
     </div>

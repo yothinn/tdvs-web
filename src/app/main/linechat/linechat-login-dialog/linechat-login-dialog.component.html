@@ -1,3 +1,8 @@
+  <button class="close-btn" mat-icon-button (click)="onCancel()">
+    <mat-icon class="secondary-text">close</mat-icon>
+  </button>
+
+
 <h1 mat-dialog-title class="title">
   <strong>LINE LOGIN</strong>
 </h1>
@@ -14,11 +19,25 @@
   <h1>รหัสยืนยันตัวตน</h1>
   <div>
     <h1>{{pincode}}</h1>
-    <h2>เหลือเวลา {{loginTimer | date:'mm:ss'}}</h2>
+    <h2>เหลือเวลา {{countDownTimer | date:'mm:ss'}}</h2>
   </div>
   <h4>โปรดใส่รหัสยืนยันตัวตนที่แอพ LINE สำหรับ Android หรือ iOS</h4>
 </mat-dialog-content>
 
-<mat-dialog-content *ngIf="!(isQrcodeWait() || isPincodeWait())">
+<div class="loading-spinner" *ngIf="isLoading">
+  <mat-spinner style="margin:0 auto;"></mat-spinner>
   <h1>รอสักครู่ กำลังโหลด ...</h1>
-</mat-dialog-content>
+</div>
+
+<div class="reload" *ngIf="isReload">
+  <button style="margin:0 auto;" mat-icon-button (click)="reloadLogin()">
+    <mat-icon style="font-size: 48px;">replay</mat-icon>
+  </button>
+  <h1>กดไอคอนเพื่อโหลดอีกครั้ง</h1>
+</div>
+
+
+<div class="isnot-admin" *ngIf="isLoginSuccess() && !isAdmin">
+  <h3><strong>คุณยังไม่ได้รับสิทธิในการเข้าถึง</strong></h3>
+  <h3><strong>กรุณาขอสิทธิการเป็นแอดมินกับเจ้าหน้าที่</strong></h3>
+</div>

@@ -2,13 +2,16 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, Vie
 import { NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
-import { of, Subject, from } from 'rxjs';
-import { takeUntil, map, expand, tap, concatAll } from 'rxjs/operators';
+import { Subject} from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { MatDialog } from "@angular/material/dialog";
 
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 import { FusePerfectScrollbarDirective } from '@fuse/directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
 import { ChatPanelService } from 'app/layout/components/chat-panel/chat-panel.service';
-import { LinechatService } from 'app/main/linechat/services/linechat.service';
+import { LinechatService, LINECHAT_EVENT } from 'app/main/linechat/services/linechat.service';
+import { LinechatLoginDialogComponent } from "app/main/linechat/linechat-login-dialog/linechat-login-dialog.component";
 
 @Component({
     selector     : 'chat-panel',
@@ -58,6 +61,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         private _httpClient: HttpClient,
         private _fuseSidebarService: FuseSidebarService,
         private _linechatService: LinechatService,
+        public dialog: MatDialog,
     )
     {
         // Set the defaults
@@ -83,13 +87,13 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         //     this.contacts = this._chatPanelService.contacts;
         //     this.user = this._chatPanelService.user;
         // });
-        this._linechatService.selectChatRoomById('U9b2714c1a2fa39646c1bb25e674aa0b3');
-        this._linechatService.getUserList()
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((userList: any) => {
-                this.contacts = userList;
-            });
-        
+
+        if (this._linechatService.isLogin()) {
+            // this._linechatService.selectChatRoomById('U9b2714c1a2fa39646c1bb25e674aa0b3');
+            this.loadContactList();
+            this.openChatStreaming();
+        }
+                
         // Subscribe to the foldedChanged observable
         this._fuseSidebarService.getSidebar('chatPanel').foldedChanged
             .pipe(takeUntil(this._unsubscribeAll))
@@ -107,20 +111,23 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
             return directive.elementRef.nativeElement.id === 'messages';
         });
 
-        this._linechatService.openChatStreaming().subscribe(e => {
-            // TODO: receive event should reload contactlist if not selected
-            // if selected should ?
-            // For test only
-            let msg = JSON.parse(e.data);
-            console.log(msg);
-            this.chat.dialog.list.push({
-                type: msg.subEvent,
-                timestamp: msg.timestamp,
-                source: msg.payload.source,
-                sendId: msg.payload.sendId,
-                message: msg.payload.message
-            });
-        })
+        // Receive event from line chat service
+        this._linechatService.getChatEvent()
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(e => {
+                if (e === LINECHAT_EVENT.LOGIN_SUCCESS) {
+                    // this._linechatService.selectChatRoomById('U9b2714c1a2fa39646c1bb25e674aa0b3');
+                    this.loadContactList();
+                    this.openChatStreaming();
+                }
+
+                console.log(e);
+                if (e === LINECHAT_EVENT.LOGOUT) {
+                    this.contacts = null;
+                    this.chat = null;
+                    this.selectedContact = null;
+                }
+        });
     }
 
     /**
@@ -263,18 +270,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
             //     // Prepare the chat for the replies
             //     this._prepareChatForReplies();
             // });
-            this._linechatService.getHistoryMessage(contact.chatId)
-                .pipe(takeUntil(this._unsubscribeAll))
-                .subscribe(msg => {
-                    msg.list.reverse();
-                    this.chat = {
-                        id: contact.chatId,
-                        dialog: msg
-                    }
-
-                    this._prepareChatForReplies();
-                    console.log(this.chat);
-                })
+            this.loadChat(contact.chatId);
         }
     }
 
@@ -338,5 +334,80 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
     getAvatar(iconHash): string {
         return this._linechatService.getIconUrl(iconHash);
     }
+
+    isLogin(): boolean {
+        return this._linechatService.isLogin();
+    }
+
+    lineLogin() {
+        console.log('openline chat');
+
+		const dialogRef = this.dialog.open(LinechatLoginDialogComponent, {
+			width: "350px",
+			disableClose: true
+		});
+
+		dialogRef.afterClosed().subscribe(() => {
+			console.log('close dialog');	
+		});
+    }
+
+    lineLogout() {
+        this._linechatService.logout();
+    }
+
+    loadChat(chatId) {
+        this._linechatService.getHistoryMessage(chatId)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(msg => {
+                msg.list.reverse();
+                this.chat = {
+                    id: chatId,
+                    dialog: msg
+                }
+
+                this._prepareChatForReplies();
+                console.log(this.chat);
+            });
+    }
+
+    loadContactList() {
+        this._linechatService.getUserList()
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((userList: any) => {
+                this.contacts = userList;
+            });
+    }
+
+    openChatStreaming() {
+        
+        this._linechatService.openChatStreaming()
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(e => {
+                console.log('open streaming')
+                console.log(e);
+                let msg = JSON.parse(e.data);
+                console.log(msg);
+                if (msg.chatId == this.selectedContact.chatId) {
+                    this.loadChat(this.selectedContact.chatId);
+                }
+                
+                // TODO: receive event should reload contactlist if not selected
+                // if selected should ?
+                // For test only
+                
+                
+                // this.chat.dialog.list.push({
+                //     type: msg.subEvent,
+                //     timestamp: msg.timestamp,
+                //     source: msg.payload.source,
+                //     sendId: msg.payload.sendId,
+                //     message: msg.payload.message
+                // });
+
+                this.loadContactList();
+        });
+    }
+
 
 }

@@ -17,10 +17,8 @@ import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason-modal.component';
 // import { PolygonZoneService } from "app/services/polygon-zone.service";
 import { ContactStatus } from '../../../types/tvds-status'
-import { markViewDirty } from "@angular/core/src/render3/instructions";
 import { LinechatLoginDialogComponent } from "app/main/linechat/linechat-login-dialog/linechat-login-dialog.component";
 import { LinechatService } from "app/main/linechat/services/linechat.service";
-import { VirtualTimeScheduler } from "rxjs";
 
 @Component({
 	selector: "app-joborder-form",
@@ -887,20 +885,21 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 	openLineChat() {
 
-			// const dialogRef = this.dialog.open(LinechatLoginDialogComponent, {
-			// 	width: "350px",
-			// 	disableClose: true
-			// });
+		// console.log('openline chat');
+		// const dialogRef = this.dialog.open(LinechatLoginDialogComponent, {
+		// 	width: "350px",
+		// 	disableClose: true
+		// });
 
-			// dialogRef.afterClosed().subscribe(() => {
-			// 	console.log('close dialog');
+		// dialogRef.afterClosed().subscribe(() => {
+		// 	console.log('close dialog');
 
-			// 	// this._linechatService.getChatRoomList().subscribe(v => {
-			// 	// 	console.log(v);
-			// 	// });
+		// 	// this._linechatService.getChatRoomList().subscribe(v => {
+		// 	// 	console.log(v);
+		// 	// });
 
-					
-			// });
+				
+		// });
  
 
 		// this._linechatService.getChatRoomList().subscribe(v => {

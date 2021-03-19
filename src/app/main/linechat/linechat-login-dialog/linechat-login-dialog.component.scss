@@ -29,3 +29,29 @@
     }
 }
 
+.close-btn {
+    background-color: white;
+    border: 0;
+    position: relative;
+    top: -20px;
+    right: -290px;
+}
+
+.loading-spinner {
+    text-align: center;
+}
+
+.reload {
+    text-align: center;
+
+    button {
+        background-color: white;
+        border: 0;
+        height: 100px;
+    }
+}
+
+.isnot-admin {
+    text-align: center;
+    color: red;
+}

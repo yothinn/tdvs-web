@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { LINECHAT_STATE, LinechatService } from '../services/linechat.service';
+import { Component, OnDestroy, OnInit, AfterViewInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { LINECHAT_EVENT, LinechatService } from '../services/linechat.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';
-
+import { environment } from 'environments/environment';
 
 @Component({
 	selector: 'app-linechat-login-dialog',
@@ -19,8 +19,13 @@ export class LinechatLoginDialogComponent implements OnInit, OnDestroy {
 	state: string = '';
 
 	loginTimer = 120000;
+	countDownTimer;
 
 	intervalId;
+
+	isLoading = true;
+	isReload = false;
+	isAdmin = false;
 
 	constructor(
 		private lineService: LinechatService,
@@ -34,44 +39,10 @@ export class LinechatLoginDialogComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		// this.state='pincodeWait';
-		// this.startTimer();
+		this.lineService.selectChatRoomById(environment.thamDeliveryChatRoomId);
 
-		this.lineService.login()
-			.pipe(takeUntil(this._unsubscribeAll))
-			.subscribe({
-				next: e => {
-					console.log(e)
-					this.state = e.type;
-					console.log(this.state);
-					if (e.type === LINECHAT_STATE.QRCODE_WAIT) {
-						this.qrcodeImg = e.data;
-						// console.log(this.qrcodeImg);
-					}
-
-					if (e.type === LINECHAT_STATE.PINCODE_WAIT) {
-						this.startTimer();
-						this.pincode = e.data;
-						console.log(this.pincode);
-					}
-	
-					// if (e.type === LINECHAT_STATE.SUCCESS) {
-					// 	console.log("login success:dialog close");
-					// 	clearInterval(this.intervalId);
-					// 	this.dialogRef.close();
-					// }
-				},
-				error: (err) => {
-					clearInterval(this.intervalId);
-					console.log('error login');
-				},
-				complete: () => {
-					this.state = LINECHAT_STATE.SUCCESS;
-					clearInterval(this.intervalId);
-					this.dialogRef.close();
-					console.log('complete login');
-				}
-			});
+		this.isLoading = true;
+		this.login();
 	}
 
 	ngOnDestroy() {
@@ -80,26 +51,89 @@ export class LinechatLoginDialogComponent implements OnInit, OnDestroy {
 		this._unsubscribeAll.complete();
 	}
 
-	// onCancel() {
-	// 	this.dialogRef.close()
-	// }
+	login() {
+		this.lineService.login()
+			.pipe(takeUntil(this._unsubscribeAll))
+			.subscribe({
+				next: e => {
+					console.log(e)
+					this.state = e.type;
+					console.log(this.state);
+					if (e.type === LINECHAT_EVENT.QRCODE_WAIT) {
+						this.isLoading = false;
+						this.qrcodeImg = e.data;
+						// console.log(this.qrcodeImg);
+					}
+
+					if (e.type === LINECHAT_EVENT.PINCODE_WAIT) {
+						this.startTimer();
+						this.pincode = e.data;
+						console.log(this.pincode);
+					}
+
+					// if (e.type === LINECHAT_EVENT.LOGIN_SUCCESS) {
+					// 	console.log('login success');
+					// }
+
+					this._ref.detectChanges();
+				},
+				error: (err) => {
+					clearInterval(this.intervalId);
+					console.log('error login');
+					this.state = '';
+					this.isReload = true;
+					this.isLoading = false;
+					this._ref.detectChanges();
+				},
+				complete: () => {
+					clearInterval(this.intervalId);
+
+					this.isAdmin = (this.state === LINECHAT_EVENT.NOT_ADMIN) ? false : true;
+					if (this.isAdmin) {
+						this.dialogRef.close();
+					}
+					
+				}
+			});
+	}
+
+	reloadLogin() {
+		this.isReload = false;
+		this.isLoading = true;
+		this.login();
+	}
+
+	onCancel() {
+		this.dialogRef.close()
+	}
 
 	getQrcodeImage() {
 		return this.sanitizer.bypassSecurityTrustUrl(this.qrcodeImg);
 	}
 
-	isQrcodeWait() {
-		return this.state === LINECHAT_STATE.QRCODE_WAIT;
+	isQrcodeWait(): boolean {
+		return this.state === LINECHAT_EVENT.QRCODE_WAIT;
 	}
 
-	isPincodeWait() {
-		return this.state === LINECHAT_STATE.PINCODE_WAIT;
+	isPincodeWait(): boolean {
+		return this.state === LINECHAT_EVENT.PINCODE_WAIT;
 	}
 
-	startTimer() {
+	isLoginSuccess(): boolean {
+		return this.state === LINECHAT_EVENT.LOGIN_SUCCESS;
+	}
+
+	startTimer(): void {
+		// REMARK : when timeout, it has error event from server
+		clearInterval(this.intervalId);
+
+		this.countDownTimer = this.loginTimer;
+	
 		this.intervalId = setInterval(() => {
-			this.loginTimer -= 1000;
-		}, 1000);
+			this.countDownTimer -= 1000;
+
+			this._ref.detectChanges();
+		}, 1000);		
 	}
 
 }

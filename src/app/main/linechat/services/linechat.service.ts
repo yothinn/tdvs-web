@@ -2,18 +2,20 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthenService } from 'app/authentication/authen.service';
 import { environment } from 'environments/environment';
-import { BehaviorSubject, Observable, Subject,  } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject,  } from 'rxjs';
+import { map, filter, takeUntil } from 'rxjs/operators';
 
+// TODO : user can setting chatroomid , not fix at environment
 
-export const LINECHAT_STATE = {
+export const LINECHAT_EVENT = {
 	QRCODE_WAIT : 'qrcodeWait',
 	PINCODE_WAIT : 'pincodeWait',
 	SSE_TOKEN: 'sseToken',
-	SUCCESS: 'loginSuccess',
-	ERROR: 'error'
+	LOGIN_SUCCESS: 'loginSuccess',
+	NOT_ADMIN: 'notAdmin',
+	ERROR: 'error',
+	LOGOUT: 'logout',
 };
-
 
 @Injectable({
 	providedIn: 'root'
@@ -27,7 +29,8 @@ export class LinechatService {
 		historyMessage: `${environment.linechatUrl}/api/linechat/historyMessage`,
 		sendMessage: `${environment.linechatUrl}/api/linechat/sendMessage`,
 		streamApiToken: `${environment.linechatUrl}/api/linechat/streamApiToken`,
-		chatStream: 'https://chat-streaming-api.line.biz/api/v1/sse',
+		// Use proxy to convert
+		chatStream: '/api/v1/sse',
 		// https://chat-streaming-api.line.biz/api/v1/sse?token=token&deviceToken=&deviceType=&clientType=PC&pingSecs=33&lastEventId=AXhEqgaJOUKmLB2Ug-bkAQ
 	};
 
@@ -38,20 +41,31 @@ export class LinechatService {
 	pincode: string;							// pincode for verify line login
 	sseToken: any;
 	cookieToken: any = null;
-	xsrfToken: any = null
+	xsrfToken: any = null;
+	cookieDate;
 
 	streamApiToken: any = null;
 	chatRoomId: string;
 
-	// private _sseLogin$ = new Subject<string>();
-	// private _sseMessage$ = new Subject<any>();
+	chatEvent$ = new Subject<any>();
 
 	constructor(
 		private auth: AuthenService,
 		private http: HttpClient,
 	) {
-		this.cookieToken = 'T0sa4cv1PzSkbI9DTJ/yy6hfICpT9z7LY06QYz4Mw9AXsRWakLA1qCWjSeMcwZ/6LCf3raa7kXwoin8XAkzTS79GUQFNWk+HltSqQgte4N8ji7R/wobs/eC9XUsq6704uicnfo1v6mj0QzuNiamOrCNOJsqawlWykABE3/PcC/KL0KDVfYg+oBAr2UIXxOyMnrL5exHuA6Jm/r93cdPdXAhiV4LtPE2oG/6oUe99IzBBen8ZswoKy9AJGRs5YwCqibCoQUGfl04Hw5nv8ltGHiCLKrINU9nsDmMR15zb8VIUmTdRK01sABn5InjzNCTGMoGv7KB1dcQkHBeub99qe05MLfk/ZEFYtMYAceMuXrqaJ9d02JY/dx/ohxafnMKs';
-		this.xsrfToken = '81f4c3d2-ace2-49f5-8033-cde36e992b40';
+		// this.cookieToken = 'csz7MvRvNEpwz+fAPUwFD/R++ednbBJdq/OM0HczpeMnWibRQIBdRnEVFgXiiwXzNJwEHfQnXo+4mLynLmxA2xghiJ2d3nZv8p0HTC1ums7AHbKPtKkgv+QH8tqcNmrCVXteReNPoYb4GEGRB3DP7nxoWE8Bm9f840YPIKwcJ4z/KVWWgsDqARa5o/6Urq3z+U9n/Y3WToyVygIQ9yIjVlSSazegGlC2FltpA8P4FF1lorl/xY+Js3Lh+iDDC+pwCn8EPO6A14mOwV4JWeES+m34EoipLR8/0YEL+YpCuUZCz7B2T8brpmtFJTKh2zhsm/G7Fb8zzjunWVdKvvyIxkueLlZOO6dl3yJUW2ssNxylTqeU0EHPqRdHIizFvnL0a8sdvaaaSJ6iPDcmR7N9IQ==';
+		// this.xsrfToken = 'd641c302-86fc-4834-864f-946bc45cf655';
+		
+		this.getLocalStorage();
+		// Reload login when new day
+		let tmpDate = new Date(parseInt(this.cookieDate));
+		let curDate = new Date(Date.now());
+		console.log(tmpDate);
+		console.log(curDate);
+		if ((tmpDate.getMonth() !== curDate.getMonth()) || (tmpDate.getDate() !== curDate.getDate())) {
+			this.cookieToken = null;
+			this.xsrfToken = null;
+		}
 	}
 
 	isLogin(): boolean {
@@ -62,20 +76,17 @@ export class LinechatService {
 		return 'https://profile.line-scdn.net/' + iconHash + '/preview';
 	}
 
+	getChatEvent(): Observable<any> {
+		return this.chatEvent$.asObservable();
+	}
+
 	selectChatRoomById(chatRoomId) {
 		this.chatRoomId = chatRoomId;
 	}
 
-	// getSseLogin(): Observable<any> {
-	// 	return this._sseLogin$.asObservable();
-	// }
-
-	// getSseMessage(): Observable<any> {
-	// 	return this._sseMessage$.asObservable();
-	// }
-
 	login(): Observable<any> {
 		return new Observable(subscriber => {
+			console.log(this.linechatUri.login);
 			this._evsLogin = new EventSource(this.linechatUri.login);
 
 			// this.evsLogin.onopen = function(e) {
@@ -89,14 +100,14 @@ export class LinechatService {
 			// }
 
 			this._evsLogin.onerror = (e) => {
-				// console.log("error message");
+				console.log("error message");
 				// console.log(e);
 				// this._sseLogin$.next(LINECHAT_STATE.ERROR);
 				this._evsLogin.close();
 				subscriber.error(e);
 			};
 
-			this._evsLogin.addEventListener(LINECHAT_STATE.QRCODE_WAIT, (e: any) => {
+			this._evsLogin.addEventListener(LINECHAT_EVENT.QRCODE_WAIT, (e: any) => {
 				// console.log('listener qrCode wait');
 				// console.log(e.data);
 				// this.qrcodeImg = e.data;
@@ -105,7 +116,7 @@ export class LinechatService {
 				subscriber.next(e);
 			});
 
-			this._evsLogin.addEventListener(LINECHAT_STATE.PINCODE_WAIT, (e: any) => {
+			this._evsLogin.addEventListener(LINECHAT_EVENT.PINCODE_WAIT, (e: any) => {
 				// console.log("pincode wait");
 				// console.log(e);
 				// this.pincode = e.data;
@@ -113,39 +124,95 @@ export class LinechatService {
 				subscriber.next(e);
 			})
 
-			this._evsLogin.addEventListener(LINECHAT_STATE.SSE_TOKEN, (e: any) => {
+			this._evsLogin.addEventListener(LINECHAT_EVENT.SSE_TOKEN, (e: any) => {
 				console.log("sse token");
 				// console.log(e.data);
-				this.sseToken = e.data;
+				this.sseToken = JSON.parse(e.data);
 				this.setCookie(this.sseToken);
 				// this._sseLogin$.next(LINECHAT_STATE.SSE_TOKEN);
 				subscriber.next(e);
 			})
 
-			this._evsLogin.addEventListener(LINECHAT_STATE.SUCCESS, (e) => {
+			this._evsLogin.addEventListener(LINECHAT_EVENT.LOGIN_SUCCESS, (e:any) => {
 				// console.log("login success");
 				// console.log(e);
+				// check if you are admin or not ?
 				this._evsLogin.close();
-				// this._sseLogin$.next(LINECHAT_STATE.SUCCESS);
-				subscriber.complete();
+
+				this.getChatRoomList().subscribe(list => {
+					// console.log('check admin');
+					// console.log(list);
+					let chatRoom: any[] = list.filter(item => item.botId === this.chatRoomId);
+					// console.log(chatRoom);
+					// console.log(chatRoom.length);
+					let isAdmin = chatRoom.length > 0 ? true : false;
+					if (isAdmin) {
+						// console.log('complete login');
+						this.setLocalStorage();
+						this.chatEvent$.next(LINECHAT_EVENT.LOGIN_SUCCESS);
+					} else {
+						e.type = LINECHAT_EVENT.NOT_ADMIN;
+						// Reset cookie;
+						this.logout();	
+					}
+
+					subscriber.next(e);
+					subscriber.complete();
+					
+				});	
 			});
 		})
 	}
 
+	logout() {
+		// TODO : logout to line server
+		// Reset local storage
+		this.sseToken = null;
+		this.cookieToken = null;
+		this.xsrfToken = null;
+		this.removeLocalStorage();
+		this.chatEvent$.next(LINECHAT_EVENT.LOGOUT);
+	}
+
 	setCookie(sseToken) {
-		let c = '';
 		for (let i of sseToken) {
 			switch (i.name) {
 				case 'XSRF-TOKEN':
 					if (i.domain === 'chat.line.biz') {
 						this.xsrfToken = i.value;
 					}
+					break;
 				case 'ses':
 					this.cookieToken = i.value;
+					break;
 			}
 		}
-		console.log(this.xsrfToken);
-		console.log(this.cookieToken);
+
+		// TODO
+		// set to local storage;
+
+		// console.log(this.xsrfToken);
+		// console.log(this.cookieToken);
+	}
+
+	setLocalStorage() {
+		window.localStorage.setItem(`cookieToken@${environment.appName}`, this.cookieToken);
+		window.localStorage.setItem(`xsrfToken@${environment.appName}`, this.xsrfToken);
+		window.localStorage.setItem(`cookieDate@${environment.appName}`, `${Date.now()}`);
+		window.localStorage.setItem(`chatRoomId@${environment.appName}`, `${this.chatRoomId}`);
+	}
+
+	getLocalStorage() {
+		this.cookieToken = window.localStorage.getItem(`cookieToken@${environment.appName}`);
+		this.xsrfToken = window.localStorage.getItem(`xsrfToken@${environment.appName}`);
+		this.cookieDate = window.localStorage.getItem(`cookieDate@${environment.appName}`);
+		this.chatRoomId = window.localStorage.getItem(`chatRoomId@${environment.appName}`);
+	}
+
+	removeLocalStorage() {
+		window.localStorage.removeItem(`cookieToken@${environment.appName}`);
+		window.localStorage.removeItem(`xsrfToken@${environment.appName}`);
+		window.localStorage.removeItem(`cooketDate@${environment.appName}`);
 	}
 
 	/**
@@ -158,17 +225,25 @@ export class LinechatService {
 	 * when empty default server is noFilter: true, limit: 50
 	 * @returns 
 	 */
-	getChatRoomList(body = {}): Observable<any>{
+	getChatRoomList(noFilter = null, limit = 50): Observable<any>{
 		let opt = {
 			headers: this.auth.getAuthorizationHeader()
 		}
 
-		body['cookieToken'] = this.cookieToken;
-		body['xsrfToken'] = this.xsrfToken;
+		let body = {
+			cookieToken: this.cookieToken,
+			xsrfToken: this.xsrfToken,
+			limit: limit,
+		}
+
+		if (noFilter) {
+			body['noFilter'] = noFilter;
+		}
 
 		console.log(body);
 
-		return this.http.post(this.linechatUri.chatRoomList, body, opt);
+		return this.http.post(this.linechatUri.chatRoomList, body, opt)
+					.pipe(map((v:any) => v.data.list));
 	}
 
 	/**
@@ -262,6 +337,7 @@ export class LinechatService {
 			}
 		}
 
+		console.log(body);
 		return this.http.post(this.linechatUri.sendMessage, body, opt);
 	}
 
@@ -291,7 +367,6 @@ export class LinechatService {
 					);
 	}
 
-
 	/**
 	 * 
 	 */
@@ -299,6 +374,7 @@ export class LinechatService {
 		return new Observable(subscriber => {
 			this.getStreamApiToken().subscribe(data => {
 				// https://chat-streaming-api.line.biz/api/v1/sse?token=token&deviceToken=&deviceType=&clientType=PC&pingSecs=33&lastEventId=AXhEqgaJOUKmLB2Ug-bkAQ
+				// let chatStreamUri = `${this.linechatUri.streamApiToken}` +
 				let chatStreamUri = '/api/v1/sse' + 
 					`?token=${data.streamingApiToken}&deviceToken=&deviceType=&clientType=PC&pingSecs=20&lastEventId=${data.lastEventId}`;
 				
