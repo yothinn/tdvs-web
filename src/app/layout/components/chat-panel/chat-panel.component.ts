@@ -115,17 +115,35 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         this._linechatService.getChatEvent()
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(e => {
-                if (e === LINECHAT_EVENT.LOGIN_SUCCESS) {
+                if (e.type === LINECHAT_EVENT.LOGIN_SUCCESS) {
                     // this._linechatService.selectChatRoomById('U9b2714c1a2fa39646c1bb25e674aa0b3');
                     this.loadContactList();
                     this.openChatStreaming();
                 }
 
                 console.log(e);
-                if (e === LINECHAT_EVENT.LOGOUT) {
+                if (e.type === LINECHAT_EVENT.LOGOUT) {
                     this.contacts = null;
                     this.chat = null;
                     this.selectedContact = null;
+                }
+
+                if (e.type === LINECHAT_EVENT.OPENCHAT_PANEL) {
+                    console.log(e.chatId)
+                    this._linechatService.getProfile(e.chatId)
+                        .pipe(takeUntil(this._unsubscribeAll))
+                        .subscribe(profile => {
+                            console.log(profile);
+                            // When small window use toggleSidebar
+                            this.toggleSidebarOpen();
+                            this.selectedContact = null;
+                            this.toggleChat({
+                                chatId: e.chatId,
+                                chatType: "USER",
+                                profile: profile
+                            });
+                        })
+                    
                 }
         });
     }
@@ -192,6 +210,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
     toggleSidebarOpen(): void
     {
         this._fuseSidebarService.getSidebar('chatPanel').toggleOpen();
+
     }
 
     /**
@@ -302,7 +321,10 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
             .subscribe(v => {
                 this._prepareChatForReplies();
                 
-                console.log(v);
+                // console.log(v);
+
+                // When send message, system receive sse event message from server 
+                // then update display message (see ngAfterViewInit and openChatStreaing)
             });
         this._replyForm.reset();
 
@@ -327,8 +349,30 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         // });
     }
 
-    scrolled(event) {
+    scrolledContact(event) {
         console.log(event);
+
+        let maxPos = event.target.scrollHeight;
+
+        let curPos = event.target.scrollTop + event.target.offsetHeight;
+
+        console.log(`maxPos : ${maxPos} cusPos: ${curPos}` );
+        // Check scroll nearby bottom
+        if (curPos >= (maxPos-5)) {
+            // Reload contact 
+            console.log('reload');
+        }
+    }
+
+    scrolledChat(event) {
+        // console.log(event);
+
+        let topPos = event.target.scrollTop;
+        // Scroll to top
+        if (topPos <= 10) {
+            // Reload history message
+        }
+
     }
 
     getAvatar(iconHash): string {
@@ -340,7 +384,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     lineLogin() {
-        console.log('openline chat');
+        // console.log('openline chat');
 
 		const dialogRef = this.dialog.open(LinechatLoginDialogComponent, {
 			width: "350px",
@@ -348,7 +392,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
 		});
 
 		dialogRef.afterClosed().subscribe(() => {
-			console.log('close dialog');	
+			// console.log('close dialog');	
 		});
     }
 
@@ -357,17 +401,20 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     loadChat(chatId) {
+        // TODO : load chat message >= 25 if < ,
         this._linechatService.getHistoryMessage(chatId)
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(msg => {
                 msg.list.reverse();
+
+                console.log(msg);
                 this.chat = {
                     id: chatId,
                     dialog: msg
-                }
+                };
 
                 this._prepareChatForReplies();
-                console.log(this.chat);
+                // onsole.log(this.chat);
             });
     }
 
@@ -376,6 +423,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((userList: any) => {
                 this.contacts = userList;
+                console.log(this.contacts);
             });
     }
 
@@ -384,26 +432,13 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         this._linechatService.openChatStreaming()
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(e => {
-                console.log('open streaming')
-                console.log(e);
+                // console.log('open streaming')
+                // console.log(e);
                 let msg = JSON.parse(e.data);
-                console.log(msg);
+                // console.log(msg);
                 if (msg.chatId == this.selectedContact.chatId) {
                     this.loadChat(this.selectedContact.chatId);
                 }
-                
-                // TODO: receive event should reload contactlist if not selected
-                // if selected should ?
-                // For test only
-                
-                
-                // this.chat.dialog.list.push({
-                //     type: msg.subEvent,
-                //     timestamp: msg.timestamp,
-                //     source: msg.payload.source,
-                //     sendId: msg.payload.sendId,
-                //     message: msg.payload.message
-                // });
 
                 this.loadContactList();
         });

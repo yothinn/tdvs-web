@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild, AfterViewInit, ChangeDetectorRef } from "@angular/core";
 import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
 import { fuseAnimations } from "@fuse/animations";
 
@@ -6,7 +6,7 @@ import { locale as english } from "../i18n/en";
 import { locale as thai } from "../i18n/th";
 
 import { JoborderService } from "../services/joborder.service";
-import { ActivatedRoute, Router } from "@angular/router";
+	import { ActivatedRoute, Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Socket } from "ngx-socket-io";
@@ -17,8 +17,13 @@ import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason-modal.component';
 // import { PolygonZoneService } from "app/services/polygon-zone.service";
 import { ContactStatus } from '../../../types/tvds-status'
-import { LinechatLoginDialogComponent } from "app/main/linechat/linechat-login-dialog/linechat-login-dialog.component";
 import { LinechatService } from "app/main/linechat/services/linechat.service";
+import { takeUntil } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { MatMenuTrigger } from "@angular/material";
+import { environment } from "environments/environment";
+import { EventStreamService } from "app/services/event-stream.service";
+
 
 @Component({
 	selector: "app-joborder-form",
@@ -27,7 +32,7 @@ import { LinechatService } from "app/main/linechat/services/linechat.service";
 	encapsulation: ViewEncapsulation.None,
 	animations: fuseAnimations,
 })
-export class JoborderFormComponent implements OnInit, OnDestroy {
+export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	joborderData: any = {};
 	vehicleData: Array<any> = [];
 
@@ -91,6 +96,16 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	//infoWindowOpened = null;
 	//previous_info_window = null;
 
+	private _unsubscribeAll;
+
+	// reference to the MatMenuTrigger in the DOM 
+	@ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
+
+	menuTopLeftPosition = {
+		x: '',
+		y: '',
+	}
+
 	constructor(
 		private _fuseTranslationLoaderService: FuseTranslationLoaderService,
 		private route: ActivatedRoute,
@@ -102,8 +117,12 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		private joborderService: JoborderService,
 		// private _polygonZoneService: PolygonZoneService,
 		private _linechatService: LinechatService,
+		private _evsService: EventStreamService,
+		private _ref: ChangeDetectorRef,
 	) {
 		this._fuseTranslationLoaderService.loadTranslations(english, thai);
+
+		this._unsubscribeAll = new Subject<any>();
 	}
 
 	ngOnInit(): void {
@@ -133,21 +152,46 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 
 		this.getVehicleData();
 
-		this.socket.on("user-confirm-reject", (message: any) => {
-			// console.log(message);
-			if (message.docno === this.joborderData.docno) {
-				this.joborderData = message;
-				this.socketUpdateMarkerOnMap();
-			}
-		});
+		// this.socket.on("user-confirm-reject", (message: any) => {
+		// 	// console.log(message);
+		// 	if (message.docno === this.joborderData.docno) {
+		// 		this.joborderData = message;
+		// 		this.socketUpdateMarkerOnMap();
+		// 	}
+		// });
 
 		// console.log(this.markersData);
 
 		this.spinner.hide();
 	}
 
+	ngAfterViewInit() {
+		this._evsService.openEventStream()
+			.pipe(takeUntil(this._unsubscribeAll))
+			.subscribe((ev: any) => {
+				if (ev.type === 'message') {
+				 	let data = JSON.parse(ev.data);
+					console.log(data);
+
+					console.log(data.data.docno);
+					// Update joborder when open same doc
+					if (data.type === 'joborderConfirm' && data.data.docno === this.joborderData.docno) {
+						this.joborderData = data.data;
+						console.log(this.joborderData);
+						this.socketUpdateMarkerOnMap();
+						
+						this._ref.detectChanges();
+					}
+				}
+			});
+	}
+
 	ngOnDestroy() {
-		this.socket.disconnect();
+		// this.socket.disconnect();
+		this._evsService.close();
+
+		this._unsubscribeAll.next();
+		this._unsubscribeAll.complete();
 	}
 
 	/**
@@ -479,6 +523,7 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 	}
 
 	sendReject(contactListData) {
+		// TODO : Change this
 		// console.log(contactListData)
 		if (contactListData.lineUserId) {
 			let body = {
@@ -557,66 +602,96 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		this.lng = Number(contactItem.longitude);
 	}
 
+	// Old version : user webhook
+	// sendConFirm(contactListData) {
+	// 	// console.log(contactListData)
+	// 	if (contactListData.lineUserId) {
+	// 		let body = {
+	// 			to: contactListData.lineUserId,
+	// 			messages: [
+	// 				{
+	// 					type: "template",
+	// 					altText: "รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน กรุณายืนยันการนัดหมายด้วยค่ะ",
+	// 					template: {
+	// 						type: "confirm",
+	// 						actions: [
+	// 							{
+	// 								type: "message",
+	// 								label: "รับนัดหมาย",
+	// 								text:
+	// 									"รับนัดหมาย วัน" +
+	// 									this.nameDate +
+	// 									"ที่: " +
+	// 									this.titleDate +
+	// 									" เลขเอกสาร: " +
+	// 									this.joborderData.docno,
+	// 							},
+	// 							{
+	// 								type: "message",
+	// 								label: "ปฏิเสธ",
+	// 								text:
+	// 									"ปฏิเสธ วัน" +
+	// 									this.nameDate +
+	// 									"ที่: " +
+	// 									this.titleDate +
+	// 									" เลขเอกสาร: " +
+	// 									this.joborderData.docno,
+	// 							},
+	// 						],
+	// 						text:
+	// 							"ตามที่ท่านลงทะเบียนกับรถธรรมธุรกิจไว้ เรามีความยินดีที่จะนำสินค้าข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวันที่ " +
+	// 							this.titleDate +
+	// 							" กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยจะติดต่ออีกครั้งก่อนเดินทาง หรือสอบถามเพิ่มเติม 098-8316596" +
+	// 							" ขอบคุณครับ",
+	// 					},
+	// 				},
+	// 			],
+	// 		};
+
+	// 		// console.log(body)
+	// 		this.joborderService
+	// 			.sendConFirmData(body)
+	// 			.then((res) => {
+	// 				this._snackBar.open("ส่งข้อความสำเร็จ รอยืนยัน", "", {
+	// 					duration: 5000,
+	// 				});
+	// 			})
+	// 			.catch((error) => {
+	// 				this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
+	// 					duration: 5000,
+	// 				});
+	// 			});
+	// 	}
+	// }
+
+
+	// New version : user server sent event
 	sendConFirm(contactListData) {
 		// console.log(contactListData)
 		if (contactListData.lineUserId) {
-			let body = {
-				to: contactListData.lineUserId,
-				messages: [
-					{
-						type: "template",
-						altText: "รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน กรุณายืนยันการนัดหมายด้วยค่ะ",
-						template: {
-							type: "confirm",
-							actions: [
-								{
-									type: "message",
-									label: "รับนัดหมาย",
-									text:
-										"รับนัดหมาย วัน" +
-										this.nameDate +
-										"ที่: " +
-										this.titleDate +
-										" เลขเอกสาร: " +
-										this.joborderData.docno,
-								},
-								{
-									type: "message",
-									label: "ปฏิเสธ",
-									text:
-										"ปฏิเสธ วัน" +
-										this.nameDate +
-										"ที่: " +
-										this.titleDate +
-										" เลขเอกสาร: " +
-										this.joborderData.docno,
-								},
-							],
-							text:
-								"ตามที่ท่านลงทะเบียนกับรถธรรมธุรกิจไว้ เรามีความยินดีที่จะนำสินค้าข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวันที่ " +
-								this.titleDate +
-								" กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยจะติดต่ออีกครั้งก่อนเดินทาง หรือสอบถามเพิ่มเติม 098-8316596" +
-								" ขอบคุณครับ",
-						},
-					},
-				],
-			};
 
-			// console.log(body)
-			this.joborderService
-				.sendConFirmData(body)
-				.then((res) => {
-					this._snackBar.open("ส่งข้อความสำเร็จ รอยืนยัน", "", {
-						duration: 5000,
+			// TODO : liff uri - move to environment
+			let liffUri = `${environment.joborderLiff}/appoinment?docno=${this.joborderData.docno}`;
+			
+			let msg = 'รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน\n' +
+						`ในวันที่ ${this.titleDate}\n` +
+						'กรุณาลิงค์ด้านล่างเพื่อยืนยันหรือปฏิเสธการนัดหมายด้วยค่ะ\n' +
+						`${liffUri}`;
+
+			if (this._linechatService.isLogin()) {
+				this._linechatService.openChatPanel(contactListData.lineUserId);
+				this._linechatService.sendMessage(contactListData.lineUserId, msg)
+					.pipe(takeUntil(this._unsubscribeAll))
+					.subscribe(v => {
+						console.log(v);
+						// check error
 					});
-				})
-				.catch((error) => {
-					this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
-						duration: 5000,
-					});
-				});
+			} else {
+				// TODO: Alert error
+			}
 		}
 	}
+	
 
 	goBack() {
 		this.spinner.show();
@@ -883,63 +958,35 @@ export class JoborderFormComponent implements OnInit, OnDestroy {
 		//console.log(this.markersData);
 	}
 
-	openLineChat() {
-
-		// console.log('openline chat');
-		// const dialogRef = this.dialog.open(LinechatLoginDialogComponent, {
-		// 	width: "350px",
-		// 	disableClose: true
-		// });
-
-		// dialogRef.afterClosed().subscribe(() => {
-		// 	console.log('close dialog');
-
-		// 	// this._linechatService.getChatRoomList().subscribe(v => {
-		// 	// 	console.log(v);
-		// 	// });
-
-				
-		// });
+	onRightClick(event, i) {
+		// preventDefault avoids to show the visualization of the right-click menu of the browser 
+		event.preventDefault(); 
  
 
-		// this._linechatService.getChatRoomList().subscribe(v => {
-		// 	console.log(v);
-		// });	
-
-		// this._linechatService.selectChatRoomById('U9b2714c1a2fa39646c1bb25e674aa0b3');
-		// this._linechatService.getUserList().subscribe(v => {
-		// 	console.log(v);
-		// });
-
-
-		// body['chatRoomId'] ='U9b2714c1a2fa39646c1bb25e674aa0b3';
-		// body['chatId'] ='Uffda42596fdca9e928de40c17baf7fab';
-
-		// this._linechatService.selectChatRoomById('U9b2714c1a2fa39646c1bb25e674aa0b3');
-		// this._linechatService.getHistoryMessage('Uffda42596fdca9e928de40c17baf7fab').subscribe(v => {
-		// 	console.log(v);
-
-		// 	// body['backwardToken'] = v.data.backward;
-		// 	// this._linechatService.getHistoryMessage(body).subscribe(v => {
-		// 	// 	console.log(v);
-		// 	// })
-		// });
-
-		// this._linechatService.sendMessage(body['chatRoomId'], body['chatId'], 'ทดสอบการส่งข้อความ').subscribe(v => {
-		// 	console.log(v);
-		// })
-
-
-		// this._linechatService.getStreamApiToken().subscribe(v => {
-		// 	console.log(v);
-		// })
-
-		// this._linechatService.openChatStreaming().subscribe((value) => {
-		// 	console.log(value);
-		// });
-
+		console.log(event);
+		console.log(i);
 
 		
+		// we record the mouse position in our object 
+		this.menuTopLeftPosition.x = event.clientX + 'px'; 
+		this.menuTopLeftPosition.y = event.clientY + 'px'; 
+   
+		// we open the menu 
+		// we pass to the menu the information about our object 
+		this.matMenuTrigger.menuData = {lineUserId: this.joborderData.contactLists[i].lineUserId}; 
+   
+		// we open the menu 
+		this.matMenuTrigger.openMenu(); 
+	}
+
+	onOpenChat(event, lineUserId) {
+		console.log(event);
+		console.log(lineUserId);
+
+		if (lineUserId) {
+			this._linechatService.openChatPanel(lineUserId);
+		}
+
 
 	}
 

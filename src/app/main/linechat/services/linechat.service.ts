@@ -15,6 +15,7 @@ export const LINECHAT_EVENT = {
 	NOT_ADMIN: 'notAdmin',
 	ERROR: 'error',
 	LOGOUT: 'logout',
+	OPENCHAT_PANEL: 'openChatPanel'
 };
 
 @Injectable({
@@ -29,6 +30,8 @@ export class LinechatService {
 		historyMessage: `${environment.linechatUrl}/api/linechat/historyMessage`,
 		sendMessage: `${environment.linechatUrl}/api/linechat/sendMessage`,
 		streamApiToken: `${environment.linechatUrl}/api/linechat/streamApiToken`,
+		setNickname: `${environment.linechatUrl}/api/linechat/nickname`,
+		getProfile: `${environment.linechatUrl}/api/linechat/profile`,
 		// Use proxy to convert
 		chatStream: '/api/v1/sse',
 		// https://chat-streaming-api.line.biz/api/v1/sse?token=token&deviceToken=&deviceType=&clientType=PC&pingSecs=33&lastEventId=AXhEqgaJOUKmLB2Ug-bkAQ
@@ -60,8 +63,8 @@ export class LinechatService {
 		// Reload login when new day
 		let tmpDate = new Date(parseInt(this.cookieDate));
 		let curDate = new Date(Date.now());
-		console.log(tmpDate);
-		console.log(curDate);
+		// console.log(tmpDate);
+		// console.log(curDate);
 		if ((tmpDate.getMonth() !== curDate.getMonth()) || (tmpDate.getDate() !== curDate.getDate())) {
 			this.cookieToken = null;
 			this.xsrfToken = null;
@@ -86,7 +89,7 @@ export class LinechatService {
 
 	login(): Observable<any> {
 		return new Observable(subscriber => {
-			console.log(this.linechatUri.login);
+			// console.log(this.linechatUri.login);
 			this._evsLogin = new EventSource(this.linechatUri.login);
 
 			// this.evsLogin.onopen = function(e) {
@@ -100,7 +103,7 @@ export class LinechatService {
 			// }
 
 			this._evsLogin.onerror = (e) => {
-				console.log("error message");
+				// console.log("error message");
 				// console.log(e);
 				// this._sseLogin$.next(LINECHAT_STATE.ERROR);
 				this._evsLogin.close();
@@ -125,7 +128,7 @@ export class LinechatService {
 			})
 
 			this._evsLogin.addEventListener(LINECHAT_EVENT.SSE_TOKEN, (e: any) => {
-				console.log("sse token");
+				// console.log("sse token");
 				// console.log(e.data);
 				this.sseToken = JSON.parse(e.data);
 				this.setCookie(this.sseToken);
@@ -149,7 +152,9 @@ export class LinechatService {
 					if (isAdmin) {
 						// console.log('complete login');
 						this.setLocalStorage();
-						this.chatEvent$.next(LINECHAT_EVENT.LOGIN_SUCCESS);
+						this.chatEvent$.next({
+							type: LINECHAT_EVENT.LOGIN_SUCCESS
+						});
 					} else {
 						e.type = LINECHAT_EVENT.NOT_ADMIN;
 						// Reset cookie;
@@ -171,7 +176,9 @@ export class LinechatService {
 		this.cookieToken = null;
 		this.xsrfToken = null;
 		this.removeLocalStorage();
-		this.chatEvent$.next(LINECHAT_EVENT.LOGOUT);
+		this.chatEvent$.next({
+			type: LINECHAT_EVENT.LOGOUT
+		});
 	}
 
 	setCookie(sseToken) {
@@ -240,7 +247,7 @@ export class LinechatService {
 			body['noFilter'] = noFilter;
 		}
 
-		console.log(body);
+		// console.log(body);
 
 		return this.http.post(this.linechatUri.chatRoomList, body, opt)
 					.pipe(map((v:any) => v.data.list));
@@ -361,7 +368,7 @@ export class LinechatService {
 					.pipe(
 						map((v: any) => {
 							this.streamApiToken = v.data;
-							console.log(this.streamApiToken);
+							// console.log(this.streamApiToken);
 							return this.streamApiToken;
 						})
 					);
@@ -378,25 +385,70 @@ export class LinechatService {
 				let chatStreamUri = '/api/v1/sse' + 
 					`?token=${data.streamingApiToken}&deviceToken=&deviceType=&clientType=PC&pingSecs=20&lastEventId=${data.lastEventId}`;
 				
-				console.log(chatStreamUri);
+				// console.log(chatStreamUri);
 				this._evsMessage = new EventSource(chatStreamUri);
 
 				this._evsMessage.addEventListener("chat", event => {
-					console.log(event)
+					// console.log(event)
 					subscriber.next(event);
 				});
 			
 				this._evsMessage.onmessage = event => {
-					console.log(event);
+					// console.log(event);
 					subscriber.next(event);
 					
 				};
 			
 				this._evsMessage.onerror = error => {
-					console.log(error);	
+					// console.log(error);	
 					subscriber.error(error);
 				};
 			})
+		});
+	}
+
+
+	setNickname(chatId, nickname) {
+		let opt = {
+			headers: this.auth.getAuthorizationHeader(),
+		}
+
+		let body = {
+			chatRoomId: this.chatRoomId,
+			chatId: chatId,
+			cookieToken: this.cookieToken,
+			xsrfToken: this.xsrfToken,
+			message: {
+				nickname: nickname
+			} 
+		};
+
+		console.log(body);
+
+		return this.http.post(this.linechatUri.setNickname, body, opt);
+	}
+
+	getProfile(chatId): Observable<any> {
+		let opt = {
+			headers: this.auth.getAuthorizationHeader(),
+		}
+
+		let body = {
+			chatRoomId: this.chatRoomId,
+			cookieToken: this.cookieToken,
+			xsrfToken: this.xsrfToken,
+			chatId: chatId,
+		};
+
+		return this.http.post(this.linechatUri.getProfile, body, opt)
+					.pipe(map((v: any) => v.data));
+	}
+
+
+	openChatPanel(chatId) {
+		this.chatEvent$.next({
+			type: LINECHAT_EVENT.OPENCHAT_PANEL,
+			chatId: chatId,
 		});
 	}
 

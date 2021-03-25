@@ -113,7 +113,7 @@
             cdkDrag
             *ngFor="let item of joborderData.contactLists; let i = index"
           >
-            <div class="list-item">
+            <div class="list-item" (contextmenu)="onRightClick($event, i)">
               <div class="cursor" (click)="navigateByItem(item)">
                 <div fxLayout="row">
                   <span fxFlex="85"> 
@@ -277,6 +277,20 @@
                   </button>
                 </div>
               </div>
+
+              <!-- an hidden div is created to set the position of appearance of the menu--> 
+              <div style="visibility: hidden; position: fixed"
+                [style.left]="menuTopLeftPosition.x"
+                [style.top]="menuTopLeftPosition.y"
+                [matMenuTriggerFor]="rightMenu"
+              >
+              </div>
+              <mat-menu #rightMenu="matMenu" >
+                <ng-template matMenuContent let-id="lineUserId">
+                  <button mat-menu-item [disabled]="!id" (click)="onOpenChat($event, id)">Chat</button>
+                </ng-template>
+              </mat-menu>
+
             </div>
           </div>
         </div>

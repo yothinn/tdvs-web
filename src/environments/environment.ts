@@ -14,6 +14,7 @@ export const environment = {
   // SOCKET_ENDPOINT: 'http://localhost:3000'
   linechatUrl: 'http://localhost:3100',
   thamDeliveryChatRoomId: 'U9b2714c1a2fa39646c1bb25e674aa0b3',
+  joborderLiff: 'https://liff.line.me/1654123512-vPZoKZA8',
 };
 
 /*
