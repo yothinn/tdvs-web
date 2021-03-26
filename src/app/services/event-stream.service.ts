@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class EventStreamService {
 
-  _eventStream;
+  _eventStream = null;;
 
   constructor() { }
 
@@ -33,6 +33,9 @@ export class EventStreamService {
   }
 
   close() {
-    this._eventStream.close();
+
+    if (this._eventStream) {
+      this._eventStream.close();
+    }
   }
 }

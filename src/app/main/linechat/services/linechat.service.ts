@@ -4,6 +4,8 @@ import { AuthenService } from 'app/authentication/authen.service';
 import { environment } from 'environments/environment';
 import { Observable, Subject,  } from 'rxjs';
 import { map, filter, takeUntil } from 'rxjs/operators';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+
 
 // TODO : user can setting chatroomid , not fix at environment
 
@@ -55,6 +57,8 @@ export class LinechatService {
 	constructor(
 		private auth: AuthenService,
 		private http: HttpClient,
+		private sanitizer:DomSanitizer,
+
 	) {
 		// this.cookieToken = 'csz7MvRvNEpwz+fAPUwFD/R++ednbBJdq/OM0HczpeMnWibRQIBdRnEVFgXiiwXzNJwEHfQnXo+4mLynLmxA2xghiJ2d3nZv8p0HTC1ums7AHbKPtKkgv+QH8tqcNmrCVXteReNPoYb4GEGRB3DP7nxoWE8Bm9f840YPIKwcJ4z/KVWWgsDqARa5o/6Urq3z+U9n/Y3WToyVygIQ9yIjVlSSazegGlC2FltpA8P4FF1lorl/xY+Js3Lh+iDDC+pwCn8EPO6A14mOwV4JWeES+m34EoipLR8/0YEL+YpCuUZCz7B2T8brpmtFJTKh2zhsm/G7Fb8zzjunWVdKvvyIxkueLlZOO6dl3yJUW2ssNxylTqeU0EHPqRdHIizFvnL0a8sdvaaaSJ6iPDcmR7N9IQ==';
 		// this.xsrfToken = 'd641c302-86fc-4834-864f-946bc45cf655';
@@ -76,8 +80,26 @@ export class LinechatService {
 	}
 
 	getIconUrl(iconHash): string {
+		if (!iconHash) {
+			return 'https://obs.line-scdn.net/0h9PsefvzeZn9OHE_fZ9EZKHJZaBI5MmA3Nn0qGGkfbUpiJCkrJS4hTDkdOEw3LSZ5di15HWpMak5k';
+		}
 		return 'https://profile.line-scdn.net/' + iconHash + '/preview';
 	}
+
+	getImageUrl(contentHash): string {
+		let uri = `https://chat-content.line-scdn.net/bot/${this.chatRoomId}/${contentHash}/preview`;
+		//return this.sanitizer.bypassSecurityTrustUrl(uri);
+		return uri;
+	}
+
+	// getStickerUrl(stickerId): string {
+	// 	https://stickershop.line-scdn.net/stickershop/v1/sticker/52002739/ANDROID/sticker.png
+	// 	let uri = `https://stickershop.line-scdn.net/stickershop/v1/sticker/${stickerId}/ANDROID/sticker.png`;
+	// 	//return this.sanitizer.bypassSecurityTrustUrl(uri);
+	// 	return uri;
+	// }
+
+
 
 	getChatEvent(): Observable<any> {
 		return this.chatEvent$.asObservable();
@@ -143,26 +165,35 @@ export class LinechatService {
 				this._evsLogin.close();
 
 				this.getChatRoomList().subscribe(list => {
-					// console.log('check admin');
-					// console.log(list);
+					console.log('check admin');
+					console.log(list);
 					let chatRoom: any[] = list.filter(item => item.botId === this.chatRoomId);
-					// console.log(chatRoom);
-					// console.log(chatRoom.length);
-					let isAdmin = chatRoom.length > 0 ? true : false;
+					console.log(chatRoom);
+					console.log(chatRoom.length);
+					let isAdmin = (chatRoom.length > 0) ? true : false;
 					if (isAdmin) {
 						// console.log('complete login');
 						this.setLocalStorage();
 						this.chatEvent$.next({
 							type: LINECHAT_EVENT.LOGIN_SUCCESS
 						});
+						subscriber.next(e);
+						subscriber.complete();
 					} else {
-						e.type = LINECHAT_EVENT.NOT_ADMIN;
+						
+						// e['type'] = LINECHAT_EVENT.NOT_ADMIN;
 						// Reset cookie;
-						this.logout();	
+						this.logout();
+						let body = {
+							type: LINECHAT_EVENT.NOT_ADMIN
+						}
+
+						this.chatEvent$.next(body);
+						subscriber.next(body);
+						subscriber.complete();	
 					}
 
-					subscriber.next(e);
-					subscriber.complete();
+
 					
 				});	
 			});
@@ -265,7 +296,8 @@ export class LinechatService {
 	 * }
 	 * @returns 
 	 */
-	getUserList(folderType = null, tagIds = null, limit = 25, nextToken=null): Observable<any> {
+	getUserList({folderType =null, tagIds = null, limit=25, nextToken =null} = {}): Observable<any> {
+		console.log(nextToken);
 		let opt = {
 			headers: this.auth.getAuthorizationHeader(),
 		}
@@ -292,7 +324,7 @@ export class LinechatService {
 		console.log(body);
 
 		return this.http.post(this.linechatUri.userList, body, opt)
-					.pipe(map((value: any) => value.data.list));
+					.pipe(map((value:any) => value.data));
 	}
 
 	/**

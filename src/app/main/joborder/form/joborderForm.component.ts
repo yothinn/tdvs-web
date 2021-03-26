@@ -1,29 +1,34 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, ViewChild, AfterViewInit, ChangeDetectorRef } from "@angular/core";
 import { FuseTranslationLoaderService } from "@fuse/services/translation-loader.service";
 import { fuseAnimations } from "@fuse/animations";
+import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
 import { locale as english } from "../i18n/en";
 import { locale as thai } from "../i18n/th";
 
-import { JoborderService } from "../services/joborder.service";
-	import { ActivatedRoute, Router } from "@angular/router";
-import { NgxSpinnerService } from "ngx-spinner";
+import { environment } from "environments/environment";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { Socket } from "ngx-socket-io";
 import { MatDialog } from "@angular/material/dialog";
-import * as moment from "moment";
-import { SelectCarAndDateComponent } from "../select-car-and-date/select-car-and-date.component";
+import { MatMenuTrigger } from "@angular/material";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
-import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason-modal.component';
-// import { PolygonZoneService } from "app/services/polygon-zone.service";
-import { ContactStatus } from '../../../types/tvds-status'
-import { LinechatService } from "app/main/linechat/services/linechat.service";
+
+import * as moment from "moment";
+
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
-import { MatMenuTrigger } from "@angular/material";
-import { environment } from "environments/environment";
-import { EventStreamService } from "app/services/event-stream.service";
 
+import { Socket } from "ngx-socket-io";
+import { NgxSpinnerService } from "ngx-spinner";
+
+import { SelectCarAndDateComponent } from "../select-car-and-date/select-car-and-date.component";
+import { RejectReasonModalComponent } from '../reject-reason-modal/reject-reason-modal.component';
+// import { PolygonZoneService } from "app/services/polygon-zone.service";
+import { ContactStatus, OrderStatus } from '../../../types/tvds-status'
+
+import { LinechatService } from "app/main/linechat/services/linechat.service";
+import { JoborderService } from "../services/joborder.service";
+import { EventStreamService } from "app/services/event-stream.service";
 
 @Component({
 	selector: "app-joborder-form",
@@ -127,6 +132,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 
 	ngOnInit(): void {
 
+
 		this.socket.connect();
 
 		this.joborderData = this.route.snapshot.data.items
@@ -166,6 +172,29 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	}
 
 	ngAfterViewInit() {
+		// Open event streaming from tvds service
+		this.openEventStream();
+	}
+
+	ngOnDestroy() {
+		// this.socket.disconnect();
+		this._evsService.close();
+
+		this._unsubscribeAll.next();
+		this._unsubscribeAll.complete();
+	}
+
+
+	openEventStream() {
+		// order status excecpt Draft, Waitapprove order available
+		// having not to open event stream;
+		if (this.joborderData.orderStatus !== OrderStatus.Draft &&
+			this.joborderData.orderStatus !== OrderStatus.WaitApprove &&
+			this.joborderData.orderStatus !== OrderStatus.OrderAvailable) {
+				return;
+		}
+
+		// Open Event stream
 		this._evsService.openEventStream()
 			.pipe(takeUntil(this._unsubscribeAll))
 			.subscribe((ev: any) => {
@@ -186,13 +215,6 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 			});
 	}
 
-	ngOnDestroy() {
-		// this.socket.disconnect();
-		this._evsService.close();
-
-		this._unsubscribeAll.next();
-		this._unsubscribeAll.complete();
-	}
 
 	/**
 	 * Check if show marker or not
@@ -522,37 +544,58 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 			});
 	}
 
+	// sendReject(contactListData) {
+	// 	// TODO : change this to send message Change this ??
+	// 	// console.log(contactListData)
+	// 	if (contactListData.lineUserId) {
+	// 		let body = {
+	// 			to: contactListData.lineUserId,
+	// 			messages: [
+	// 				{
+	// 					type: "text",
+	// 					text: "สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: " + contactListData.remark
+	// 				},
+	// 			],
+	// 		};
+	// 		// console.log(body)
+	// 		this.joborderService
+	// 			.sendConFirmData(body)
+	// 			.then((res) => {
+	// 				this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {
+	// 					duration: 5000,
+	// 				});
+	// 			})
+	// 			.catch((error) => {
+	// 				this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
+	// 					duration: 5000,
+	// 				});
+	// 			});
+	// 	} else {
+	// 		this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพย์ เพื่อแจ้งสถานะ", "", {
+	// 			duration: 8000,
+	// 		});
+	// 	}
+	// }
+
 	sendReject(contactListData) {
-		// TODO : Change this
-		// console.log(contactListData)
-		if (contactListData.lineUserId) {
-			let body = {
-				to: contactListData.lineUserId,
-				messages: [
-					{
-						type: "text",
-						text: "สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: " + contactListData.remark
-					},
-				],
-			};
-			// console.log(body)
-			this.joborderService
-				.sendConFirmData(body)
-				.then((res) => {
-					this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {
-						duration: 5000,
-					});
-				})
-				.catch((error) => {
-					this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
-						duration: 5000,
-					});
+			
+			if (contactListData.lineUserId) {
+				let msg = 'สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: ' + contactListData.remark;
+				this._linechatService.sendMessage(contactListData.lineUserId, msg)
+					.pipe(takeUntil(this._unsubscribeAll))
+					.subscribe(
+						v => {
+							this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {duration: 5000});
+						},
+						error => {
+							this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {duration: 5000});
+						}
+					);
+			} else {
+				this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพย์ เพื่อแจ้งสถานะ", "", {
+					duration: 8000,
 				});
-		} else {
-			this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพย์ เพื่อแจ้งสถานะ", "", {
-				duration: 8000,
-			});
-		}
+			}
 	}
 
 	findOnMap(jobOrderDataItem, txt) {
@@ -790,7 +833,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	}
 
 	/**
-	 * Redraw marker in bound
+	 * Redraw marker in boundary window
 	 */
 	redrawBound() {
 		// When first load redraw data
@@ -877,6 +920,10 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 		// console.log(this.filterData);
 	}
 
+	/**
+	 * District filter
+	 * @param filterData 
+	 */
 	onDistrictChange(filterData) {
 		// console.log('district change');
 
@@ -962,10 +1009,8 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 		// preventDefault avoids to show the visualization of the right-click menu of the browser 
 		event.preventDefault(); 
  
-
-		console.log(event);
-		console.log(i);
-
+		// console.log(event);
+		// console.log(i);
 		
 		// we record the mouse position in our object 
 		this.menuTopLeftPosition.x = event.clientX + 'px'; 
@@ -986,7 +1031,6 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 		if (lineUserId) {
 			this._linechatService.openChatPanel(lineUserId);
 		}
-
 
 	}
 

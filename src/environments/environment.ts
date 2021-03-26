@@ -13,7 +13,8 @@ export const environment = {
   authApiUrl: "https://authen-service-7lgq2xsobq-de.a.run.app",
   // SOCKET_ENDPOINT: 'http://localhost:3000'
   linechatUrl: 'http://localhost:3100',
-  thamDeliveryChatRoomId: 'U9b2714c1a2fa39646c1bb25e674aa0b3',
+  thamDeliveryChatRoomId: 'U9b2714c1a2fa39646c1bb25e674aa0b3',   // Test รถธรรมธุรกิจ
+  // thamDeliveryChatRoomId: 'U6c026b2dba9af0ae072658289156c9ca',
   joborderLiff: 'https://liff.line.me/1654123512-vPZoKZA8',
 };
 

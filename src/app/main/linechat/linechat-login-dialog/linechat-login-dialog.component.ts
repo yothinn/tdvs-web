@@ -25,7 +25,7 @@ export class LinechatLoginDialogComponent implements OnInit, OnDestroy {
 
 	isLoading = true;
 	isReload = false;
-	isAdmin = false;
+	isAdmin = true;
 
 	constructor(
 		private lineService: LinechatService,
@@ -71,9 +71,16 @@ export class LinechatLoginDialogComponent implements OnInit, OnDestroy {
 						console.log(this.pincode);
 					}
 
-					// if (e.type === LINECHAT_EVENT.LOGIN_SUCCESS) {
-					// 	console.log('login success');
-					// }
+					if (e.type === LINECHAT_EVENT.NOT_ADMIN) {
+						this.isAdmin = false;
+
+						// this.dialogRef.close();
+					}
+
+					if (e.type === LINECHAT_EVENT.LOGIN_SUCCESS) {
+						// 	console.log('login success');
+						this.dialogRef.close();
+					}
 
 					this._ref.detectChanges();
 				},
@@ -87,12 +94,6 @@ export class LinechatLoginDialogComponent implements OnInit, OnDestroy {
 				},
 				complete: () => {
 					clearInterval(this.intervalId);
-
-					this.isAdmin = (this.state === LINECHAT_EVENT.NOT_ADMIN) ? false : true;
-					if (this.isAdmin) {
-						this.dialogRef.close();
-					}
-					
 				}
 			});
 	}
