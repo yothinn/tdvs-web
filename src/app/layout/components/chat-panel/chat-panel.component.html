@@ -95,7 +95,7 @@
 
                         <div *ngIf="message.message.type === 'image' ">
                             <!-- <img src="https://chat-content.line-scdn.net/bot/U6c026b2dba9af0ae072658289156c9ca/{{message.message.contentHash}}/preview"> -->
-                            <img src="{{ getImageUrl(message.message.contentHash )}}" width="100" height="100">
+                            <img src="{{ getImageUrl(message.message )}}" width="100" height="100">
                         </div>
                         <div *ngIf="message.message.type === 'sticker' ">
                             <img src="https://stickershop.line-scdn.net/stickershop/v1/sticker/{{message.message.stickerId}}/ANDROID/sticker.png" width="100" height="100">                            

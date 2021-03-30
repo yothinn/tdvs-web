@@ -121,14 +121,13 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         this._linechatService.getChatEvent()
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(e => {
-                if (e.type === LINECHAT_EVENT.LOGIN_SUCCESS) {
-                    // this._linechatService.selectChatRoomById('U9b2714c1a2fa39646c1bb25e674aa0b3');
+                if (e.type === LINECHAT_EVENT.SELECT_CHATROOM_SUCCESS) {
                     // Load contact list and open chat sse streaming
                     this.loadContactList();
                     this.openChatStreaming();
                 }
 
-                console.log(e);
+                // console.log(e);
                 if (e.type === LINECHAT_EVENT.LOGOUT) {
                     this.contacts = null;
                     this.chat = null;
@@ -137,12 +136,12 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
                 }
 
                 if (e.type === LINECHAT_EVENT.OPENCHAT_PANEL) {
-                    console.log(e.chatId)
+                    // console.log(e.chatId)
                     // Get line profile from line server
                     this._linechatService.getProfile(e.chatId)
                         .pipe(takeUntil(this._unsubscribeAll))
                         .subscribe(profile => {
-                            console.log(profile);
+                            // console.log(profile);
                             // When small window use toggleSidebar
                             this.toggleSidebarOpen();
                             this.selectedContact = null;
@@ -374,7 +373,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         if (curPos >= (maxPos-10)) {
             // Reload contact 
             if (!this.contactTimer) {
-                console.log('reload contact');
+                // console.log('reload contact');
                 this.loadContactList(this.contactNextToken);
                 this.contactTimer = setTimeout(() => {
                    //  console.log('clear contact timer');
@@ -399,7 +398,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         if (topPos <= 10) {
             // Reload history message
             if (!this.chatTimer) {
-                console.log('reload chat')
+                // console.log('reload chat')
                 
                 this.loadChat(this.selectedContact.chatId, this.chat.dialog.backward);
                 this.chatTimer = setTimeout(() => {
@@ -428,7 +427,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         // console.log('openline chat');
 
 		const dialogRef = this.dialog.open(LinechatLoginDialogComponent, {
-			width: "350px",
+			width: "360px",
 			disableClose: true
 		});
 
@@ -443,7 +442,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
 
     loadChat(chatId, backwardToken = null) {
         // TODO : load chat message >= 25 if < ,
-        console.log(backwardToken);
+        // console.log(backwardToken);
         this._linechatService.getHistoryMessage(chatId, backwardToken)
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(msg => {
@@ -484,7 +483,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((userList: any) => {
                 this.contactNextToken = userList.next;
-                console.log(userList);
+                // console.log(userList);
                 // console.log(this.contactNextToken);
 
                 if  (nextToken) {
@@ -543,10 +542,15 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
         });
     }
 
-    getImageUrl(contentHash) {
+    getImageUrl(msg) {
         // console.log(chatId);
         // console.log(contentHash);
-        return this._linechatService.getImageUrl(contentHash);
+        if (msg.contentHash) {
+            return this._linechatService.getImageUrl(msg.contentHash);
+        } else {
+            return msg.contentProvider.previewImageUrl;
+        }
+        
     }
 
     // getStickerUrl(stickerId) {

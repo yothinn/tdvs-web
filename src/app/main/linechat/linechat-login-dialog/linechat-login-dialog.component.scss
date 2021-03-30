@@ -51,7 +51,20 @@
     }
 }
 
-.isnot-admin {
+.text-warn {
     text-align: center;
     color: red;
+}
+
+.select-chatroom {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+.btn-select-chatroom {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 }

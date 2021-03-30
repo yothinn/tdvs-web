@@ -8,7 +8,7 @@
   <strong>LINE LOGIN</strong>
 </h1>
 
-
+<!-- QRCODE WAIT -->
 <mat-dialog-content *ngIf="isQrcodeWait()" class="qrcode-container">
   <h2>เข้าสู่ระบบด้วยคิวอาร์โค้ด</h2>
   <img style="text-align: center;" [src]="getQrcodeImage()">
@@ -16,6 +16,7 @@
 
 </mat-dialog-content>
 
+<!-- PINCODE WAIT -->
 <mat-dialog-content *ngIf="isPincodeWait()" class="pincode-container">
   <h1>รหัสยืนยันตัวตน</h1>
   <div>
@@ -23,6 +24,7 @@
     <h2>เหลือเวลา {{countDownTimer | date:'mm:ss'}}</h2>
   </div>
   <h4>โปรดใส่รหัสยืนยันตัวตนที่แอพ LINE สำหรับ Android หรือ iOS</h4>
+  <mat-checkbox [(ngModel)]="isChangeChatRoom">ต้องการเปลี่ยนห้องสนทนา</mat-checkbox>
 </mat-dialog-content>
 
 <div class="loading-spinner" *ngIf="isLoading">
@@ -30,6 +32,7 @@
   <h1>รอสักครู่ กำลังโหลด ...</h1>
 </div>
 
+<!-- LOAD ERROR -->
 <div class="reload" *ngIf="isReload">
   <button style="margin:0 auto;" mat-icon-button (click)="reloadLogin()">
     <mat-icon style="font-size: 48px;">replay</mat-icon>
@@ -37,8 +40,28 @@
   <h1>กดไอคอนเพื่อโหลดอีกครั้ง</h1>
 </div>
 
-
-<div class="isnot-admin" *ngIf="!isAdmin">
+<!-- SHOW ERROR , you wasn't ADMIN -->
+<div class="text-warn" *ngIf="chatRoomId && !isAdmin">
   <h3><strong>คุณยังไม่ได้รับสิทธิในการเข้าถึง</strong></h3>
   <h3><strong>กรุณาขอสิทธิการเป็นแอดมินกับเจ้าหน้าที่</strong></h3>
+</div>
+
+
+
+<div *ngIf="chatRoomList !== null && chatRoomList?.length > 0">
+  <h3>กรุณาเลือกห้องสนทนาที่จะเชื่อมต่อ</h3>
+  <mat-radio-group class="select-chatroom" [(ngModel)]="selectedChatRoom">
+    <mat-radio-button *ngFor="let chatRoom of chatRoomList" [value]="chatRoom.name">
+        {{chatRoom.name}}
+    </mat-radio-button>
+  </mat-radio-group>
+  <div class="btn-select-chatroom">
+    <button mat-flat-button [disabled]="!selectedChatRoom" (click)="onSelectChatRoom()">ตกลง</button>
+  </div>
+</div>
+<div *ngIf="!chatRoomId && chatRoomList?.length === 0">
+  <h3 class="text-warn">ไม่มีห้องสนทนาให้เชื่อมต่อ</h3>
+  <div class="btn-select-chatroom"> 
+    <button mat-flat-button color="primary" (click)="onSelectChatRoom()">ตกลง</button>
+  </div>
 </div>

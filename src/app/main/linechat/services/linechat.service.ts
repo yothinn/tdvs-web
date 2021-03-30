@@ -14,6 +14,7 @@ export const LINECHAT_EVENT = {
 	PINCODE_WAIT : 'pincodeWait',
 	SSE_TOKEN: 'sseToken',
 	LOGIN_SUCCESS: 'loginSuccess',
+	SELECT_CHATROOM_SUCCESS: "selectChatRoomSuccess",
 	NOT_ADMIN: 'notAdmin',
 	ERROR: 'error',
 	LOGOUT: 'logout',
@@ -50,7 +51,7 @@ export class LinechatService {
 	cookieDate;
 
 	streamApiToken: any = null;
-	chatRoomId: string;
+	private _chatRoomId: string = null;
 
 	chatEvent$ = new Subject<any>();
 
@@ -63,15 +64,34 @@ export class LinechatService {
 		// this.cookieToken = 'csz7MvRvNEpwz+fAPUwFD/R++ednbBJdq/OM0HczpeMnWibRQIBdRnEVFgXiiwXzNJwEHfQnXo+4mLynLmxA2xghiJ2d3nZv8p0HTC1ums7AHbKPtKkgv+QH8tqcNmrCVXteReNPoYb4GEGRB3DP7nxoWE8Bm9f840YPIKwcJ4z/KVWWgsDqARa5o/6Urq3z+U9n/Y3WToyVygIQ9yIjVlSSazegGlC2FltpA8P4FF1lorl/xY+Js3Lh+iDDC+pwCn8EPO6A14mOwV4JWeES+m34EoipLR8/0YEL+YpCuUZCz7B2T8brpmtFJTKh2zhsm/G7Fb8zzjunWVdKvvyIxkueLlZOO6dl3yJUW2ssNxylTqeU0EHPqRdHIizFvnL0a8sdvaaaSJ6iPDcmR7N9IQ==';
 		// this.xsrfToken = 'd641c302-86fc-4834-864f-946bc45cf655';
 		
-		this.getLocalStorage();
+		this.getChatRoomIdLocalStorage();
+		this.getCookieLocalStorage();
+		
 		// Reload login when new day
 		let tmpDate = new Date(parseInt(this.cookieDate));
 		let curDate = new Date(Date.now());
 		// console.log(tmpDate);
 		// console.log(curDate);
+
 		if ((tmpDate.getMonth() !== curDate.getMonth()) || (tmpDate.getDate() !== curDate.getDate())) {
 			this.cookieToken = null;
 			this.xsrfToken = null;
+		}
+	}
+
+	// Getter/Setter chatroomId
+	public get chatRoomId() {
+		return this._chatRoomId;
+	}
+
+	public set chatRoomId(id) {
+		this._chatRoomId = id;
+
+		if (id) {
+			// Set to localstorage
+			this.setChatRoomIdLocalStorage();
+		} else {
+			this.clearChatRoomIdLocalStorage();
 		}
 	}
 
@@ -100,13 +120,15 @@ export class LinechatService {
 	// }
 
 
-
 	getChatEvent(): Observable<any> {
 		return this.chatEvent$.asObservable();
 	}
 
-	selectChatRoomById(chatRoomId) {
-		this.chatRoomId = chatRoomId;
+	sendChatEvent(type, data:any = null) {
+		this.chatEvent$.next({
+			type: type,
+			data: data
+		});
 	}
 
 	login(): Observable<any> {
@@ -125,77 +147,34 @@ export class LinechatService {
 			// }
 
 			this._evsLogin.onerror = (e) => {
-				// console.log("error message");
 				// console.log(e);
-				// this._sseLogin$.next(LINECHAT_STATE.ERROR);
 				this._evsLogin.close();
 				subscriber.error(e);
 			};
 
 			this._evsLogin.addEventListener(LINECHAT_EVENT.QRCODE_WAIT, (e: any) => {
-				// console.log('listener qrCode wait');
 				// console.log(e.data);
-				// this.qrcodeImg = e.data;
-				//this.qrcodeImg = `data:image/png;base64, ${e.data}`;
-				// this._sseLogin$.next(LINECHAT_STATE.QRCODE_WAIT);
 				subscriber.next(e);
 			});
 
 			this._evsLogin.addEventListener(LINECHAT_EVENT.PINCODE_WAIT, (e: any) => {
-				// console.log("pincode wait");
 				// console.log(e);
-				// this.pincode = e.data;
-				// this._sseLogin$.next(LINECHAT_STATE.PINCODE_WAIT);
 				subscriber.next(e);
-			})
+			});
 
 			this._evsLogin.addEventListener(LINECHAT_EVENT.SSE_TOKEN, (e: any) => {
-				// console.log("sse token");
 				// console.log(e.data);
 				this.sseToken = JSON.parse(e.data);
 				this.setCookie(this.sseToken);
-				// this._sseLogin$.next(LINECHAT_STATE.SSE_TOKEN);
 				subscriber.next(e);
-			})
+			});
 
 			this._evsLogin.addEventListener(LINECHAT_EVENT.LOGIN_SUCCESS, (e:any) => {
-				// console.log("login success");
 				// console.log(e);
-				// check if you are admin or not ?
 				this._evsLogin.close();
-
-				this.getChatRoomList().subscribe(list => {
-					console.log('check admin');
-					console.log(list);
-					let chatRoom: any[] = list.filter(item => item.botId === this.chatRoomId);
-					console.log(chatRoom);
-					console.log(chatRoom.length);
-					let isAdmin = (chatRoom.length > 0) ? true : false;
-					if (isAdmin) {
-						// console.log('complete login');
-						this.setLocalStorage();
-						this.chatEvent$.next({
-							type: LINECHAT_EVENT.LOGIN_SUCCESS
-						});
-						subscriber.next(e);
-						subscriber.complete();
-					} else {
-						
-						// e['type'] = LINECHAT_EVENT.NOT_ADMIN;
-						// Reset cookie;
-						this.logout();
-						let body = {
-							type: LINECHAT_EVENT.NOT_ADMIN
-						}
-
-						this.chatEvent$.next(body);
-						subscriber.next(body);
-						subscriber.complete();	
-					}
-
-
-					
-				});	
+				this.setCookieLocalStorage();
+				subscriber.next(e);
+				subscriber.complete();
 			});
 		})
 	}
@@ -206,10 +185,9 @@ export class LinechatService {
 		this.sseToken = null;
 		this.cookieToken = null;
 		this.xsrfToken = null;
-		this.removeLocalStorage();
-		this.chatEvent$.next({
-			type: LINECHAT_EVENT.LOGOUT
-		});
+		this.clearCookieLocalStorage();
+
+		this.sendChatEvent(LINECHAT_EVENT.LOGOUT);
 	}
 
 	setCookie(sseToken) {
@@ -225,32 +203,37 @@ export class LinechatService {
 					break;
 			}
 		}
-
-		// TODO
-		// set to local storage;
-
-		// console.log(this.xsrfToken);
-		// console.log(this.cookieToken);
 	}
 
-	setLocalStorage() {
+	private setCookieLocalStorage() {
 		window.localStorage.setItem(`cookieToken@${environment.appName}`, this.cookieToken);
 		window.localStorage.setItem(`xsrfToken@${environment.appName}`, this.xsrfToken);
 		window.localStorage.setItem(`cookieDate@${environment.appName}`, `${Date.now()}`);
-		window.localStorage.setItem(`chatRoomId@${environment.appName}`, `${this.chatRoomId}`);
 	}
 
-	getLocalStorage() {
+	private getCookieLocalStorage() {
 		this.cookieToken = window.localStorage.getItem(`cookieToken@${environment.appName}`);
 		this.xsrfToken = window.localStorage.getItem(`xsrfToken@${environment.appName}`);
 		this.cookieDate = window.localStorage.getItem(`cookieDate@${environment.appName}`);
+		
+	}
+
+	clearCookieLocalStorage() {
+		window.localStorage.removeItem(`cookieToken@${environment.appName}`);
+		window.localStorage.removeItem(`xsrfToken@${environment.appName}`);
+		window.localStorage.removeItem(`cookieDate@${environment.appName}`);
+	}
+
+	private getChatRoomIdLocalStorage() {
 		this.chatRoomId = window.localStorage.getItem(`chatRoomId@${environment.appName}`);
 	}
 
-	removeLocalStorage() {
-		window.localStorage.removeItem(`cookieToken@${environment.appName}`);
-		window.localStorage.removeItem(`xsrfToken@${environment.appName}`);
-		window.localStorage.removeItem(`cooketDate@${environment.appName}`);
+	private setChatRoomIdLocalStorage() {
+		window.localStorage.setItem(`chatRoomId@${environment.appName}`, this.chatRoomId);
+	}
+
+	clearChatRoomIdLocalStorage() {
+		window.localStorage.removeItem(`chatRoomId@${environment.appName}`);
 	}
 
 	/**
@@ -297,7 +280,7 @@ export class LinechatService {
 	 * @returns 
 	 */
 	getUserList({folderType =null, tagIds = null, limit=25, nextToken =null} = {}): Observable<any> {
-		console.log(nextToken);
+		// console.log(nextToken);
 		let opt = {
 			headers: this.auth.getAuthorizationHeader(),
 		}
@@ -321,7 +304,7 @@ export class LinechatService {
 			body['nextToken'] = nextToken;
 		}
 
-		console.log(body);
+		// console.log(body);
 
 		return this.http.post(this.linechatUri.userList, body, opt)
 					.pipe(map((value:any) => value.data));
