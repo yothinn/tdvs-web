@@ -156,6 +156,7 @@ chat-panel {
         z-index: 7;
         flex: 1 1 100%;
         box-shadow: -1px 0 2px 0 rgba(0, 0, 0, 0.25);
+        overflow-x: scroll;
 
         .messages {
             position: relative;
@@ -233,7 +234,7 @@ chat-panel {
 
                 &.me {
                     padding-left: 40px;
-
+                    
                     .avatar {
                         order: 2;
                         margin: 0 0 0 16px;

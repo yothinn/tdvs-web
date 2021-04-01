@@ -580,19 +580,23 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	sendReject(contactListData) {
 			
 			if (contactListData.lineUserId) {
-				let msg = 'สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: ' + contactListData.remark;
-				this._linechatService.sendMessage(contactListData.lineUserId, msg)
-					.pipe(takeUntil(this._unsubscribeAll))
-					.subscribe(
-						v => {
-							this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {duration: 5000});
-						},
-						error => {
-							this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {duration: 5000});
-						}
-					);
+				if (this._linechatService.isLogin()) {
+					let msg = 'สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: ' + contactListData.remark;
+					this._linechatService.sendMessage(contactListData.lineUserId, msg)
+						.pipe(takeUntil(this._unsubscribeAll))
+						.subscribe(
+							v => {
+								this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {duration: 5000});
+							},
+							error => {
+								this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {duration: 5000});
+							}
+						);
+				} else {
+					this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ กรุณาล็อกอินไลน์ก่อน", "", {duration: 8000,});
+				}
 			} else {
-				this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพย์ เพื่อแจ้งสถานะ", "", {
+				this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพท์ เพื่อแจ้งสถานะ", "", {
 					duration: 8000,
 				});
 			}
@@ -725,12 +729,18 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 				this._linechatService.openChatPanel(contactListData.lineUserId);
 				this._linechatService.sendMessage(contactListData.lineUserId, msg)
 					.pipe(takeUntil(this._unsubscribeAll))
-					.subscribe(v => {
-						console.log(v);
-						// check error
-					});
+					.subscribe(
+						v => {
+							//console.log(v);
+							// Do nothing
+						},
+						err => {
+							this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ ไม่สามารถส่งข้อความได้", "", {duration: 5000,});
+						}
+					);
 			} else {
-				// TODO: Alert error
+
+				this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ กรุณาล็อกอินไลน์ก่อน", "", {duration: 8000,});
 			}
 		}
 	}
