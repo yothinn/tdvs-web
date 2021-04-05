@@ -491,7 +491,10 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 
 		if (status === "sendLine") {
 			this.joborderData.contactLists[i].contactStatus = "waitapprove";
-			this.sendConFirm(this.joborderData.contactLists[i]);
+			// REMARK : temporaly comment, it has problem for send message to line
+			// this.sendReject(this.joborderData.contactLists[i]);
+			// this.sendConFirm(this.joborderData.contactLists[i]);
+
 			this.onSaveStatus("w");
 			this.findOnMap(this.joborderData.contactLists[i], "W");
 		}
@@ -512,7 +515,8 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 					this.joborderData.contactLists[i].remark = result;
 					this.joborderData.contactLists[i].contactStatus = "reject";
 					this.onSaveStatus("r");
-					this.sendReject(this.joborderData.contactLists[i]);
+					// REMARK : temporaly comment, it has problem for send message to line
+					// this.sendReject(this.joborderData.contactLists[i]);
 					this.findOnMap(this.joborderData.contactLists[i], "R");
 				}
 			});
@@ -718,7 +722,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 		if (contactListData.lineUserId) {
 
 			// TODO : liff uri - move to environment
-			let liffUri = `${environment.joborderLiff}/appoinment?docno=${this.joborderData.docno}`;
+			let liffUri = `${environment.joborderLiff}?docno=${this.joborderData.docno}`;
 			
 			let msg = 'รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน\n' +
 						`ในวันที่ ${this.titleDate}\n` +
@@ -731,7 +735,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 					.pipe(takeUntil(this._unsubscribeAll))
 					.subscribe(
 						v => {
-							//console.log(v);
+							console.log(v);
 							// Do nothing
 						},
 						err => {

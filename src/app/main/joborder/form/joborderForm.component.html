@@ -182,7 +182,7 @@
                   joborderData.orderStatus !== 'ordercancel'
                 "
               >
-                <div fxFlex="25" *ngIf="item.lineUserId">
+                <!-- <div fxFlex="25" *ngIf="item.lineUserId">
                   <button
                     mat-flat-button
                     class="btn-list-status"
@@ -236,7 +236,29 @@
                     "
                   >
                     Reject
+                  </button> -->
+
+                <div fxFlex="25" *ngIf="item.lineUserId">
+                  <button
+                    mat-flat-button
+                    class="btn-list-status"
+                    [ngClass]="{ 'color-c-btn': joborderData._id }"
+                    (click)="onChangeStatus('confirm', i)"
+                  >
+                    Confirm
                   </button>
+                </div>
+
+                <div fxFlex="25" *ngIf="item.lineUserId">
+                  <button
+                    mat-flat-button
+                    class="btn-list-status"
+                    [ngClass]="{ 'color-r-btn': joborderData._id }"
+                    (click)="onChangeStatus('reject', i)"
+                  >
+                    Reject
+                  </button>
+                  
                 </div>
 
                 <div fxFlex="25" *ngIf="!item.lineUserId">
