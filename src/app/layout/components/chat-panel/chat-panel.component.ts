@@ -142,9 +142,9 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
                         .pipe(takeUntil(this._unsubscribeAll))
                         .subscribe(profile => {
                             // console.log(profile);
-                            // When small window use toggleSidebar
-                            this.toggleSidebarOpen();
+                            // When small window use toggleSidebar 
                             this.selectedContact = null;
+                            this.toggleSidebarOpen();
                             this.toggleChat({
                                 chatId: e.chatId,
                                 chatType: "USER",
@@ -494,7 +494,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
                     this.contacts = userList.list;
                 }
 
-                // console.log(this.contacts);
+                console.log(this.contacts);
             });
     }
 
