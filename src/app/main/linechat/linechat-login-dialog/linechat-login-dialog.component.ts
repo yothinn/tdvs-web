@@ -109,7 +109,7 @@ export class LinechatLoginDialogComponent implements OnInit, OnDestroy {
 	}
 
 	onCancel() {
-		this.dialogRef.close()
+		this.dialogRef.close();
 	}
 
 	getQrcodeImage() {
