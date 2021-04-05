@@ -13,41 +13,59 @@
     <ng-container *ngIf="selectedContact !== null">
 
         <div class="title" fxLayout="row" fxLayoutAlign="start center">
-            <img [src]="selectedContact.avatar" class="avatar mx-16">
-            <h3 class="text-truncate">{{selectedContact.name}}</h3>
+            <img [src]="getAvatar(selectedContact.profile.iconHash)" class="avatar mx-16">
+            <h3 class="text-truncate">{{selectedContact.profile.nickname || selectedContact.profile.name}}</h3>
         </div>
 
     </ng-container>
 
-    <button mat-icon-button class="toggle-sidebar-folded mr-8" (click)="foldSidebarTemporarily();resetChat();"
-            fxHide fxShow.gt-md>
-        <mat-icon class="secondary-text s-20">close</mat-icon>
-    </button>
+    <div>
+        <button mat-flat-button 
+            *ngIf="!isLogin()"
+            class="toggle-sidebar-folded mr-8" 
+            (click)="lineLogin()"
+        >
+            LOGIN
+        </button>
+        <button mat-flat-button 
+            *ngIf="isLogin()"
+            class="toggle-sidebar-folded mr-8" 
+            (click)="lineLogout()"
+        >
+            LOGOUT
+        </button>
+        <button mat-icon-button class="toggle-sidebar-folded mr-8" (click)="foldSidebarTemporarily();resetChat();"
+                fxHide fxShow.gt-md>
+            <mat-icon class="secondary-text s-20">close</mat-icon>
+        </button>
 
-    <button mat-icon-button class="toggle-sidebar-open mr-8" (click)="toggleSidebarOpen();resetChat();"
+        <button mat-icon-button class="toggle-sidebar-open mr-8" (click)="toggleSidebarOpen();resetChat();"
             fxHide.gt-md>
         <mat-icon class="secondary-text">close</mat-icon>
     </button>
-
+    </div>
+    
 </div>
 
 <div class="content">
 
     <!-- Contacts -->
-    <div id="contacts-list" fusePerfectScrollbar [fusePerfectScrollbarOptions]="{suppressScrollX: true}">
+    <div id="contacts-list" fusePerfectScrollbar [fusePerfectScrollbarOptions]="{suppressScrollX: true}" 
+        (scroll)="scrolledContact($event)"
+    >
 
         <div *ngFor="let contact of contacts"
              class="contacts-list-item"
              [ngClass]="contact.status"
-             [class.active]="contact.id === selectedContact?.id"
-             (click)="toggleChat(contact)">
+             [class.active]="contact.profile.userId === selectedContact?.profile.userId"
+             (click)="toggleChat(contact)"
+        >
 
-            <img class="avatar" [src]="contact.avatar"
-                 [matTooltip]="contact.name"
+            <img class="avatar" [src]="getAvatar(contact.profile.iconHash)"
+                 [matTooltip]="contact.profile.name"
                  matTooltipPosition="left">
-            <div class="unread-count" *ngIf="contact.unread">{{contact.unread}}</div>
-            <div class="status-icon" [ngClass]="contact.status"></div>
-
+            <!-- <div class="unread-count" *ngIf="contact.unread">{{contact.unread}}</div>
+            <div class="status-icon" [ngClass]="contact.status"></div> -->
         </div>
 
     </div>
@@ -56,32 +74,48 @@
     <!-- Chat -->
     <div id="chat" fxLayout="column" fxFlex="1 1 auto">
 
-        <div id="messages" class="messages" fxFlex="1 1 auto" fusePerfectScrollbar>
+        <div id="messages" class="messages" fxFlex="1 1 auto" fusePerfectScrollbar (scroll)="scrolledChat($event)">
 
-            <ng-container *ngIf="chat && chat.dialog && chat.dialog.length > 0">
+            <ng-container *ngIf="chat && chat.dialog.list && chat.dialog.list.length > 0">
 
-                <div *ngFor="let message of chat.dialog; let i = index" class="message-row"
+                <div *ngFor="let message of chat.dialog.list; let i = index" class="message-row"
                      [ngClass]="{
-                            'me': message.who === user.id,
-                            'contact': message.who !== user.id,
+                            'me': message.type === 'messageSent',
+                            'contact': message.type === 'message',
                             'first-of-group': isFirstMessageOfGroup(message, i),
                             'last-of-group': isLastMessageOfGroup(message, i)
                             }">
 
                     <img *ngIf="shouldShowContactAvatar(message, i)"
-                         src="{{selectedContact.avatar}}"
+                         src="{{ getAvatar(selectedContact.profile.iconHash) }}"
                          class="avatar">
 
-                    <div class="bubble">
-                        <div class="message">{{message.message}}</div>
-                        <div class="time secondary-text">{{message.time | date:'short'}}</div>
+                    <div class="bubble" *ngIf="message.type === 'message' || message.type === 'messageSent' ">
+                        <div *ngIf="message.message.type === 'text' " class="message">{{message.message.text}}</div>
+
+                        <div *ngIf="message.message.type === 'image' ">
+                            <!-- <img src="https://chat-content.line-scdn.net/bot/U6c026b2dba9af0ae072658289156c9ca/{{message.message.contentHash}}/preview"> -->
+                            <img src="{{ getImageUrl(message.message )}}" width="100" height="100">
+                        </div>
+                        <div *ngIf="message.message.type === 'sticker' ">
+                            <img src="https://stickershop.line-scdn.net/stickershop/v1/sticker/{{message.message.stickerId}}/ANDROID/sticker.png" width="100" height="100">                            
+                        </div>
+                        <!-- <div *ngIf="message.message.type === 'sticker' ">
+                            <img [src]="getStickerUrl(message.message.stickerId)">
+                        </div> -->
+                        <!-- <div *ngIf="message.message.type === 'image'">
+                            <svg width="100" height="100" >
+                                <image [attr.xlink:href]="getImageUrl(message.source.chatId, message.message.contentHash)" width="100" height="100"/>
+                            </svg>
+                        </div> -->
+                        <div class="time secondary-text">{{message.timestamp | date:'d/M/yy h:mm a'}}</div>
                     </div>
 
                 </div>
 
             </ng-container>
 
-            <ng-container *ngIf="selectedContact && chat && chat.dialog && chat.dialog.length === 0">
+            <ng-container *ngIf="selectedContact && chat && chat.dialog.list && chat.dialog.list.length === 0">
 
                 <div class="no-messages-icon">
                     <mat-icon class="s-128 fade-text">chat</mat-icon>

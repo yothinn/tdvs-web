@@ -1,0 +1,24 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    font-size: 12px;
+}
+
+.filter-container {
+    ::ng-deep .mat-form-field-wrapper{
+        margin-bottom: -1.25em;
+        font-size: 12px;
+    }
+}
+
+ .button-icon {
+    padding: 0px;
+    width: 100%;
+    background-color: white;
+    border: 0;
+ }
+
+ .icon {
+     font-size: 24px;
+     font-weight: 100;
+ }

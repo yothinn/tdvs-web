@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MarkerInfoWindowComponent } from './marker-info-window.component';
+import { LinechatPanelComponent } from './linechat-panel.component';
 
-describe('MarkerInfoWindowComponent', () => {
-  let component: MarkerInfoWindowComponent;
-  let fixture: ComponentFixture<MarkerInfoWindowComponent>;
+describe('LinechatPanelComponent', () => {
+  let component: LinechatPanelComponent;
+  let fixture: ComponentFixture<LinechatPanelComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MarkerInfoWindowComponent ]
+      declarations: [ LinechatPanelComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MarkerInfoWindowComponent);
+    fixture = TestBed.createComponent(LinechatPanelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -31,6 +31,7 @@ export class TvdscustomerFormComponent implements OnInit {
   tvdscustomerData: any = {};
 
   postcodeList: any = [];
+  userActivated: boolean = true;
   // temp = [];
 
   convenientDayList = [
@@ -98,8 +99,19 @@ export class TvdscustomerFormComponent implements OnInit {
           addressPostCode: '',
           notes: '',
           latitude: '',
-          longitude: ''
+          longitude: '',
+          activated: true,
+          lineDisplayName: '',
         };
+
+    console.log(this.tvdscustomerData);
+
+    if (this.tvdscustomerData.activated === null || this.tvdscustomerData.activated === undefined) {
+      this.userActivated = true;
+    } else {
+      this.userActivated = this.tvdscustomerData.activated;
+    }
+
     this.tvdscustomerData.persanalId = this.tvdscustomerData.persanalId || '';
     this.tvdscustomerData.notes = this.tvdscustomerData.notes || '';
 
@@ -149,6 +161,7 @@ export class TvdscustomerFormComponent implements OnInit {
       notes: [this.tvdscustomerData.notes],
       latitude: [this.tvdscustomerData.latitude],
       longitude: [this.tvdscustomerData.longitude],
+      lineDisplayName: [this.tvdscustomerData.lineDisplayName],
     });
   }
 
@@ -165,8 +178,9 @@ export class TvdscustomerFormComponent implements OnInit {
     updData = this.tvdscustomerForm.value;
     updData['convenientDay'] = Array(7).fill(false);
     this.convenientDayList.forEach(item => updData.convenientDay[item.weekDay] = item.selected);
+    updData.activated = this.userActivated;
     
-    // console.log(updData);
+    console.log(updData);
     
     if (this.tvdscustomerData._id) {
       // this.tvdscustomerForm.value._id = this.tvdscustomerData._id;
@@ -208,20 +222,6 @@ export class TvdscustomerFormComponent implements OnInit {
   filterPostcode(event): void {
     this.postcodeList = this.postcodeService.filter(event.target.value);
   }
-
-  // updateFilter(event) {
-  //   //change search keyword to lower case
-  //   const val = event.target.value.toLowerCase();
-
-  //   // filter our data
-  //   // and clear tmp -> move to service
-  //   const temp = this.temp.filter(function (d) {
-  //     return d.postcode.toLowerCase().indexOf(val) !== -1 || !val;
-  //   });
-
-  //   // update the rows
-  //   this.postcodesList = temp;
-  // }
 
   setPostcode(val) {
     //12150 | บึงคำพร้อย | อำเภอลำลูกกา | ปทุมธานี

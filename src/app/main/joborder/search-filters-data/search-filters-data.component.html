@@ -1,3 +1,70 @@
-<div>
-  <button (click)="onSelectClick()">คลิก</button>
+<div fxLayout="column" fxLayoutGap="0.2rem" class="filter-container">
+	<mat-form-field appearance="fill">
+		<mat-label>ค้นหาชื่อ นามสกุล</mat-label>
+		<input matInput [formControl]="searchCtrl" (keyup.enter)="onSearch($event)">
+	</mat-form-field>
+	<div [@slideInOut] *ngIf="showFilter" fxLayout="column" fxLayoutGap="0.2rem"
+	>
+		<!-- <mat-form-field appearance="fill">
+			<mat-label>เลือกโซน</mat-label>
+			<mat-select [(value)]="selectedZone" (selectionChange)="onZoneChange()" multiple>
+				<div fxLayout="row" fxLayoutAlign="space-around center">
+					<button mat-flat-button (click)="onSelectZoneAll(true)">เลือกทั้งหมด</button>
+					<button mat-flat-button (click)="onSelectZoneAll(false)">ยกเลิกทั้งหมด</button>
+				</div>
+				<mat-option *ngFor="let zone of polygonZone" [value]="zone.name">{{zone.name}}</mat-option>
+			</mat-select>
+		</mat-form-field> -->
+		<mat-form-field appearance="fill">
+			<mat-label>เลือกจังหวัด</mat-label>
+			<mat-select 
+				[disabled]="isShowMarkOnlyAppoint || isShowMarkOnlySelect"
+				[(value)]="selectedProvince" 
+				(selectionChange)="onProvinceChange()"
+			>
+				<mat-option [value]="PROVINCE_ALL_TEXT">{{ PROVINCE_ALL_TEXT }}</mat-option>
+				<mat-option *ngFor="let province of provincesList" [value]="province">{{province}}</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field appearance="fill">
+			<mat-label>เลือกเขต</mat-label>
+			<mat-select 
+				[disabled]="disableDistrict || isShowMarkOnlyAppoint || isShowMarkOnlySelect" 
+				[(value)]="selectedDistrict" 
+				(selectionChange)="onDistrictChange()" 
+				multiple
+			>
+				<div fxLayout="row" fxLayoutAlign="space-around center">
+					<button mat-flat-button (click)="onSelectDistrictAll(true)">เลือกทั้งหมด</button>
+					<button mat-flat-button (click)="onSelectDistrictAll(false)">ยกเลิกทั้งหมด</button>
+				</div>
+				<mat-option *ngFor="let district of districtsList" [value]="district">{{district}}</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field appearance="fill">
+			<mat-label>เลือกวันที่สะดวกรับบริการ</mat-label>
+			<mat-select [disabled]="!enableConvenient" [(value)]="selectedConvenient" (selectionChange)="onConvenientChange()" multiple>
+				<mat-option *ngFor="let d of convenientDay" [value]="d">{{d}}</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<div fxLayout="row wrap" fxLayoutGap="1.5rem" style="padding-left:1rem">
+			<mat-checkbox [(ngModel)]="isShowMarkOnlySelect" (change)="onCheckShowMarkOnlySelect()">แสดงลูกค้าที่เลือก</mat-checkbox>
+			<mat-checkbox [(ngModel)]="isShowMarkOnlyAppoint" (change)="onCheckShowMarkOnlyAppoint()">แสดงลูกค้ารับนัด</mat-checkbox>
+			<mat-checkbox [(ngModel)]="enableConvenient" 
+				[disabled]="isShowMarkOnlySelect || isShowMarkOnlyAppoint"
+				(change)="onConvenientChange()" 
+			>
+				กรองด้วยวันที่สะดวกรับบริการ
+			</mat-checkbox>
+		</div>
+		<div>
+			
+		</div>
+	</div>
+	<div fxLayout="row">
+		<button class="button-icon" mat-basic-button (click)="onShowFilter()">
+			<mat-icon class="icon" *ngIf="showFilter">expand_less</mat-icon>
+			<mat-icon class="icon" *ngIf="!showFilter">expand_more</mat-icon>
+		</button>
+	</div>
 </div>

@@ -9,83 +9,101 @@
         fixedInViewport="true"
         fixedTopGap="65"
         fixedBottomGap="0"
+        
       >
-        <div fxLayout="row wrap" fxLayoutAlign="start center">
-          
-          <div
-            class="logo mb-24 mb-md-0"
-            fxFlex="60"
-            fxLayoutAlign="start center"
-          >
-            <div fxLayout="column">
-              <div>
-                <span class="logo-text h3">วันที่: </span>
-                <span class="logo-text h5">{{ titleDate }}</span>
+
+        <div fxLayout="column" fxLayoutGap="1rem">
+          <!-- Filter part -->
+          <app-search-filters-data
+            (search)="onSearchCustomer($event)"
+            (selectProvinceChange)="onProvinceChange($event)"
+            (selectDistrictChange)="onDistrictChange($event)"
+            (selectConvenientChange)="onConvenientChange($event)"
+            (checkOptionChange)="onCheckOptionChange($event)"
+          > 
+
+          </app-search-filters-data>
+
+          <!-- Joborder part-->
+          <div>
+            <div fxLayout="row wrap" fxLayoutAlign="start center">
+              <div 
+                class="logo mb-24 mb-md-0 ml-12"
+                fxLayout="column"
+                fxFlex="60"
+              >
+                <div>
+                  <span class="logo-text h3">วันที่: </span>
+                  <span class="logo-text h5">{{ titleDate }}</span>
+                </div>
+                <div>
+                  <span class="logo-text h3">ทะเบียนรถ: </span>
+                  <span class="logo-text h5">{{
+                    joborderData.carNo.lisenceID || "ไม่ระบุ"
+                  }}</span>
+                </div>
+                <div>
+                  <span class="logo-text h3">คนขับ: </span>
+                  <span class="logo-text h5">{{
+                    joborderData.carNo.driverInfo
+                      ? joborderData.carNo.driverInfo.displayName
+                      : "ไม่ระบุ"
+                  }}</span>
+                </div>
+                <div *ngIf="joborderData.docno">
+                  <span class="logo-text h3">เลขที่ใบสั่งงาน: </span>
+                  <span class="logo-text h5">{{ joborderData.docno }}</span>
+                </div>
+                <div *ngIf="joborderData.docno">
+                  <span class="logo-text h3">สถานะ: </span>
+                  <span class="logo-text h5">
+                    {{ joborderData.orderStatus | thaiorderstatus }}
+                  </span>
+                  <!-- <span class="logo-text h5">{{
+                    joborderData.orderStatus === "draft"
+                      ? "จัดเส้นทาง"
+                      : joborderData.orderStatus === "waitapprove"
+                      ? "รอยืนยัน"
+                      : joborderData.orderStatus === "orderavailable"
+                      ? "ใบงานพร้อม"
+                      : joborderData.orderStatus === "serviceprepared"
+                      ? "เตรียมการบริการ"
+                      : joborderData.orderStatus === "golive"
+                      ? "กำลังให้บริการ"
+                      : joborderData.orderStatus === "close"
+                      ? "จบบริการ"
+                      : "จบบริการ(ยกเลิก)"
+                  }}</span> -->
+                </div>
               </div>
-              <div>
-                <span class="logo-text h3">ทะเบียนรถ: </span>
-                <span class="logo-text h5">{{
-                  joborderData.carNo.lisenceID || "ไม่ระบุ"
-                }}</span>
-              </div>
-              <div>
-                <span class="logo-text h3">คนขับ: </span>
-                <span class="logo-text h5">{{
-                  joborderData.carNo.driverInfo
-                    ? joborderData.carNo.driverInfo.displayName
-                    : "ไม่ระบุ"
-                }}</span>
-              </div>
-              <div *ngIf="joborderData.docno">
-                <span class="logo-text h3">เลขที่ใบสั่งงาน: </span>
-                <span class="logo-text h5">{{ joborderData.docno }}</span>
-              </div>
-              <div *ngIf="joborderData.docno">
-                <span class="logo-text h3">สถานะ: </span>
-                <span class="logo-text h5">
-                  {{ joborderData.orderStatus | thaiorderstatus }}
-                </span>
-                <!-- <span class="logo-text h5">{{
-                  joborderData.orderStatus === "draft"
-                    ? "จัดเส้นทาง"
-                    : joborderData.orderStatus === "waitapprove"
-                    ? "รอยืนยัน"
-                    : joborderData.orderStatus === "orderavailable"
-                    ? "ใบงานพร้อม"
-                    : joborderData.orderStatus === "serviceprepared"
-                    ? "เตรียมการบริการ"
-                    : joborderData.orderStatus === "golive"
-                    ? "กำลังให้บริการ"
-                    : joborderData.orderStatus === "close"
-                    ? "จบบริการ"
-                    : "จบบริการ(ยกเลิก)"
-                }}</span> -->
+              <div
+                fxLayout="column" 
+                fxLayoutGap="1rem"
+              >
+                <!--พี่โก๋เอาออกเพราะทุก Action พี่โก๋ Save หมด-->
+                <!-- <button mat-button color="warn" (click)="onSave()" *ngIf="!joborderData._id">
+                                สร้าง
+                            </button>
+                            <button mat-button color="warn" (click)="onSave()" *ngIf="joborderData._id">
+                                บันทึก
+                            </button> -->
+
+                <button
+                  mat-flat-button
+                  color="warn"
+                  (click)="openCarAndDate()"
+                  *ngIf="
+                    joborderData._id &&
+                    joborderData.orderStatus !== 'golive' &&
+                    joborderData.orderStatus !== 'close' &&
+                    joborderData.orderStatus !== 'closewithcondition' &&
+                    joborderData.orderStatus !== 'ordercancel'
+                  "
+                >
+                  เปลี่ยนคนขับ
+                </button>
               </div>
             </div>
-          </div>
-          <div fxFlex="40" class="text-center">
-            <!--พี่โก๋เอาออกเพราะทุก Action พี่โก๋ Save หมด-->
-            <!-- <button mat-button color="warn" (click)="onSave()" *ngIf="!joborderData._id">
-                            สร้าง
-                        </button>
-                        <button mat-button color="warn" (click)="onSave()" *ngIf="joborderData._id">
-                            บันทึก
-                        </button> -->
-
-            <button
-              mat-button
-              color="warn"
-              (click)="openCarAndDate()"
-              *ngIf="
-                joborderData._id &&
-                joborderData.orderStatus !== 'golive' &&
-                joborderData.orderStatus !== 'close' &&
-                joborderData.orderStatus !== 'closewithcondition' &&
-                joborderData.orderStatus !== 'ordercancel'
-              "
-            >
-              แก้ไขข้อมูลคนขับ
-            </button>
           </div>
         </div>
 
@@ -95,11 +113,11 @@
             cdkDrag
             *ngFor="let item of joborderData.contactLists; let i = index"
           >
-            <div class="list-item">
+            <div class="list-item" (contextmenu)="onRightClick($event, i)">
               <div class="cursor" (click)="navigateByItem(item)">
                 <div fxLayout="row">
                   <span fxFlex="85"> 
-                    ชื่อ: {{ item.displayName }} 
+                    ชื่อ: {{ item.displayName }}
                   </span>
                   <span fxFlex="15">
                     <strong>({{ i + 1 }}/{{ joborderData.contactLists.length }})</strong>
@@ -123,6 +141,9 @@
                 <div *ngIf="item.mobileNo3">
                   เบอร์โทร3: {{ item.mobileNo3 }}
                 </div>
+                <div *ngIf="item.lineDisplayName">
+                  Line: {{ item.lineDisplayName}}
+                </div>
                 <div *ngIf="item.lineUserId">LineId: {{ item.lineUserId }}</div>
                 <div>
                   ประเภท:
@@ -134,7 +155,7 @@
                 <div>
                   สถานะ:
                   <span>
-                     {{ item.contactStatus | thaicontactstatus }}
+                    {{ item.contactStatus | thaicontactstatus }}
                   </span>
                   <!-- <span *ngIf="item.contactStatus === 'select'">เลือกแล้ว</span>
                   <span *ngIf="item.contactStatus === 'waitapprove'"
@@ -256,6 +277,20 @@
                   </button>
                 </div>
               </div>
+
+              <!-- an hidden div is created to set the position of appearance of the menu--> 
+              <div style="visibility: hidden; position: fixed"
+                [style.left]="menuTopLeftPosition.x"
+                [style.top]="menuTopLeftPosition.y"
+                [matMenuTriggerFor]="rightMenu"
+              >
+              </div>
+              <mat-menu #rightMenu="matMenu" >
+                <ng-template matMenuContent let-id="lineUserId">
+                  <button mat-menu-item [disabled]="!id" (click)="onOpenChat($event, id)">Chat</button>
+                </ng-template>
+              </mat-menu>
+
             </div>
           </div>
         </div>
@@ -304,7 +339,7 @@
         <agm-map
           #agmMap
           class="map-size"
-          (mapClick)="closeInfo()"
+          (mapClick)="closeInfoWindow()"
           [latitude]="lat"
           [longitude]="lng"
           [zoom]="zoom"
@@ -312,19 +347,22 @@
           [zoomControl]="false"
           (boundsChange)="onBoundsMapChange($event)"
         >
-          <!-- <agm-polygon #polygon [paths]="corPolyLine" [clickable]="false">
+          <!-- <div *ngFor="let zone of polygonZone"> 
+            <agm-polygon [paths]="zone.polygonPath" [clickable]="false">
 
-          </agm-polygon> -->
-          <div *ngFor="let markerItem of filterMarker; let i = index">
-            <div *ngIf="markerItem.longitude || markerItem.latitude">
+            </agm-polygon> 
+          </div> -->
+          
+          <div *ngFor="let markerItem of boundMarker; let i = index">
+            <div *ngIf="isShowMarker(markerItem)">
               <agm-marker
-                (markerClick)="clickedInfoWindow(infoWindow)"
+                (markerClick)="openWindow(markerItem._id)"
                 [latitude]="markerItem.latitude"
                 [longitude]="markerItem.longitude"
-                [iconUrl]="markerItem.icon"
+                [iconUrl]="displayIcon(markerItem)"
               >
           
-                <agm-info-window #infoWindow fxLayout="column">
+                <agm-info-window #infoWindow [isOpen]="isInfoWindowOpen(markerItem._id)" fxLayout="column">
                   <div class="h3 mt-16 ml-8 mr-8">
                     <strong>
                       {{ markerItem.title ? markerItem.title : "คุณ" }}
@@ -333,6 +371,7 @@
                           ? markerItem.displayName
                           : "ไม่ระบุ"
                       }}
+                      ( Line: {{ markerItem.lineDisplayName }} )
                     </strong>
                   </div>
                   <div class="h4 mt-16 ml-8 mr-8">

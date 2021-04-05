@@ -59,6 +59,7 @@ const routes = [
     MatDialogModule,
     MatSnackBarModule,
     MatCheckboxModule,
+    MatSlideToggleModule,
 
     MatTreeModule,
     MatSliderModule,

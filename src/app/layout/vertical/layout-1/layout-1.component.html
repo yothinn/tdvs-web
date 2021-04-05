@@ -99,9 +99,16 @@
 
 
 <!-- QUICK PANEL -->
-<fuse-sidebar name="quickPanel" position="right" class="quick-panel">
+<!-- <fuse-sidebar name="quickPanel" position="right" class="quick-panel">
   <quick-panel></quick-panel>
+</fuse-sidebar> -->
+<fuse-sidebar name="chatPanel" position="right" class="chat-panel right-chat-panel"
+                  [folded]="true" [foldedWidth]="70" [foldedAutoTriggerOnHover]="false"
+                  lockedOpen="gt-md">
+  <chat-panel></chat-panel>
 </fuse-sidebar>
+
+
 <!-- / QUICK PANEL -->
 
 <!-- ----------------------------------------------------------------------------------------------------- -->
