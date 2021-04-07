@@ -182,7 +182,7 @@
                   joborderData.orderStatus !== 'ordercancel'
                 "
               >
-                <!-- <div fxFlex="25" *ngIf="item.lineUserId">
+                <div fxFlex="25" *ngIf="item.lineUserId">
                   <button
                     mat-flat-button
                     class="btn-list-status"
@@ -236,9 +236,10 @@
                     "
                   >
                     Reject
-                  </button> -->
+                  </button>
+                </div>
 
-                <div fxFlex="25" *ngIf="item.lineUserId">
+                <!-- <div fxFlex="25" *ngIf="item.lineUserId">
                   <button
                     mat-flat-button
                     class="btn-list-status"
@@ -257,9 +258,9 @@
                     (click)="onChangeStatus('reject', i)"
                   >
                     Reject
-                  </button>
+                  </button> 
                   
-                </div>
+                </div>-->
 
                 <div fxFlex="25" *ngIf="!item.lineUserId">
                   <button
@@ -308,7 +309,7 @@
               >
               </div>
               <mat-menu #rightMenu="matMenu" >
-                <ng-template matMenuContent let-id="lineUserId">
+                <ng-template matMenuContent let-id="lineChatId">
                   <button mat-menu-item [disabled]="!id" (click)="onOpenChat($event, id)">Chat</button>
                 </ng-template>
               </mat-menu>

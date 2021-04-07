@@ -493,7 +493,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 			this.joborderData.contactLists[i].contactStatus = "waitapprove";
 			// REMARK : temporaly comment, it has problem for send message to line
 			// this.sendReject(this.joborderData.contactLists[i]);
-			// this.sendConFirm(this.joborderData.contactLists[i]);
+			this.sendConFirm(this.joborderData.contactLists[i]);
 
 			this.onSaveStatus("w");
 			this.findOnMap(this.joborderData.contactLists[i], "W");
@@ -516,7 +516,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 					this.joborderData.contactLists[i].contactStatus = "reject";
 					this.onSaveStatus("r");
 					// REMARK : temporaly comment, it has problem for send message to line
-					// this.sendReject(this.joborderData.contactLists[i]);
+					this.sendReject(this.joborderData.contactLists[i]);
 					this.findOnMap(this.joborderData.contactLists[i], "R");
 				}
 			});
@@ -548,63 +548,65 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 			});
 	}
 
-	// sendReject(contactListData) {
-	// 	// TODO : change this to send message Change this ??
-	// 	// console.log(contactListData)
-	// 	if (contactListData.lineUserId) {
-	// 		let body = {
-	// 			to: contactListData.lineUserId,
-	// 			messages: [
-	// 				{
-	// 					type: "text",
-	// 					text: "สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: " + contactListData.remark
-	// 				},
-	// 			],
-	// 		};
-	// 		// console.log(body)
-	// 		this.joborderService
-	// 			.sendConFirmData(body)
-	// 			.then((res) => {
-	// 				this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {
-	// 					duration: 5000,
-	// 				});
-	// 			})
-	// 			.catch((error) => {
-	// 				this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
-	// 					duration: 5000,
-	// 				});
-	// 			});
-	// 	} else {
-	// 		this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพย์ เพื่อแจ้งสถานะ", "", {
-	// 			duration: 8000,
-	// 		});
-	// 	}
-	// }
-
+	// Old version : use line push
 	sendReject(contactListData) {
-			
-			if (contactListData.lineUserId) {
-				if (this._linechatService.isLogin()) {
-					let msg = 'สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: ' + contactListData.remark;
-					this._linechatService.sendMessage(contactListData.lineUserId, msg)
-						.pipe(takeUntil(this._unsubscribeAll))
-						.subscribe(
-							v => {
-								this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {duration: 5000});
-							},
-							error => {
-								this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {duration: 5000});
-							}
-						);
-				} else {
-					this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ กรุณาล็อกอินไลน์ก่อน", "", {duration: 8000,});
-				}
-			} else {
-				this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพท์ เพื่อแจ้งสถานะ", "", {
-					duration: 8000,
+		// TODO : change this to send message Change this ??
+		// console.log(contactListData)
+		if (contactListData.lineUserId) {
+			let body = {
+				to: contactListData.lineUserId,
+				messages: [
+					{
+						type: "text",
+						text: "สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: " + contactListData.remark
+					},
+				],
+			};
+			// console.log(body)
+			this.joborderService
+				.sendConFirmData(body)
+				.then((res) => {
+					this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {
+						duration: 5000,
+					});
+				})
+				.catch((error) => {
+					this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
+						duration: 5000,
+					});
 				});
-			}
+		} else {
+			this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพย์ เพื่อแจ้งสถานะ", "", {
+				duration: 8000,
+			});
+		}
 	}
+
+	// New version : use line chat
+	// sendReject(contactListData) {
+			
+	// 		if (contactListData.lineUserId) {
+	// 			if (this._linechatService.isLogin()) {
+	// 				let msg = 'สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: ' + contactListData.remark;
+	// 				this._linechatService.sendMessage(contactListData.lineUserId, msg)
+	// 					.pipe(takeUntil(this._unsubscribeAll))
+	// 					.subscribe(
+	// 						v => {
+	// 							this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {duration: 5000});
+	// 						},
+	// 						error => {
+	// 							this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {duration: 5000});
+	// 						}
+	// 					);
+	// 			} else {
+	// 				this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ กรุณาล็อกอินไลน์ก่อน", "", {duration: 8000,});
+	// 			}
+	// 		} else {
+	// 			this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพท์ เพื่อแจ้งสถานะ", "", {
+	// 				duration: 8000,
+	// 			});
+	// 		}
+	// }
 
 	findOnMap(jobOrderDataItem, txt) {
 		// console.log(item._id)
@@ -654,100 +656,102 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	}
 
 	// Old version : user webhook
-	// sendConFirm(contactListData) {
-	// 	// console.log(contactListData)
-	// 	if (contactListData.lineUserId) {
-	// 		let body = {
-	// 			to: contactListData.lineUserId,
-	// 			messages: [
-	// 				{
-	// 					type: "template",
-	// 					altText: "รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน กรุณายืนยันการนัดหมายด้วยค่ะ",
-	// 					template: {
-	// 						type: "confirm",
-	// 						actions: [
-	// 							{
-	// 								type: "message",
-	// 								label: "รับนัดหมาย",
-	// 								text:
-	// 									"รับนัดหมาย วัน" +
-	// 									this.nameDate +
-	// 									"ที่: " +
-	// 									this.titleDate +
-	// 									" เลขเอกสาร: " +
-	// 									this.joborderData.docno,
-	// 							},
-	// 							{
-	// 								type: "message",
-	// 								label: "ปฏิเสธ",
-	// 								text:
-	// 									"ปฏิเสธ วัน" +
-	// 									this.nameDate +
-	// 									"ที่: " +
-	// 									this.titleDate +
-	// 									" เลขเอกสาร: " +
-	// 									this.joborderData.docno,
-	// 							},
-	// 						],
-	// 						text:
-	// 							"ตามที่ท่านลงทะเบียนกับรถธรรมธุรกิจไว้ เรามีความยินดีที่จะนำสินค้าข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวันที่ " +
-	// 							this.titleDate +
-	// 							" กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยจะติดต่ออีกครั้งก่อนเดินทาง หรือสอบถามเพิ่มเติม 098-8316596" +
-	// 							" ขอบคุณครับ",
-	// 					},
-	// 				},
-	// 			],
-	// 		};
-
-	// 		// console.log(body)
-	// 		this.joborderService
-	// 			.sendConFirmData(body)
-	// 			.then((res) => {
-	// 				this._snackBar.open("ส่งข้อความสำเร็จ รอยืนยัน", "", {
-	// 					duration: 5000,
-	// 				});
-	// 			})
-	// 			.catch((error) => {
-	// 				this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
-	// 					duration: 5000,
-	// 				});
-	// 			});
-	// 	}
-	// }
-
-
-	// New version : user server sent event
 	sendConFirm(contactListData) {
 		// console.log(contactListData)
 		if (contactListData.lineUserId) {
-
-			// TODO : liff uri - move to environment
-			let liffUri = `${environment.joborderLiff}?docno=${this.joborderData.docno}`;
-			
-			let msg = 'รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน\n' +
-						`ในวันที่ ${this.titleDate}\n` +
-						'กรุณาลิงค์ด้านล่างเพื่อยืนยันหรือปฏิเสธการนัดหมายด้วยค่ะ\n' +
-						`${liffUri}`;
-
-			if (this._linechatService.isLogin()) {
-				this._linechatService.openChatPanel(contactListData.lineUserId);
-				this._linechatService.sendMessage(contactListData.lineUserId, msg)
-					.pipe(takeUntil(this._unsubscribeAll))
-					.subscribe(
-						v => {
-							console.log(v);
-							// Do nothing
+			let body = {
+				to: contactListData.lineUserId,
+				messages: [
+					{
+						type: "template",
+						altText: "รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน กรุณายืนยันการนัดหมายด้วยค่ะ",
+						template: {
+							type: "confirm",
+							actions: [
+								{
+									type: "message",
+									label: "รับนัดหมาย",
+									text:
+										"รับนัดหมาย วัน" +
+										this.nameDate +
+										"ที่: " +
+										this.titleDate +
+										" เลขเอกสาร: " +
+										this.joborderData.docno + " " +
+										`(${contactListData.lineUserId})`,
+								},
+								{
+									type: "message",
+									label: "ปฏิเสธ",
+									text:
+										"ปฏิเสธ วัน" +
+										this.nameDate +
+										"ที่: " +
+										this.titleDate +
+										" เลขเอกสาร: " +
+										this.joborderData.docno + " " + 
+										`(${contactListData.lineUserId})`,
+								},
+							],
+							text:
+								"ตามที่ท่านลงทะเบียนกับรถธรรมธุรกิจไว้ เรามีความยินดีที่จะนำสินค้าข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวันที่ " +
+								this.titleDate +
+								" กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยจะติดต่ออีกครั้งก่อนเดินทาง หรือสอบถามเพิ่มเติม 098-8316596" +
+								" ขอบคุณครับ",
 						},
-						err => {
-							this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ ไม่สามารถส่งข้อความได้", "", {duration: 5000,});
-						}
-					);
-			} else {
+					},
+				],
+			};
 
-				this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ กรุณาล็อกอินไลน์ก่อน", "", {duration: 8000,});
-			}
+			// console.log(body)
+			this.joborderService
+				.sendConFirmData(body)
+				.then((res) => {
+					this._snackBar.open("ส่งข้อความสำเร็จ รอยืนยัน", "", {
+						duration: 5000,
+					});
+				})
+				.catch((error) => {
+					this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
+						duration: 5000,
+					});
+				});
 		}
 	}
+
+
+	// New version : user server sent event
+	// sendConFirm(contactListData) {
+	// 	// console.log(contactListData)
+	// 	if (contactListData.lineUserId) {
+
+	// 		// TODO : liff uri - move to environment
+	// 		let liffUri = `${environment.joborderLiff}?docno=${this.joborderData.docno}`;
+			
+	// 		let msg = 'รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน\n' +
+	// 					`ในวันที่ ${this.titleDate}\n` +
+	// 					'กรุณาลิงค์ด้านล่างเพื่อยืนยันหรือปฏิเสธการนัดหมายด้วยค่ะ\n' +
+	// 					`${liffUri}`;
+
+	// 		if (this._linechatService.isLogin()) {
+	// 			this._linechatService.openChatPanel(contactListData.lineUserId);
+	// 			this._linechatService.sendMessage(contactListData.lineUserId, msg)
+	// 				.pipe(takeUntil(this._unsubscribeAll))
+	// 				.subscribe(
+	// 					v => {
+	// 						console.log(v);
+	// 						// Do nothing
+	// 					},
+	// 					err => {
+	// 						this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ ไม่สามารถส่งข้อความได้", "", {duration: 5000,});
+	// 					}
+	// 				);
+	// 		} else {
+
+	// 			this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ กรุณาล็อกอินไลน์ก่อน", "", {duration: 8000,});
+	// 		}
+	// 	}
+	// }
 	
 
 	goBack() {
@@ -1032,7 +1036,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
    
 		// we open the menu 
 		// we pass to the menu the information about our object 
-		this.matMenuTrigger.menuData = {lineUserId: this.joborderData.contactLists[i].lineUserId}; 
+		this.matMenuTrigger.menuData = {lineChatId: this.joborderData.contactLists[i].lineChatId}; 
    
 		// we open the menu 
 		this.matMenuTrigger.openMenu(); 
