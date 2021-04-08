@@ -54,6 +54,7 @@ export class LinechatService {
 	private _chatRoomId: string = null;
 
 	chatEvent$ = new Subject<any>();
+	daemonChat$ = new Subject<any>();
 
 	constructor(
 		private auth: AuthenService,
@@ -403,9 +404,10 @@ export class LinechatService {
 				// console.log(chatStreamUri);
 				this._evsMessage = new EventSource(chatStreamUri);
 
-				this._evsMessage.addEventListener("chat", event => {
-					// console.log(event)
+				this._evsMessage.addEventListener("chat", (event:any) => {
+					// console.log(event);
 					subscriber.next(event);
+					this.findChatIdFromLiff(event.data);
 				});
 			
 				this._evsMessage.onmessage = event => {
@@ -465,6 +467,56 @@ export class LinechatService {
 			type: LINECHAT_EVENT.OPENCHAT_PANEL,
 			chatId: chatId,
 		});
+	}
+
+	getDaemonChat(): Observable<any> {
+		return this.daemonChat$.asObservable();
+	}
+
+	/**
+	 * Find string liff in text
+	 * for map lineUserid from liff and chatId
+	 */
+	findChatIdFromLiff(data: string) {
+		let msg = JSON.parse(data);
+
+		// console.log(msg);
+
+		let chatId = msg.chatId;
+		let lineUserId;
+
+		if (!msg.payload) {
+			return;
+		}
+
+		if ((msg.payload.type === 'messageSent') && (msg.payload.message.type === 'text')) {
+			// Ex. https://liff.line.me/1654160516-lRJZgP5X?docId=606eae03ab365d000ffb49dc&luid=Uc42656d6541295931b1f6d986f12ae8b
+			let txt = msg.payload.message.text;
+			// console.log(txt);
+			// Find luid text 
+			let pos = txt.search('&luid=');
+			// console.log(pos);
+			if (pos) {
+				lineUserId = txt.slice(pos + 6);
+
+				// console.log(lineUserId);
+				// Send event to all subscribe
+				this.daemonChat$.next({
+					type: 'FIND_CHATID',
+					chatId: chatId,
+					lineUserId: lineUserId,
+				});
+			}
+			
+		}
+		
+		
+		
+
+		
+
+		
+		
 	}
 
 }

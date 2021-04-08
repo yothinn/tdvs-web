@@ -29,6 +29,7 @@ import { ContactStatus, OrderStatus } from '../../../types/tvds-status'
 import { LinechatService } from "app/main/linechat/services/linechat.service";
 import { JoborderService } from "../services/joborder.service";
 import { EventStreamService } from "app/services/event-stream.service";
+import { TvdscustomerService } from "app/main/tvdscustomer/services/tvdscustomer.service";
 
 @Component({
 	selector: "app-joborder-form",
@@ -124,6 +125,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 		private _linechatService: LinechatService,
 		private _evsService: EventStreamService,
 		private _ref: ChangeDetectorRef,
+		private _customerService: TvdscustomerService,
 	) {
 		this._fuseTranslationLoaderService.loadTranslations(english, thai);
 
@@ -174,6 +176,9 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	ngAfterViewInit() {
 		// Open event streaming from tvds service
 		this.openEventStream();
+
+		// Start daemon chat to find chatId and lineUserId
+		this.startDaemonChat();
 	}
 
 	ngOnDestroy() {
@@ -200,9 +205,9 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 			.subscribe((ev: any) => {
 				if (ev.type === 'message') {
 				 	let data = JSON.parse(ev.data);
-					console.log(data);
+					// console.log(data);
 
-					console.log(data.data.docno);
+					// console.log(data.data.docno);
 					// Update joborder when open same doc
 					if (data.type === 'joborderConfirm' && data.data.docno === this.joborderData.docno) {
 						this.joborderData = data.data;
@@ -409,6 +414,8 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 				defaultStatus = "waitcontact";
 			}
 
+			//console.log(item);
+
 			if (mIndex === -1) {
 				let itemList = {
 					_id: item._id,
@@ -430,15 +437,16 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 					addressPostCode: item.addressPostCode,
 					lineUserId: item.lineUserId,
 					lineDisplayName: item.lineDisplayName,
+					lineChatId: item.lineChatId,
 					latitude: item.latitude,
 					longitude: item.longitude,
 				};
-				// console.log(itemList)
+				//console.log(itemList)
 
 				this.joborderData.contactLists.push(itemList);
 				this.changeIconMarker(item, "S");
 			}
-			// console.log(this.joborderData.contactLists);
+			//console.log(this.joborderData.contactLists);
 
 			item.docno = this.joborderData.docno;
 			item.contactStatus = "S";
@@ -656,49 +664,89 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	}
 
 	// Old version : user webhook
+	// sendConFirm(contactListData) {
+	// 	// console.log(contactListData)
+	// 	if (contactListData.lineUserId) {
+	// 		let body = {
+	// 			to: contactListData.lineUserId,
+	// 			messages: [
+	// 				{
+	// 					type: "template",
+	// 					altText: "รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน กรุณายืนยันการนัดหมายด้วยค่ะ",
+	// 					template: {
+	// 						type: "confirm",
+	// 						actions: [
+	// 							{
+	// 								type: "message",
+	// 								label: "รับนัดหมาย",
+	// 								text:
+	// 									"รับนัดหมาย วัน" +
+	// 									this.nameDate +
+	// 									"ที่: " +
+	// 									this.titleDate +
+	// 									" เลขเอกสาร: " +
+	// 									this.joborderData.docno + " " +
+	// 									`(${contactListData.lineUserId})`,
+	// 							},
+	// 							{
+	// 								type: "message",
+	// 								label: "ปฏิเสธ",
+	// 								text:
+	// 									"ปฏิเสธ วัน" +
+	// 									this.nameDate +
+	// 									"ที่: " +
+	// 									this.titleDate +
+	// 									" เลขเอกสาร: " +
+	// 									this.joborderData.docno + " " + 
+	// 									`(${contactListData.lineUserId})`,
+	// 							},
+	// 						],
+	// 						text:
+	// 							"ตามที่ท่านลงทะเบียนกับรถธรรมธุรกิจไว้ เรามีความยินดีที่จะนำสินค้าข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวันที่ " +
+	// 							this.titleDate +
+	// 							" กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยจะติดต่ออีกครั้งก่อนเดินทาง หรือสอบถามเพิ่มเติม 098-8316596" +
+	// 							" ขอบคุณครับ",
+	// 					},
+	// 				},
+	// 			],
+	// 		};
+
+	// 		// console.log(body)
+	// 		this.joborderService
+	// 			.sendConFirmData(body)
+	// 			.then((res) => {
+	// 				this._snackBar.open("ส่งข้อความสำเร็จ รอยืนยัน", "", {
+	// 					duration: 5000,
+	// 				});
+	// 			})
+	// 			.catch((error) => {
+	// 				this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
+	// 					duration: 5000,
+	// 				});
+	// 			});
+	// 	}
+	// }
+
+
+	// New version 1 : use push message and liff
 	sendConFirm(contactListData) {
 		// console.log(contactListData)
 		if (contactListData.lineUserId) {
+			// REMARK : lineUserId use for detect mapping in this web
+			// for get line chat Id
+			let liffUri = `${environment.joborderLiff}?docId=${this.joborderData._id}&luid=${contactListData.lineUserId}`;
+
+			let msg = 'รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน\n' +
+	 					`ในวันที่ ${this.titleDate}\n` +
+	 					'กรุณาลิงค์ด้านล่างเพื่อยืนยันหรือปฏิเสธการนัดหมายด้วยค่ะ\n' +
+	 					`${liffUri}`;
+
 			let body = {
 				to: contactListData.lineUserId,
 				messages: [
 					{
-						type: "template",
-						altText: "รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน กรุณายืนยันการนัดหมายด้วยค่ะ",
-						template: {
-							type: "confirm",
-							actions: [
-								{
-									type: "message",
-									label: "รับนัดหมาย",
-									text:
-										"รับนัดหมาย วัน" +
-										this.nameDate +
-										"ที่: " +
-										this.titleDate +
-										" เลขเอกสาร: " +
-										this.joborderData.docno + " " +
-										`(${contactListData.lineUserId})`,
-								},
-								{
-									type: "message",
-									label: "ปฏิเสธ",
-									text:
-										"ปฏิเสธ วัน" +
-										this.nameDate +
-										"ที่: " +
-										this.titleDate +
-										" เลขเอกสาร: " +
-										this.joborderData.docno + " " + 
-										`(${contactListData.lineUserId})`,
-								},
-							],
-							text:
-								"ตามที่ท่านลงทะเบียนกับรถธรรมธุรกิจไว้ เรามีความยินดีที่จะนำสินค้าข้าว ผัก ไข่ และผลิตภัณฑ์แปรรูปไปพบท่านในวันที่ " +
-								this.titleDate +
-								" กรุณากดยืนยันนัดหมาย การเดินทางไม่สามารถระบุเวลาที่แน่นอนได้ โดยจะติดต่ออีกครั้งก่อนเดินทาง หรือสอบถามเพิ่มเติม 098-8316596" +
-								" ขอบคุณครับ",
-						},
+						type: "text",
+						text: msg,
 					},
 				],
 			};
@@ -718,6 +766,8 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 				});
 		}
 	}
+
+
 
 
 	// New version : user server sent event
@@ -1034,6 +1084,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 		this.menuTopLeftPosition.x = event.clientX + 'px'; 
 		this.menuTopLeftPosition.y = event.clientY + 'px'; 
    
+		// console.log(this.joborderData);
 		// we open the menu 
 		// we pass to the menu the information about our object 
 		this.matMenuTrigger.menuData = {lineChatId: this.joborderData.contactLists[i].lineChatId}; 
@@ -1043,13 +1094,44 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	}
 
 	onOpenChat(event, lineUserId) {
-		console.log(event);
-		console.log(lineUserId);
+		// console.log(event);
+		// console.log(lineUserId);
 
 		if (lineUserId) {
 			this._linechatService.openChatPanel(lineUserId);
 		}
 
+	}
+
+
+	/**
+	 * Start daemon for recieve line message
+	 */
+	startDaemonChat() {
+		this._linechatService.getDaemonChat()
+			.pipe(takeUntil(this._unsubscribeAll))
+			.subscribe(v => {
+				if (v.type === "FIND_CHATID") {
+					// console.log(v);
+					
+					let contact = this.joborderData.contactLists.filter(i => i.lineUserId === v.lineUserId);
+					if (contact.length > 0) {
+						// console.log(contact[0]._id);
+
+						if (!contact[0].lineChatId) {
+
+							// Update lineChatId
+							this._customerService.updateTvdscustomerData({
+								_id: contact[0]._id,
+								lineChatId: v.chatId,
+							}).then(res => {
+								contact[0].lineChatId = v.chatId;
+								// console.log(res);
+							});
+						}
+					}
+				}
+			});
 	}
 
 }

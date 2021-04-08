@@ -494,7 +494,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
                     this.contacts = userList.list;
                 }
 
-                console.log(this.contacts);
+                // console.log(this.contacts);
             });
     }
 
@@ -529,7 +529,7 @@ export class ChatPanelComponent implements OnInit, AfterViewInit, OnDestroy
                 // console.log('open streaming')
                 // console.log(e);
                 let msg = JSON.parse(e.data);
-                console.log(msg);
+                // console.log(msg);
 
                 if (this.selectedContact && (msg.chatId == this.selectedContact.chatId)) {
                     this.loadChat(this.selectedContact.chatId);

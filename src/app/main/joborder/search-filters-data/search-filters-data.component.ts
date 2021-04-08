@@ -174,7 +174,7 @@ export class SearchFiltersDataComponent implements OnInit {
 
 	onShowFilter() {
 		this.showFilter = !this.showFilter;
-		// console.log(this.showFilter);
+		//console.log(this.showFilter);
 	}
 
 	onConvenientChange() {
