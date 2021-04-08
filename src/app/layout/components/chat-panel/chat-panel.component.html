@@ -13,7 +13,7 @@
     <ng-container *ngIf="selectedContact !== null">
 
         <div class="title" fxLayout="row" fxLayoutAlign="start center">
-            <img [src]="getAvatar(selectedContact.profile.iconHash)" class="avatar mx-16">
+            <img [src]="getAvatar(selectedContact.profile?.iconHash)" class="avatar mx-16">
             <h3 class="text-truncate">{{selectedContact.profile.nickname || selectedContact.profile.name}}</h3>
         </div>
 

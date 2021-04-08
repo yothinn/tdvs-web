@@ -189,6 +189,7 @@ chat-panel {
                     .message {
                         white-space: pre-wrap;
                         line-height: 1.2;
+                        word-break: break-word;
                     }
 
                     .time {

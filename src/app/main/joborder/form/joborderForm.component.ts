@@ -29,6 +29,7 @@ import { ContactStatus, OrderStatus } from '../../../types/tvds-status'
 import { LinechatService } from "app/main/linechat/services/linechat.service";
 import { JoborderService } from "../services/joborder.service";
 import { EventStreamService } from "app/services/event-stream.service";
+import { TvdscustomerService } from "app/main/tvdscustomer/services/tvdscustomer.service";
 
 @Component({
 	selector: "app-joborder-form",
@@ -124,6 +125,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 		private _linechatService: LinechatService,
 		private _evsService: EventStreamService,
 		private _ref: ChangeDetectorRef,
+		private _customerService: TvdscustomerService,
 	) {
 		this._fuseTranslationLoaderService.loadTranslations(english, thai);
 
@@ -174,6 +176,9 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	ngAfterViewInit() {
 		// Open event streaming from tvds service
 		this.openEventStream();
+
+		// Start daemon chat to find chatId and lineUserId
+		this.startDaemonChat();
 	}
 
 	ngOnDestroy() {
@@ -200,9 +205,9 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 			.subscribe((ev: any) => {
 				if (ev.type === 'message') {
 				 	let data = JSON.parse(ev.data);
-					console.log(data);
+					// console.log(data);
 
-					console.log(data.data.docno);
+					// console.log(data.data.docno);
 					// Update joborder when open same doc
 					if (data.type === 'joborderConfirm' && data.data.docno === this.joborderData.docno) {
 						this.joborderData = data.data;
@@ -409,6 +414,8 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 				defaultStatus = "waitcontact";
 			}
 
+			//console.log(item);
+
 			if (mIndex === -1) {
 				let itemList = {
 					_id: item._id,
@@ -430,15 +437,16 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 					addressPostCode: item.addressPostCode,
 					lineUserId: item.lineUserId,
 					lineDisplayName: item.lineDisplayName,
+					lineChatId: item.lineChatId,
 					latitude: item.latitude,
 					longitude: item.longitude,
 				};
-				// console.log(itemList)
+				//console.log(itemList)
 
 				this.joborderData.contactLists.push(itemList);
 				this.changeIconMarker(item, "S");
 			}
-			// console.log(this.joborderData.contactLists);
+			//console.log(this.joborderData.contactLists);
 
 			item.docno = this.joborderData.docno;
 			item.contactStatus = "S";
@@ -493,7 +501,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 			this.joborderData.contactLists[i].contactStatus = "waitapprove";
 			// REMARK : temporaly comment, it has problem for send message to line
 			// this.sendReject(this.joborderData.contactLists[i]);
-			// this.sendConFirm(this.joborderData.contactLists[i]);
+			this.sendConFirm(this.joborderData.contactLists[i]);
 
 			this.onSaveStatus("w");
 			this.findOnMap(this.joborderData.contactLists[i], "W");
@@ -516,7 +524,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 					this.joborderData.contactLists[i].contactStatus = "reject";
 					this.onSaveStatus("r");
 					// REMARK : temporaly comment, it has problem for send message to line
-					// this.sendReject(this.joborderData.contactLists[i]);
+					this.sendReject(this.joborderData.contactLists[i]);
 					this.findOnMap(this.joborderData.contactLists[i], "R");
 				}
 			});
@@ -548,63 +556,65 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 			});
 	}
 
-	// sendReject(contactListData) {
-	// 	// TODO : change this to send message Change this ??
-	// 	// console.log(contactListData)
-	// 	if (contactListData.lineUserId) {
-	// 		let body = {
-	// 			to: contactListData.lineUserId,
-	// 			messages: [
-	// 				{
-	// 					type: "text",
-	// 					text: "สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: " + contactListData.remark
-	// 				},
-	// 			],
-	// 		};
-	// 		// console.log(body)
-	// 		this.joborderService
-	// 			.sendConFirmData(body)
-	// 			.then((res) => {
-	// 				this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {
-	// 					duration: 5000,
-	// 				});
-	// 			})
-	// 			.catch((error) => {
-	// 				this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
-	// 					duration: 5000,
-	// 				});
-	// 			});
-	// 	} else {
-	// 		this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพย์ เพื่อแจ้งสถานะ", "", {
-	// 			duration: 8000,
-	// 		});
-	// 	}
-	// }
-
+	// Old version : use line push
 	sendReject(contactListData) {
-			
-			if (contactListData.lineUserId) {
-				if (this._linechatService.isLogin()) {
-					let msg = 'สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: ' + contactListData.remark;
-					this._linechatService.sendMessage(contactListData.lineUserId, msg)
-						.pipe(takeUntil(this._unsubscribeAll))
-						.subscribe(
-							v => {
-								this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {duration: 5000});
-							},
-							error => {
-								this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {duration: 5000});
-							}
-						);
-				} else {
-					this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ กรุณาล็อกอินไลน์ก่อน", "", {duration: 8000,});
-				}
-			} else {
-				this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพท์ เพื่อแจ้งสถานะ", "", {
-					duration: 8000,
+		// TODO : change this to send message Change this ??
+		// console.log(contactListData)
+		if (contactListData.lineUserId) {
+			let body = {
+				to: contactListData.lineUserId,
+				messages: [
+					{
+						type: "text",
+						text: "สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: " + contactListData.remark
+					},
+				],
+			};
+			// console.log(body)
+			this.joborderService
+				.sendConFirmData(body)
+				.then((res) => {
+					this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {
+						duration: 5000,
+					});
+				})
+				.catch((error) => {
+					this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
+						duration: 5000,
+					});
 				});
-			}
+		} else {
+			this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพย์ เพื่อแจ้งสถานะ", "", {
+				duration: 8000,
+			});
+		}
 	}
+
+	// New version : use line chat
+	// sendReject(contactListData) {
+			
+	// 		if (contactListData.lineUserId) {
+	// 			if (this._linechatService.isLogin()) {
+	// 				let msg = 'สถานะการส่งของท่านถูกยกเลิก เนื่องจาก: ' + contactListData.remark;
+	// 				this._linechatService.sendMessage(contactListData.lineUserId, msg)
+	// 					.pipe(takeUntil(this._unsubscribeAll))
+	// 					.subscribe(
+	// 						v => {
+	// 							this._snackBar.open("ส่งข้อความเพื่อแจ้งสถานะการยกเลิกเรียบร้อย", "", {duration: 5000});
+	// 						},
+	// 						error => {
+	// 							this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {duration: 5000});
+	// 						}
+	// 					);
+	// 			} else {
+	// 				this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ กรุณาล็อกอินไลน์ก่อน", "", {duration: 8000,});
+	// 			}
+	// 		} else {
+	// 			this._snackBar.open("โปรดติดต่อทางเบอร์โทรศัพท์ เพื่อแจ้งสถานะ", "", {
+	// 				duration: 8000,
+	// 			});
+	// 		}
+	// }
 
 	findOnMap(jobOrderDataItem, txt) {
 		// console.log(item._id)
@@ -675,7 +685,8 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	// 									"ที่: " +
 	// 									this.titleDate +
 	// 									" เลขเอกสาร: " +
-	// 									this.joborderData.docno,
+	// 									this.joborderData.docno + " " +
+	// 									`(${contactListData.lineUserId})`,
 	// 							},
 	// 							{
 	// 								type: "message",
@@ -686,7 +697,8 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	// 									"ที่: " +
 	// 									this.titleDate +
 	// 									" เลขเอกสาร: " +
-	// 									this.joborderData.docno,
+	// 									this.joborderData.docno + " " + 
+	// 									`(${contactListData.lineUserId})`,
 	// 							},
 	// 						],
 	// 						text:
@@ -716,38 +728,80 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	// }
 
 
-	// New version : user server sent event
+	// New version 1 : use push message and liff
 	sendConFirm(contactListData) {
 		// console.log(contactListData)
 		if (contactListData.lineUserId) {
+			// REMARK : lineUserId use for detect mapping in this web
+			// for get line chat Id
+			let liffUri = `${environment.joborderLiff}?docId=${this.joborderData._id}&luid=${contactListData.lineUserId}`;
 
-			// TODO : liff uri - move to environment
-			let liffUri = `${environment.joborderLiff}?docno=${this.joborderData.docno}`;
-			
 			let msg = 'รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน\n' +
-						`ในวันที่ ${this.titleDate}\n` +
-						'กรุณาลิงค์ด้านล่างเพื่อยืนยันหรือปฏิเสธการนัดหมายด้วยค่ะ\n' +
-						`${liffUri}`;
+	 					`ในวันที่ ${this.titleDate}\n` +
+	 					'กรุณาลิงค์ด้านล่างเพื่อยืนยันหรือปฏิเสธการนัดหมายด้วยค่ะ\n' +
+	 					`${liffUri}`;
 
-			if (this._linechatService.isLogin()) {
-				this._linechatService.openChatPanel(contactListData.lineUserId);
-				this._linechatService.sendMessage(contactListData.lineUserId, msg)
-					.pipe(takeUntil(this._unsubscribeAll))
-					.subscribe(
-						v => {
-							console.log(v);
-							// Do nothing
-						},
-						err => {
-							this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ ไม่สามารถส่งข้อความได้", "", {duration: 5000,});
-						}
-					);
-			} else {
+			let body = {
+				to: contactListData.lineUserId,
+				messages: [
+					{
+						type: "text",
+						text: msg,
+					},
+				],
+			};
 
-				this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ กรุณาล็อกอินไลน์ก่อน", "", {duration: 8000,});
-			}
+			// console.log(body)
+			this.joborderService
+				.sendConFirmData(body)
+				.then((res) => {
+					this._snackBar.open("ส่งข้อความสำเร็จ รอยืนยัน", "", {
+						duration: 5000,
+					});
+				})
+				.catch((error) => {
+					this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ", "", {
+						duration: 5000,
+					});
+				});
 		}
 	}
+
+
+
+
+	// New version : user server sent event
+	// sendConFirm(contactListData) {
+	// 	// console.log(contactListData)
+	// 	if (contactListData.lineUserId) {
+
+	// 		// TODO : liff uri - move to environment
+	// 		let liffUri = `${environment.joborderLiff}?docno=${this.joborderData.docno}`;
+			
+	// 		let msg = 'รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน\n' +
+	// 					`ในวันที่ ${this.titleDate}\n` +
+	// 					'กรุณาลิงค์ด้านล่างเพื่อยืนยันหรือปฏิเสธการนัดหมายด้วยค่ะ\n' +
+	// 					`${liffUri}`;
+
+	// 		if (this._linechatService.isLogin()) {
+	// 			this._linechatService.openChatPanel(contactListData.lineUserId);
+	// 			this._linechatService.sendMessage(contactListData.lineUserId, msg)
+	// 				.pipe(takeUntil(this._unsubscribeAll))
+	// 				.subscribe(
+	// 					v => {
+	// 						console.log(v);
+	// 						// Do nothing
+	// 					},
+	// 					err => {
+	// 						this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ ไม่สามารถส่งข้อความได้", "", {duration: 5000,});
+	// 					}
+	// 				);
+	// 		} else {
+
+	// 			this._snackBar.open("เกิดข้อผิดพลาดในการส่งข้อความ กรุณาล็อกอินไลน์ก่อน", "", {duration: 8000,});
+	// 		}
+	// 	}
+	// }
 	
 
 	goBack() {
@@ -1030,22 +1084,54 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 		this.menuTopLeftPosition.x = event.clientX + 'px'; 
 		this.menuTopLeftPosition.y = event.clientY + 'px'; 
    
+		// console.log(this.joborderData);
 		// we open the menu 
 		// we pass to the menu the information about our object 
-		this.matMenuTrigger.menuData = {lineUserId: this.joborderData.contactLists[i].lineUserId}; 
+		this.matMenuTrigger.menuData = {lineChatId: this.joborderData.contactLists[i].lineChatId}; 
    
 		// we open the menu 
 		this.matMenuTrigger.openMenu(); 
 	}
 
 	onOpenChat(event, lineUserId) {
-		console.log(event);
-		console.log(lineUserId);
+		// console.log(event);
+		// console.log(lineUserId);
 
 		if (lineUserId) {
 			this._linechatService.openChatPanel(lineUserId);
 		}
 
+	}
+
+
+	/**
+	 * Start daemon for recieve line message
+	 */
+	startDaemonChat() {
+		this._linechatService.getDaemonChat()
+			.pipe(takeUntil(this._unsubscribeAll))
+			.subscribe(v => {
+				if (v.type === "FIND_CHATID") {
+					// console.log(v);
+					
+					let contact = this.joborderData.contactLists.filter(i => i.lineUserId === v.lineUserId);
+					if (contact.length > 0) {
+						// console.log(contact[0]._id);
+
+						if (!contact[0].lineChatId) {
+
+							// Update lineChatId
+							this._customerService.updateTvdscustomerData({
+								_id: contact[0]._id,
+								lineChatId: v.chatId,
+							}).then(res => {
+								contact[0].lineChatId = v.chatId;
+								// console.log(res);
+							});
+						}
+					}
+				}
+			});
 	}
 
 }
