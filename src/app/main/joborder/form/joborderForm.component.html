@@ -107,6 +107,7 @@
           </div>
         </div>
 
+        <!-- Contact Lists-->
         <div cdkDropList (cdkDropListDropped)="drop($event)">
           <div
             class="list-bg"
@@ -195,7 +196,7 @@
                       !joborderData._id || item.contactStatus !== 'select'
                     "
                   >
-                    ส่งนัดหมาย
+                    แจ้งนัด
                   </button>
                 </div>
 
@@ -239,28 +240,6 @@
                   </button>
                 </div>
 
-                <!-- <div fxFlex="25" *ngIf="item.lineUserId">
-                  <button
-                    mat-flat-button
-                    class="btn-list-status"
-                    [ngClass]="{ 'color-c-btn': joborderData._id }"
-                    (click)="onChangeStatus('confirm', i)"
-                  >
-                    Confirm
-                  </button>
-                </div>
-
-                <div fxFlex="25" *ngIf="item.lineUserId">
-                  <button
-                    mat-flat-button
-                    class="btn-list-status"
-                    [ngClass]="{ 'color-r-btn': joborderData._id }"
-                    (click)="onChangeStatus('reject', i)"
-                  >
-                    Reject
-                  </button> 
-                  
-                </div>-->
 
                 <div fxFlex="25" *ngIf="!item.lineUserId">
                   <button

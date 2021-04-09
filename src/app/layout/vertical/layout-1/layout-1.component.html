@@ -102,11 +102,13 @@
 <!-- <fuse-sidebar name="quickPanel" position="right" class="quick-panel">
   <quick-panel></quick-panel>
 </fuse-sidebar> -->
-<fuse-sidebar name="chatPanel" position="right" class="chat-panel right-chat-panel"
-                  [folded]="true" [foldedWidth]="70" [foldedAutoTriggerOnHover]="false"
-                  lockedOpen="gt-md">
-  <chat-panel></chat-panel>
-</fuse-sidebar>
+<ng-container *ngIf="!fuseConfig.layout.sidepanel.hidden && fuseConfig.layout.sidepanel.position === 'right'">
+  <fuse-sidebar name="chatPanel" position="right" class="chat-panel right-chat-panel"
+                    [folded]="true" [foldedWidth]="70" [foldedAutoTriggerOnHover]="false"
+                    lockedOpen="gt-md">
+    <chat-panel></chat-panel>
+  </fuse-sidebar>
+</ng-container>
 
 
 <!-- / QUICK PANEL -->

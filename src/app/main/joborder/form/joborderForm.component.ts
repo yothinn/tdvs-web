@@ -558,8 +558,10 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 
 	// Old version : use line push
 	sendReject(contactListData) {
-		// TODO : change this to send message Change this ??
 		// console.log(contactListData)
+
+		// Use push message instead send message because 
+		// it hasn't chat id filed
 		if (contactListData.lineUserId) {
 			let body = {
 				to: contactListData.lineUserId,
@@ -731,6 +733,9 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	// New version 1 : use push message and liff
 	sendConFirm(contactListData) {
 		// console.log(contactListData)
+		
+		// REMARK: Use push message instead send message because 
+		// it hasn't chat id filed
 		if (contactListData.lineUserId) {
 			// REMARK : lineUserId use for detect mapping in this web
 			// for get line chat Id
