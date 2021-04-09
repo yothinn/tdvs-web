@@ -18,7 +18,7 @@ import * as moment from "moment";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 
-import { Socket } from "ngx-socket-io";
+// import { Socket } from "ngx-socket-io";
 import { NgxSpinnerService } from "ngx-spinner";
 
 import { SelectCarAndDateComponent } from "../select-car-and-date/select-car-and-date.component";
@@ -118,7 +118,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 		private router: Router,
 		public dialog: MatDialog,
 		private _snackBar: MatSnackBar,
-		private socket: Socket,
+		// private socket: Socket,
 		private spinner: NgxSpinnerService,
 		private joborderService: JoborderService,
 		// private _polygonZoneService: PolygonZoneService,
@@ -135,7 +135,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 	ngOnInit(): void {
 
 
-		this.socket.connect();
+		// this.socket.connect();
 
 		this.joborderData = this.route.snapshot.data.items
 			? this.route.snapshot.data.items.data
