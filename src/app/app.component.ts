@@ -14,7 +14,7 @@ import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.
 import { navigation } from 'app/navigation/navigation';
 import { locale as navigationEnglish } from 'app/navigation/i18n/en';
 import { locale as navigationThai } from 'app/navigation/i18n/th';
-import { Socket } from 'ngx-socket-io';
+// import { Socket } from 'ngx-socket-io';
 import { environment } from 'environments/environment';
 
 @Component({
@@ -51,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy
         private _fuseTranslationLoaderService: FuseTranslationLoaderService,
         private _translateService: TranslateService,
         private _platform: Platform,
-        private socket: Socket,
+        // private socket: Socket,
     )
     {
         // this.socket.connect();

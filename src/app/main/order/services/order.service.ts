@@ -8,7 +8,7 @@ const api_url = environment.apiUrl + "/api/orders/";
 const api_url_vehicle = environment.apiUrl + "/api/vehicles/";
 const api_url_markers = environment.apiUrl + "/api/ordersupdatemap/";
 const api_url_line = environment.apiUrl + "/api/chatbot/sendmessage";
-import * as io from 'socket.io-client';
+// import * as io from 'socket.io-client';
 import { AuthenService } from 'app/authentication/authen.service';
 
 @Injectable({

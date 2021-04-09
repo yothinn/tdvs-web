@@ -15,7 +15,7 @@ import { MatDialog } from "@angular/material";
 import { CarAndDateComponent } from "../car-and-date/car-and-date.component";
 import * as moment from "moment";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
-import { Socket } from "ngx-socket-io";
+// import { Socket } from "ngx-socket-io";
 
 @Component({
   selector: "app-order-form",
@@ -50,7 +50,7 @@ export class OrderFormComponent implements OnInit {
     private spinner: NgxSpinnerService,
     public dialog: MatDialog,
     private _snackBar: MatSnackBar,
-    private socket: Socket
+    // private socket: Socket
   ) {
     this._fuseTranslationLoaderService.loadTranslations(english, thai);
   }
@@ -82,12 +82,12 @@ export class OrderFormComponent implements OnInit {
     this.getVehicleData();
 
     // this.orderService.setupSocketConnection();
-    this.socket.on("user-confirm-reject", (message: any) => {
-      // console.log(message);
-      if (message.docno === this.orderData.docno) {
-        this.orderData = message;
-      }
-    });
+    // this.socket.on("user-confirm-reject", (message: any) => {
+    //   // console.log(message);
+    //   if (message.docno === this.orderData.docno) {
+    //     this.orderData = message;
+    //   }
+    // });
   }
 
   getVehicleData() {
