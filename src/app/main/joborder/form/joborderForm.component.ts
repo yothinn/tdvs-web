@@ -199,22 +199,28 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 				return;
 		}
 
+		console.log('open event stream');
 		// Open Event stream
 		this._evsService.openEventStream()
 			.pipe(takeUntil(this._unsubscribeAll))
 			.subscribe((ev: any) => {
+				// console.log(ev);
 				if (ev.type === 'message') {
-				 	let data = JSON.parse(ev.data);
-					// console.log(data);
+				 	let data = null;
+					 if (typeof ev.data === "object") {
+						data = JSON.parse(ev.data);
+					 					  
+						// console.log(data);
 
-					// console.log(data.data.docno);
-					// Update joborder when open same doc
-					if (data.type === 'joborderConfirm' && data.data.docno === this.joborderData.docno) {
-						this.joborderData = data.data;
-						console.log(this.joborderData);
-						this.socketUpdateMarkerOnMap();
-						
-						this._ref.detectChanges();
+						// console.log(data.data.docno);
+						// Update joborder when open same doc
+						if (data.type === 'joborderConfirm' && data.data.docno === this.joborderData.docno) {
+							this.joborderData = data.data;
+							// console.log(this.joborderData);
+							this.socketUpdateMarkerOnMap();
+							
+							this._ref.detectChanges();
+						}
 					}
 				}
 			});
@@ -743,7 +749,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 
 			let msg = 'รถธรรมธุรกิจ ขอนัดหมายเข้าไปให้บริการท่านถึงหน้าบ้าน\n' +
 	 					`ในวันที่ ${this.titleDate}\n` +
-	 					'กรุณาลิงค์ด้านล่างเพื่อยืนยันหรือปฏิเสธการนัดหมายด้วยค่ะ\n' +
+	 					'กรุณากดลิงค์ด้านล่างเพื่อยืนยันหรือปฏิเสธการนัดหมายด้วยค่ะ\n' +
 	 					`${liffUri}`;
 
 			let body = {
@@ -863,6 +869,7 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 					}
 				})
 				.catch((err) => {
+					console.log(err);
 					this.spinner.hide();
 					this._snackBar.open("เกิดข้อผิดพลาดในการเริ่มจัดเส้นทาง และบันทึกจุดบริการ", "", {
 						duration: 7000,
@@ -1031,7 +1038,19 @@ export class JoborderFormComponent implements AfterViewInit, OnInit, OnDestroy {
 			let pos = 0;
 			// Find district
 			if (filterData.districtList.length > 0) {
-				pos = filterData.districtList.findIndex(d => d === value.addressDistrict);
+				pos = filterData.districtList.findIndex(d => {
+					if (value.addressDistrict !== '') {
+						let reg = new RegExp(value.addressDistrict, "ig");
+						return d.search(reg) >= 0;
+					} else {
+						return false;
+					}
+				});
+
+				if (pos >=0 ) {
+					console.log(`${pos} ${pos >=0 ? filterData.districtList[pos]: ''} ${value.addressDistrict}`);
+				}
+				
 			}
 
 			// if found district then find convenient day
