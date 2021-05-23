@@ -411,7 +411,7 @@ export class LinechatService {
 				});
 			
 				this._evsMessage.onmessage = event => {
-					// console.log(event);
+					console.log(event);
 					subscriber.next(event);
 					
 				};
